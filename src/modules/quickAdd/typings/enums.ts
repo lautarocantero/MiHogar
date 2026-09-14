@@ -1,0 +1,4 @@
+export enum QuickAddStep {
+  CHOOSE_TYPE = 'CHOOSE_TYPE',
+  AMOUNT_AND_DETAILS = 'AMOUNT_AND_DETAILS'
+}

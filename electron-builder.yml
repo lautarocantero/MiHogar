@@ -1,0 +1,44 @@
+appId: com.mihogar.app
+productName: Mi Hogar
+copyright: Copyright © 2026 Lautaro Cantero
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - out/**/*
+  - resources/**/*
+  - package.json
+
+asar: true
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.png
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: build/icon.png
+  category: public.app-category.finance
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  icon: build/icon.png
+  category: Office
+  maintainer: Lautaro Cantero

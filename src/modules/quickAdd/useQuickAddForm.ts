@@ -1,0 +1,58 @@
+import { useCallback, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
+import { recordMovementThunk } from '@/store/movements/movementThunks'
+import { useLoader } from '@/hooks/shared/useLoader'
+import { MovementType, OwnerType } from '@/typings/domain/enums'
+import { QuickAddStep } from './typings/enums'
+import type { QuickAddFormValues, UseQuickAddFormResult } from './typings/types'
+
+export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
+  const dispatch = useAppDispatch()
+  const [step, setStep] = useState(QuickAddStep.CHOOSE_TYPE)
+  const [selectedType, setSelectedType] = useState<MovementType | null>(null)
+  const { isLoading, error, run } = useLoader()
+  const accounts = useAppSelector(selectAllAccounts)
+
+  const chooseType = useCallback((type: MovementType) => {
+    setSelectedType(type)
+    setStep(QuickAddStep.AMOUNT_AND_DETAILS)
+  }, [])
+
+  const goBackToChooseType = useCallback(() => {
+    setStep(QuickAddStep.CHOOSE_TYPE)
+  }, [])
+
+  const submit = useCallback(
+    (values: QuickAddFormValues) => {
+      run(async () => {
+        const account = accounts.find((candidate) => candidate.id === values.accountId)
+        await dispatch(
+          recordMovementThunk({
+            type: values.type,
+            amount: values.amount,
+            date: values.date,
+            accountId: values.accountId,
+            toAccountId: values.type === MovementType.TRANSFER ? values.toAccountId : undefined,
+            categoryId: values.type === MovementType.TRANSFER ? undefined : values.categoryId,
+            ownerType: account?.ownerType ?? OwnerType.HOUSEHOLD,
+            ownerId: account?.ownerId,
+            note: values.note
+          })
+        ).unwrap()
+        onDone()
+      }, 'No se pudo guardar el movimiento')
+    },
+    [dispatch, run, onDone, accounts]
+  )
+
+  return {
+    step,
+    chooseType,
+    goBackToChooseType,
+    submit,
+    isSubmitting: isLoading,
+    errorMessage: error,
+    selectedType
+  }
+}

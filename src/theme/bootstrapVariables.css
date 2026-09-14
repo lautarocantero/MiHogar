@@ -1,0 +1,15 @@
+/* Sincronizado a mano con src/theme/tokens.ts (paleta Organic). */
+/* Bootstrap se usa SOLO para utilidades de layout (d-flex, gap-*, mt-*, etc). */
+/* Sus componentes interactivos (modal, dropdown, tooltip) están prohibidos: todo lo interactivo es MUI. */
+:root {
+  --bs-primary: #ab5e2b;
+  --bs-primary-rgb: 171, 94, 43;
+  --bs-secondary: #6a7851;
+  --bs-secondary-rgb: 106, 120, 81;
+  --bs-body-bg: #f5ead8;
+  --bs-body-color: #8c491a;
+  --bs-border-color: #dcd3c4;
+  --bs-border-radius: 28px;
+  --bs-border-radius-pill: 999px;
+  --bs-font-sans-serif: 'Figtree', sans-serif;
+}

@@ -1,0 +1,19 @@
+import type { AddMemberFormValues, ChangeHouseholdKeyFormValues } from './types'
+
+export type HouseholdKeyFormProps = {
+  onSubmit: (values: ChangeHouseholdKeyFormValues) => void
+  isSubmitting: boolean
+  errorMessage: string | null
+  successMessage: string | null
+}
+
+export type AddMemberFormProps = {
+  onSubmit: (values: AddMemberFormValues) => void
+  isSubmitting: boolean
+  errorMessage: string | null
+}
+
+export type AddMemberDialogProps = {
+  open: boolean
+  onClose: () => void
+}
