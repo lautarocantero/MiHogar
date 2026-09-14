@@ -17,6 +17,7 @@ publish:
   provider: github
   owner: lautarocantero
   repo: MiHogar
+  draft: false
 
 win:
   target:
