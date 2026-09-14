@@ -4,7 +4,7 @@ copyright: Copyright © 2026 Lautaro Cantero
 
 directories:
   output: release
-  buildResources: build
+  buildResources: resources
 
 files:
   - out/**/*
@@ -13,12 +13,16 @@ files:
 
 asar: true
 
+publish:
+  provider: github
+  owner: lautarocantero
+  repo: MiHogar
+
 win:
   target:
     - target: nsis
       arch:
         - x64
-  icon: build/icon.png
 
 nsis:
   oneClick: false
@@ -31,7 +35,6 @@ mac:
       arch:
         - x64
         - arm64
-  icon: build/icon.png
   category: public.app-category.finance
 
 linux:
@@ -39,6 +42,5 @@ linux:
     - target: AppImage
       arch:
         - x64
-  icon: build/icon.png
   category: Office
   maintainer: Lautaro Cantero

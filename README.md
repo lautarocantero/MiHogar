@@ -83,6 +83,19 @@ yarn build:mac        # Empaqueta DMG (macOS)
 
 Los binarios generados quedan en `release/` (configurado en `electron-builder.yml`).
 
+## Descargar el instalador
+
+Cada vez que se publica un tag `vX.Y.Z`, un workflow de GitHub Actions (`.github/workflows/release.yml`) compila los instaladores para Windows, macOS y Linux y los sube automáticamente a la sección [Releases](https://github.com/lautarocantero/MiHogar/releases) del repo. Desde ahí se puede descargar el instalador correspondiente sin necesidad de compilar el proyecto.
+
+Para publicar una nueva versión:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+También se puede disparar manualmente desde la pestaña Actions (`workflow_dispatch`).
+
 ## Seguridad y datos
 
 Los datos del hogar se guardan localmente en un archivo cifrado (vault), no hay servidor ni sincronización en la nube. Al crear el hogar se define una clave que se usa para derivar la clave de cifrado; sin esa clave no es posible desencriptar el archivo. Se recomienda no perder la clave del hogar, ya que no hay forma de recuperarla.
