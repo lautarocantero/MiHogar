@@ -16,4 +16,5 @@ export type AddMemberFormProps = {
 export type AddMemberDialogProps = {
   open: boolean
   onClose: () => void
+  onCreated?: (memberId: string) => void
 }

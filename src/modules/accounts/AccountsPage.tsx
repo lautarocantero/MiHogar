@@ -4,13 +4,18 @@ import AddIcon from '@mui/icons-material/Add'
 import Grid from '@mui/material/Grid2'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import type { Account } from '@/typings/domain/types'
 import { AccountCard } from './components/AccountCard'
 import { AddAccountDialog } from './components/AddAccountDialog'
+import { EditAccountDialog } from './components/EditAccountDialog'
+import { DeleteAccountDialog } from './components/DeleteAccountDialog'
 import { useAccountsData } from './useAccountsData'
 
 export function AccountsPage(): React.JSX.Element {
   const { totalAvailable, creditCardDebt, accountViews } = useAccountsData()
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false)
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null)
+  const [deletingAccount, setDeletingAccount] = useState<Account | null>(null)
 
   return (
     <Stack spacing={4} component="section" aria-label="Cuentas y tarjetas">
@@ -59,13 +64,31 @@ export function AccountsPage(): React.JSX.Element {
         <Grid container spacing={3}>
           {accountViews.map((account) => (
             <Grid key={account.id} size={{ xs: 12, sm: 6, lg: 4 }}>
-              <AccountCard account={account} />
+              <AccountCard
+                account={account}
+                onEdit={() => setEditingAccount(account)}
+                onDelete={() => setDeletingAccount(account)}
+              />
             </Grid>
           ))}
         </Grid>
       )}
 
       <AddAccountDialog open={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
+      {editingAccount && (
+        <EditAccountDialog
+          account={editingAccount}
+          open={Boolean(editingAccount)}
+          onClose={() => setEditingAccount(null)}
+        />
+      )}
+      {deletingAccount && (
+        <DeleteAccountDialog
+          account={deletingAccount}
+          open={Boolean(deletingAccount)}
+          onClose={() => setDeletingAccount(null)}
+        />
+      )}
     </Stack>
   )
 }

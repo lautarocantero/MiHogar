@@ -1,4 +1,6 @@
-import { Box, Card, Chip, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Box, Card, Chip, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { MovementType } from '@/typings/domain/enums'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
@@ -25,9 +27,15 @@ function getSignedAmountLabel(type: MovementType, amount: number): string {
   return formatCurrency(amount)
 }
 
-export function TimelineEntryCard({ entry }: TimelineEntryCardProps): React.JSX.Element {
+export function TimelineEntryCard({
+  entry,
+  onEdit,
+  onDelete
+}: TimelineEntryCardProps): React.JSX.Element {
   const { movement, concept, detail, isEstimated, isPast } = entry
   const { day, month } = formatDayMonth(movement.date)
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
+  const comesFromPayment = Boolean(movement.paymentId)
 
   return (
     <Stack direction="row" spacing={2} component="li" sx={{ listStyle: 'none' }}>
@@ -59,9 +67,46 @@ export function TimelineEntryCard({ entry }: TimelineEntryCardProps): React.JSX.
               {detail}
             </Typography>
           </Box>
-          <Typography variant="h6" component="p" color={getDotColor(movement.type)}>
-            {getSignedAmountLabel(movement.type, movement.amount)}
-          </Typography>
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Typography variant="h6" component="p" color={getDotColor(movement.type)}>
+              {getSignedAmountLabel(movement.type, movement.amount)}
+            </Typography>
+            <IconButton
+              size="small"
+              aria-label={`Opciones de ${concept}`}
+              onClick={(event) => setMenuAnchor(event.currentTarget)}
+            >
+              <MoreVertIcon fontSize="small" />
+            </IconButton>
+            <Menu
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={() => setMenuAnchor(null)}
+            >
+              {comesFromPayment ? (
+                <MenuItem disabled>Viene de un pago, editalo desde Pagos</MenuItem>
+              ) : (
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      setMenuAnchor(null)
+                      onEdit()
+                    }}
+                  >
+                    Editar
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      setMenuAnchor(null)
+                      onDelete()
+                    }}
+                  >
+                    Eliminar
+                  </MenuItem>
+                </>
+              )}
+            </Menu>
+          </Stack>
         </Stack>
       </Card>
     </Stack>

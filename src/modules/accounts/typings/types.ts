@@ -20,3 +20,15 @@ export type UseCreateAccountResult = {
   isSubmitting: boolean
   errorMessage: string | null
 }
+
+export type UseUpdateAccountResult = {
+  submit: (values: AddAccountFormValues) => void
+  isSubmitting: boolean
+  errorMessage: string | null
+}
+
+export type UseDeleteAccountResult = {
+  submit: () => void
+  isSubmitting: boolean
+  errorMessage: string | null
+}

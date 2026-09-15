@@ -1,4 +1,6 @@
-import { Box, Card, Chip, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
+import { Box, Card, Chip, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { AccountType } from '@/typings/domain/enums'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
@@ -11,12 +13,13 @@ const ACCOUNT_TYPE_BAR_COLOR: Record<AccountType, string> = {
   [AccountType.CREDIT_CARD]: organicColors.orange.dark
 }
 
-export function AccountCard({ account }: AccountCardProps): React.JSX.Element {
+export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): React.JSX.Element {
   const isNegativeBalance = account.balance < 0
   const creditCardInfoText =
     account.type === AccountType.CREDIT_CARD
       ? computeCreditCardInfoText(account.closingDay, account.dueDay, account.installmentsRemaining)
       : null
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   return (
     <Card
@@ -38,11 +41,42 @@ export function AccountCard({ account }: AccountCardProps): React.JSX.Element {
               {account.typeLabel}
             </Typography>
           </Box>
-          <Chip
-            label={account.ownerLabel}
-            size="small"
-            sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
-          />
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <Chip
+              label={account.ownerLabel}
+              size="small"
+              sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
+            />
+            <IconButton
+              size="small"
+              aria-label={`Opciones de ${account.name}`}
+              onClick={(event) => setMenuAnchor(event.currentTarget)}
+            >
+              <MoreVertIcon fontSize="small" />
+            </IconButton>
+            <Menu
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={() => setMenuAnchor(null)}
+            >
+              <MenuItem
+                onClick={() => {
+                  setMenuAnchor(null)
+                  onEdit()
+                }}
+              >
+                Editar
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setMenuAnchor(null)
+                  onDelete()
+                }}
+              >
+                Eliminar
+              </MenuItem>
+            </Menu>
+          </Stack>
         </Stack>
         <Typography
           variant="h4"

@@ -2,16 +2,16 @@ import { Alert, Box, Button, Stack } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addAccountFormSchema } from '@/validation/addAccountFormSchema'
-import { AccountType, OwnerType } from '@/typings/domain/enums'
 import { AccountFormFields } from './AccountFormFields'
-import type { AddAccountFormProps } from '../typings/props'
+import type { EditAccountFormProps } from '../typings/props'
 import type { AddAccountFormValues } from '../typings/types'
 
-export function AddAccountForm({
+export function EditAccountForm({
+  account,
   onSubmit,
   isSubmitting,
   errorMessage
-}: AddAccountFormProps): React.JSX.Element {
+}: EditAccountFormProps): React.JSX.Element {
   const {
     register,
     handleSubmit,
@@ -21,12 +21,15 @@ export function AddAccountForm({
   } = useForm<AddAccountFormValues>({
     resolver: zodResolver(addAccountFormSchema),
     defaultValues: {
-      name: '',
-      type: AccountType.BANK,
-      ownerType: OwnerType.HOUSEHOLD,
-      ownerId: '',
-      balance: 0,
-      contextPhrase: ''
+      name: account.name,
+      type: account.type,
+      ownerType: account.ownerType,
+      ownerId: account.ownerId ?? '',
+      balance: account.balance,
+      contextPhrase: account.contextPhrase ?? '',
+      closingDay: account.closingDay,
+      dueDay: account.dueDay,
+      installmentsRemaining: account.installmentsRemaining
     }
   })
 
@@ -45,7 +48,7 @@ export function AddAccountForm({
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-          {isSubmitting ? 'Guardando…' : 'Agregar la cuenta'}
+          {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
         </Button>
       </Stack>
     </Box>

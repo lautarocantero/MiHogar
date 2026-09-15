@@ -8,12 +8,11 @@ import {
   Switch,
   TextField
 } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addSavingsFormSchema } from '@/validation/addSavingsFormSchema'
 import { OwnerType } from '@/typings/domain/enums'
-import { useAppSelector } from '@/store/hooks'
-import { selectAllMembers } from '@/store/household/householdSelectors'
+import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import type { AddSavingsFormProps } from '../typings/props'
 import type { AddSavingsFormValues } from '../typings/types'
 
@@ -22,11 +21,11 @@ export function AddSavingsForm({
   isSubmitting,
   errorMessage
 }: AddSavingsFormProps): React.JSX.Element {
-  const members = useAppSelector(selectAllMembers)
   const {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors }
   } = useForm<AddSavingsFormValues>({
     resolver: zodResolver(addSavingsFormSchema),
@@ -77,19 +76,18 @@ export function AddSavingsForm({
           <MenuItem value={OwnerType.MEMBER}>De un integrante</MenuItem>
         </TextField>
         {selectedOwnerType === OwnerType.MEMBER && (
-          <TextField
-            label="Integrante"
-            select
-            {...register('ownerId')}
-            error={Boolean(errors.ownerId)}
-            helperText={errors.ownerId?.message}
-          >
-            {members.map((member) => (
-              <MenuItem key={member.id} value={member.id}>
-                {member.name}
-              </MenuItem>
-            ))}
-          </TextField>
+          <Controller
+            name="ownerId"
+            control={control}
+            render={({ field }) => (
+              <MemberOwnerField
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                error={Boolean(errors.ownerId)}
+                helperText={errors.ownerId?.message}
+              />
+            )}
+          />
         )}
         <FormControlLabel
           control={<Switch defaultChecked {...register('liquidAnytime')} />}

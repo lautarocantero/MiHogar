@@ -8,15 +8,15 @@ import {
   Switch,
   TextField
 } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addPaymentFormSchema } from '@/validation/addPaymentFormSchema'
 import { OwnerType, PaymentFrequency } from '@/typings/domain/enums'
 import { useAppSelector } from '@/store/hooks'
-import { selectAllMembers } from '@/store/household/householdSelectors'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
+import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import type { AddPaymentFormProps } from '../typings/props'
 import type { AddPaymentFormValues } from '../typings/types'
 
@@ -25,7 +25,6 @@ export function AddPaymentForm({
   isSubmitting,
   errorMessage
 }: AddPaymentFormProps): React.JSX.Element {
-  const members = useAppSelector(selectAllMembers)
   const accounts = useAppSelector(selectAllAccounts)
   const categories = useAppSelector(selectAllCategories)
 
@@ -33,6 +32,7 @@ export function AddPaymentForm({
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors }
   } = useForm<AddPaymentFormValues>({
     resolver: zodResolver(addPaymentFormSchema),
@@ -106,19 +106,18 @@ export function AddPaymentForm({
           <MenuItem value={OwnerType.MEMBER}>De un integrante</MenuItem>
         </TextField>
         {selectedOwnerType === OwnerType.MEMBER && (
-          <TextField
-            label="Integrante"
-            select
-            {...register('ownerId')}
-            error={Boolean(errors.ownerId)}
-            helperText={errors.ownerId?.message}
-          >
-            {members.map((member) => (
-              <MenuItem key={member.id} value={member.id}>
-                {member.name}
-              </MenuItem>
-            ))}
-          </TextField>
+          <Controller
+            name="ownerId"
+            control={control}
+            render={({ field }) => (
+              <MemberOwnerField
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                error={Boolean(errors.ownerId)}
+                helperText={errors.ownerId?.message}
+              />
+            )}
+          />
         )}
         <FormControlLabel
           control={<Switch defaultChecked {...register('recurring')} />}

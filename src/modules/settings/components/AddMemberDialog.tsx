@@ -3,8 +3,15 @@ import { AddMemberForm } from './AddMemberForm'
 import { useAddMember } from '../useAddMember'
 import type { AddMemberDialogProps } from '../typings/props'
 
-export function AddMemberDialog({ open, onClose }: AddMemberDialogProps): React.JSX.Element {
-  const { submit, isSubmitting, errorMessage } = useAddMember(onClose)
+export function AddMemberDialog({
+  open,
+  onClose,
+  onCreated
+}: AddMemberDialogProps): React.JSX.Element {
+  const { submit, isSubmitting, errorMessage } = useAddMember((memberId) => {
+    onCreated?.(memberId)
+    onClose()
+  })
 
   return (
     <Dialog

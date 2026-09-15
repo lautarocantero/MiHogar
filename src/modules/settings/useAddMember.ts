@@ -5,15 +5,16 @@ import { addMember } from '@/store/household/membersSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
 import type { AddMemberFormValues, UseAddMemberResult } from './typings/types'
 
-export function useAddMember(onCreated: () => void): UseAddMemberResult {
+export function useAddMember(onCreated: (memberId: string) => void): UseAddMemberResult {
   const dispatch = useAppDispatch()
   const { isLoading, error, run } = useLoader()
 
   const submit = useCallback(
     (values: AddMemberFormValues) => {
       run(async () => {
-        dispatch(addMember({ id: uuidv4(), name: values.name }))
-        onCreated()
+        const id = uuidv4()
+        dispatch(addMember({ id, name: values.name }))
+        onCreated(id)
       }, 'No se pudo agregar el integrante')
     },
     [dispatch, run, onCreated]

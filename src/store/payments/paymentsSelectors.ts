@@ -18,3 +18,6 @@ export const selectPaidPayments = (state: RootState): Payment[] =>
   paymentsSelectors
     .selectAll(state.payments)
     .filter((payment) => payment.status === PaymentStatus.PAID)
+
+export const selectPaymentsByAccountId = (state: RootState, accountId: string): Payment[] =>
+  paymentsSelectors.selectAll(state.payments).filter((payment) => payment.accountId === accountId)
