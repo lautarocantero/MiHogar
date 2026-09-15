@@ -12,6 +12,18 @@ if (process.platform === 'linux') {
   // correr sin instalación privilegiada). La app no carga contenido remoto,
   // así que desactivar el sandbox de Chromium acá es un tradeoff aceptable.
   app.commandLine.appendSwitch('no-sandbox')
+  // Evita que Chromium use /dev/shm para memoria compartida: en algunos
+  // hosts falla con "Creating shared memory in /dev/shm/... failed: No
+  // such process" pese a que los permisos del directorio son correctos.
+  app.commandLine.appendSwitch('disable-dev-shm-usage')
+  // El proceso zygote sigue intentando crear un user namespace incluso con
+  // --no-sandbox, y en hosts con AppArmor restringiendo userns sin
+  // privilegios (Ubuntu 24.04+/26.04 por defecto) esa creación queda
+  // denegada, dejando al zygote en un estado roto que hace fallar la
+  // memoria compartida de cualquier proceso hijo (gpu-process, renderer).
+  // Sin zygote, cada proceso se forkea directo del browser y evita ese
+  // camino.
+  app.commandLine.appendSwitch('no-zygote')
 }
 
 app.whenReady().then(() => {
