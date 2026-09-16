@@ -1,9 +1,10 @@
-import { Alert, Box, Button, Card, Stack, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, Card, Stack, Typography } from '@mui/material'
 import LockIcon from '@mui/icons-material/Lock'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { unlockFormSchema } from '@/validation/unlockFormSchema'
 import { organicColors } from '@/theme/tokens'
+import { PasswordField } from '@/components/shared/PasswordField'
 import type { UnlockCredentialsFormValues } from '../typings/types'
 import type { SectionLockGateProps } from '../typings/props'
 
@@ -47,9 +48,8 @@ export function SectionLockGate({
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate width="100%">
           <Stack spacing={2}>
-            <TextField
+            <PasswordField
               label="Clave del hogar"
-              type="password"
               fullWidth
               {...register('householdKey')}
               error={Boolean(errors.householdKey)}

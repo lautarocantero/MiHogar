@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
 import type { Payment } from '@/typings/domain/types'
-import type { OwnerType } from '@/typings/domain/enums'
+import type { AmountMode, OwnerType, PaymentKind } from '@/typings/domain/enums'
 import type { PaymentFilter } from './enums'
 import type {
   AddPaymentFormValues,
@@ -22,6 +22,8 @@ export type PaymentFormFieldsProps = {
   errors: FieldErrors<AddPaymentFormValues>
   selectedOwnerType: OwnerType
   isRecurring: boolean
+  kind: PaymentKind
+  selectedAmountMode: AmountMode
 }
 
 export type EditPaymentFormProps = {
@@ -53,12 +55,14 @@ export type PaymentFilterPillsProps = {
 }
 
 export type AddPaymentFormProps = {
+  kind: PaymentKind
   onSubmit: (values: AddPaymentFormValues) => void
   isSubmitting: boolean
   errorMessage: string | null
 }
 
 export type AddPaymentDialogProps = {
+  kind: PaymentKind
   open: boolean
   onClose: () => void
 }

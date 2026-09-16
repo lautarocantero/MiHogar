@@ -9,6 +9,7 @@ export type PaymentView = Payment & {
   accountName: string
   ownerLabel: string
   categoryName: string
+  displayDate: string
 }
 
 export type UnlockCredentialsFormValues = z.infer<typeof unlockFormSchema>

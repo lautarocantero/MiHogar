@@ -4,6 +4,8 @@ import { selectAllAccounts, selectTotalAvailableBalance } from '@/store/accounts
 import { selectPendingPayments } from '@/store/payments/paymentsSelectors'
 import { selectRecentMovements } from '@/store/movements/movementsSelectors'
 import { computePendingTotal } from '@/utils/domain/computePendingTotal'
+import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
+import { PaymentKind } from '@/typings/domain/enums'
 import type { HomeData } from './typings/types'
 
 const UPCOMING_PAYMENTS_LIMIT = 3
@@ -18,16 +20,21 @@ export function useHomeData(): HomeData {
   )
 
   return useMemo(() => {
-    const pendingTotal = computePendingTotal(pendingPayments)
+    const pendingExpensePayments = pendingPayments.filter(
+      (payment) => payment.kind !== PaymentKind.DEPOSIT
+    )
+    const pendingTotal = computePendingTotal(pendingExpensePayments)
     const accountsById = new Map(accounts.map((account) => [account.id, account]))
+    const sortedAccounts = [...accounts].sort((a, b) => b.balance - a.balance)
 
-    const upcomingPayments = [...pendingPayments]
-      .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
-      .slice(0, UPCOMING_PAYMENTS_LIMIT)
+    const upcomingPayments = pendingPayments
       .map((payment) => ({
         payment,
-        accountName: accountsById.get(payment.accountId)?.name ?? 'Cuenta sin definir'
+        accountName: accountsById.get(payment.accountId)?.name ?? 'Cuenta sin definir',
+        displayDate: resolvePaymentDisplayDate(payment, accountsById.get(payment.accountId))
       }))
+      .sort((a, b) => a.displayDate.localeCompare(b.displayDate))
+      .slice(0, UPCOMING_PAYMENTS_LIMIT)
 
     const recentMovementsView = recentMovements.map((movement) => ({
       movement,
@@ -36,9 +43,9 @@ export function useHomeData(): HomeData {
 
     return {
       totalAvailable,
-      accounts,
+      accounts: sortedAccounts,
       pendingTotal,
-      pendingCount: pendingPayments.length,
+      pendingCount: pendingExpensePayments.length,
       remainingAfterPayments: totalAvailable - pendingTotal,
       upcomingPayments,
       recentMovements: recentMovementsView

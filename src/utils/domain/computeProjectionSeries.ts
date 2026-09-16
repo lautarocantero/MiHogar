@@ -6,7 +6,8 @@ export function computeProjectionSeries(
   today: Date,
   monthEnd: Date,
   pendingPaymentsThisRange: Payment[],
-  incomeMovementsThisRange: Movement[]
+  incomeMovementsThisRange: Movement[],
+  pendingDepositsThisRange: Payment[] = []
 ): ProjectionPoint[] {
   const dueByDate = new Map<string, number>()
   pendingPaymentsThisRange.forEach((payment) => {
@@ -16,6 +17,9 @@ export function computeProjectionSeries(
   const incomeByDate = new Map<string, number>()
   incomeMovementsThisRange.forEach((movement) => {
     incomeByDate.set(movement.date, (incomeByDate.get(movement.date) ?? 0) + movement.amount)
+  })
+  pendingDepositsThisRange.forEach((payment) => {
+    incomeByDate.set(payment.dueDate, (incomeByDate.get(payment.dueDate) ?? 0) + payment.amount)
   })
 
   let runningBalance = todayBalance

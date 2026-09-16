@@ -5,16 +5,12 @@ import { AccountType } from '@/typings/domain/enums'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { computeCreditCardInfoText } from '@/utils/domain/computeCreditCardInfoText'
+import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import type { AccountCardProps } from '../typings/props'
-
-const ACCOUNT_TYPE_BAR_COLOR: Record<AccountType, string> = {
-  [AccountType.BANK]: organicColors.orange.main,
-  [AccountType.CASH]: organicColors.sage.main,
-  [AccountType.CREDIT_CARD]: organicColors.orange.dark
-}
 
 export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): React.JSX.Element {
   const isNegativeBalance = account.balance < 0
+  const typeColor = resolveAccountTypeColor(account.type)
   const creditCardInfoText =
     account.type === AccountType.CREDIT_CARD
       ? computeCreditCardInfoText(account.closingDay, account.dueDay, account.installmentsRemaining)
@@ -27,7 +23,7 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
       elevation={0}
       sx={{
         p: 3,
-        borderLeft: `10px solid ${ACCOUNT_TYPE_BAR_COLOR[account.type]}`,
+        borderLeft: `10px solid ${typeColor.main}`,
         height: '100%'
       }}
     >

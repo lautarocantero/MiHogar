@@ -41,11 +41,13 @@ export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
         display: 'flex',
         flexDirection: 'column',
         gap: 0.5,
-        backgroundColor: eventStyle?.background ?? organicColors.surface,
+        backgroundColor: day.isToday
+          ? organicColors.orange.tint
+          : (eventStyle?.background ?? organicColors.surface),
         border: day.isToday
           ? `2px solid ${organicColors.orange.main}`
           : `1px solid ${eventStyle?.border ?? organicColors.neutral.border}`,
-        opacity: day.isCurrentMonth ? 1 : 0.4
+        opacity: !day.isCurrentMonth ? 0.4 : day.isPast ? 0.55 : 1
       }}
     >
       <Typography variant="body2" fontWeight={day.isToday ? 700 : 400}>

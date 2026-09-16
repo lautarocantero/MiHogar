@@ -12,3 +12,11 @@ export type ReportsData = {
   currentMonthFlow: FlowSummary
   savingsRatePercent: number
 }
+
+export type MonthComparisonEntry = {
+  monthKey: string
+  monthLabel: string
+  breakdown: CategoryBreakdownEntry[]
+  flow: FlowSummary
+  savingsRatePercent: number
+}

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { OwnerType, PaymentFrequency } from '@/typings/domain/enums'
+import { AmountMode, OwnerType, PaymentFrequency, PaymentKind } from '@/typings/domain/enums'
 
 export const addPaymentFormSchema = z
   .object({
@@ -12,9 +12,17 @@ export const addPaymentFormSchema = z
     recurring: z.boolean(),
     frequency: z.nativeEnum(PaymentFrequency).optional(),
     dueDate: z.string().min(1, 'Elegí la fecha de vencimiento'),
-    amount: z.coerce.number({ message: 'Ingresá un monto' }).positive('El monto debe ser mayor a 0')
+    amount: z.coerce
+      .number({ message: 'Ingresá un monto' })
+      .nonnegative('El monto no puede ser negativo'),
+    kind: z.nativeEnum(PaymentKind).default(PaymentKind.EXPENSE),
+    amountMode: z.nativeEnum(AmountMode).default(AmountMode.FIXED)
   })
   .refine((data) => data.ownerType !== OwnerType.MEMBER || Boolean(data.ownerId), {
     message: 'Elegí quién es el dueño del pago',
     path: ['ownerId']
+  })
+  .refine((data) => data.amountMode !== AmountMode.FIXED || data.amount > 0, {
+    message: 'Ingresá un monto mayor a 0',
+    path: ['amount']
   })

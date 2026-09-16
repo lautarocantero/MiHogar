@@ -1,7 +1,8 @@
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createHouseholdKeyFormSchema } from '@/validation/createHouseholdKeyFormSchema'
+import { PasswordField } from '@/components/shared/PasswordField'
 import type { CreateHouseholdKeyFormProps } from '../typings/props'
 import type { CreateHouseholdKeyFormValues } from '../typings/types'
 
@@ -34,18 +35,16 @@ export function CreateHouseholdKeyForm({
           Esta clave protege todos tus datos. Es una sola, para todo el hogar. Guardala en un lugar
           seguro: si la olvidás, no vamos a poder recuperar la información.
         </Typography>
-        <TextField
+        <PasswordField
           label="Clave del hogar"
-          type="password"
           autoComplete="new-password"
           {...register('householdKey')}
           error={Boolean(errors.householdKey)}
           helperText={errors.householdKey?.message}
           slotProps={{ htmlInput: { 'aria-required': true } }}
         />
-        <TextField
+        <PasswordField
           label="Repetí la clave"
-          type="password"
           autoComplete="new-password"
           {...register('confirmHouseholdKey')}
           error={Boolean(errors.confirmHouseholdKey)}

@@ -15,9 +15,20 @@ export enum PaymentStatus {
 }
 
 export enum PaymentFrequency {
+  DAILY = 'DAILY',
   MONTHLY = 'MONTHLY',
   YEARLY = 'YEARLY',
   ONCE = 'ONCE'
+}
+
+export enum PaymentKind {
+  EXPENSE = 'EXPENSE',
+  DEPOSIT = 'DEPOSIT'
+}
+
+export enum AmountMode {
+  FIXED = 'FIXED',
+  VARIABLE = 'VARIABLE'
 }
 
 export enum MovementType {

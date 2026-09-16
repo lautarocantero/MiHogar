@@ -5,7 +5,8 @@ import { getPreferencesFilePath } from './vaultPaths'
 
 const DEFAULT_PREFERENCES: PreferencesFile = {
   fontSizeLevel: 'normal',
-  remindersEnabled: true
+  remindersEnabled: true,
+  reminderLeadDays: 1
 }
 
 export async function readPreferences(): Promise<PreferencesFile> {

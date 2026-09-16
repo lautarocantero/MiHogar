@@ -5,7 +5,7 @@ import { useAppSelector } from '@/store/hooks'
 import { selectTotalAvailableBalance } from '@/store/accounts/accountsSelectors'
 import { selectPendingPayments } from '@/store/payments/paymentsSelectors'
 import { selectAllMovements } from '@/store/movements/movementsSelectors'
-import { MovementType } from '@/typings/domain/enums'
+import { MovementType, PaymentKind } from '@/typings/domain/enums'
 import { computeProjectionSeries } from '@/utils/domain/computeProjectionSeries'
 import { computePendingTotal } from '@/utils/domain/computePendingTotal'
 import type { ProjectionData } from './typings/types'
@@ -24,21 +24,30 @@ export function useProjectionData(): ProjectionData {
     const pendingThisRange = pendingPayments.filter((payment) =>
       isWithinInterval(parseISO(payment.dueDate), pendingRangeInterval)
     )
+    const pendingExpensesThisRange = pendingThisRange.filter(
+      (payment) => payment.kind !== PaymentKind.DEPOSIT
+    )
+    const pendingDepositsThisRange = pendingThisRange.filter(
+      (payment) => payment.kind === PaymentKind.DEPOSIT
+    )
     const incomeThisRange = movements.filter(
       (movement) =>
         movement.type === MovementType.INCOME &&
         isWithinInterval(parseISO(movement.date), futureIncomeRangeInterval)
     )
 
-    const pendingTotal = computePendingTotal(pendingThisRange)
-    const expectedIncome = incomeThisRange.reduce((total, movement) => total + movement.amount, 0)
+    const pendingTotal = computePendingTotal(pendingExpensesThisRange)
+    const expectedIncome =
+      incomeThisRange.reduce((total, movement) => total + movement.amount, 0) +
+      pendingDepositsThisRange.reduce((total, payment) => total + payment.amount, 0)
 
     const series = computeProjectionSeries(
       todayBalance,
       today,
       monthEnd,
-      pendingThisRange,
-      incomeThisRange
+      pendingExpensesThisRange,
+      incomeThisRange,
+      pendingDepositsThisRange
     )
 
     const endOfMonthBalance = todayBalance - pendingTotal + expectedIncome

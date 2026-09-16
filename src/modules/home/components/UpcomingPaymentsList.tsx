@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Card, Stack, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
-import { formatDayMonth, formatDueLabel } from '@/utils/formatting/formatDate'
+import { formatDayMonth, formatDaysRemainingLabel } from '@/utils/formatting/formatDate'
 import { buildPaymentDetailPath } from '@/router/routes'
 import type { UpcomingPaymentsListProps } from '../typings/props'
 
@@ -17,8 +17,8 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
 
   return (
     <Stack spacing={2} component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
-      {payments.map(({ payment, accountName }, index) => {
-        const { day, month } = formatDayMonth(payment.dueDate)
+      {payments.map(({ payment, accountName, displayDate }, index) => {
+        const { day, month } = formatDayMonth(displayDate)
         const isMostUrgent = index === 0
 
         return (
@@ -46,7 +46,7 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
                   {payment.concept}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {formatDueLabel(payment.dueDate)} · Se paga con {accountName}
+                  {formatDaysRemainingLabel(displayDate)} · Se paga con {accountName}
                 </Typography>
               </Box>
               <Typography variant="h6" component="p" color={organicColors.orange.dark}>

@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid2'
 import { Link as RouterLink } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
 import { MonthGrid } from './components/MonthGrid'
+import { WeekdayHeader } from './components/WeekdayHeader'
 import { CalendarLegend } from './components/CalendarLegend'
 import { MonthlyProgressCard } from './components/MonthlyProgressCard'
 import { WeekAheadList } from './components/WeekAheadList'
@@ -16,6 +17,7 @@ export function CalendarPage(): React.JSX.Element {
       <Grid size={{ xs: 12, md: 8 }}>
         <Stack spacing={3}>
           <CalendarLegend />
+          {weeks[0] && <WeekdayHeader days={weeks[0]} />}
           <MonthGrid weeks={weeks} />
         </Stack>
       </Grid>

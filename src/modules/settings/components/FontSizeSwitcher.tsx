@@ -3,6 +3,8 @@ import { useFontScale } from '@/theme/FontScale/useFontScale'
 import { FontSizeLevel } from '@/theme/FontScale/typings/enums'
 
 const OPTIONS: Array<{ level: FontSizeLevel; label: string }> = [
+  { level: FontSizeLevel.XSMALL, label: 'Muy chica (-20%)' },
+  { level: FontSizeLevel.SMALL, label: 'Chica (-10%)' },
   { level: FontSizeLevel.NORMAL, label: 'Normal' },
   { level: FontSizeLevel.LARGE, label: 'Grande (+15%)' },
   { level: FontSizeLevel.XLARGE, label: 'Muy grande (+30%)' }

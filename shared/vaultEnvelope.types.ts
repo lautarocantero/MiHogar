@@ -9,8 +9,9 @@ export type VaultEnvelope = {
 }
 
 export type PreferencesFile = {
-  fontSizeLevel: 'normal' | 'large' | 'xlarge'
+  fontSizeLevel: 'xsmall' | 'small' | 'normal' | 'large' | 'xlarge'
   remindersEnabled: boolean
+  reminderLeadDays: number
 }
 
 export type AttachmentSavePayload = {

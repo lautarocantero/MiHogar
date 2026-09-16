@@ -1,10 +1,15 @@
 import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { PaymentKind } from '@/typings/domain/enums'
 import { AddPaymentForm } from './AddPaymentForm'
 import { useCreatePayment } from '../useCreatePayment'
 import type { AddPaymentDialogProps } from '../typings/props'
 
-export function AddPaymentDialog({ open, onClose }: AddPaymentDialogProps): React.JSX.Element {
-  const { submit, isSubmitting, errorMessage } = useCreatePayment(onClose)
+export function AddPaymentDialog({
+  kind,
+  open,
+  onClose
+}: AddPaymentDialogProps): React.JSX.Element {
+  const { submit, isSubmitting, errorMessage } = useCreatePayment(kind, onClose)
 
   return (
     <Dialog
@@ -14,9 +19,16 @@ export function AddPaymentDialog({ open, onClose }: AddPaymentDialogProps): Reac
       maxWidth="sm"
       aria-labelledby="add-payment-title"
     >
-      <DialogTitle id="add-payment-title">Agregar un pago</DialogTitle>
+      <DialogTitle id="add-payment-title">
+        {kind === PaymentKind.DEPOSIT ? 'Agregar un depósito fijo' : 'Agregar un pago fijo'}
+      </DialogTitle>
       <DialogContent>
-        <AddPaymentForm onSubmit={submit} isSubmitting={isSubmitting} errorMessage={errorMessage} />
+        <AddPaymentForm
+          kind={kind}
+          onSubmit={submit}
+          isSubmitting={isSubmitting}
+          errorMessage={errorMessage}
+        />
       </DialogContent>
     </Dialog>
   )

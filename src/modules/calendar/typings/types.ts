@@ -11,6 +11,7 @@ export type CalendarDay = {
   isoDate: string
   isToday: boolean
   isCurrentMonth: boolean
+  isPast: boolean
   event: CalendarDayEvent | null
 }
 
@@ -22,6 +23,7 @@ export type MonthlyProgress = {
 
 export type WeekAheadPayment = Payment & {
   accountName: string
+  displayDate: string
 }
 
 export type CalendarData = {
