@@ -16,3 +16,8 @@ export type UseUnlockVaultResult = {
   isSubmitting: boolean
   errorMessage: string | null
 }
+
+export type UseEnterDemoModeResult = {
+  enterDemo: () => void
+  isEntering: boolean
+}

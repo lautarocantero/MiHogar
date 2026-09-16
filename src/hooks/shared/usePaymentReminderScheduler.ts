@@ -23,7 +23,7 @@ export function usePaymentReminderScheduler(): void {
         if (isCancelled || !preferences.remindersEnabled) {
           return
         }
-        const reminders = computeDueReminders(paymentsRef.current)
+        const reminders = computeDueReminders(paymentsRef.current, preferences.reminderLeadDays)
         if (reminders.length > 0) {
           await checkPaymentReminders(reminders)
         }

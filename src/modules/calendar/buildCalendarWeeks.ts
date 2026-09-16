@@ -3,6 +3,7 @@ import {
   endOfMonth,
   endOfWeek,
   format,
+  isBefore,
   isSameDay,
   isSameMonth,
   startOfMonth,
@@ -30,6 +31,7 @@ export function buildCalendarWeeks(
       isoDate,
       isToday: isSameDay(date, today),
       isCurrentMonth: isSameMonth(date, referenceDate),
+      isPast: isBefore(date, today) && !isSameDay(date, today),
       event: eventsByIsoDate.get(isoDate) ?? null
     }
     return day

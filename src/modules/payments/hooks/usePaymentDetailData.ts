@@ -5,6 +5,7 @@ import { selectAccountById } from '@/store/accounts/accountsSelectors'
 import { selectAllMembers } from '@/store/household/householdSelectors'
 import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
+import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
 import type { PaymentView } from '../typings/types'
 
 export function usePaymentDetailData(paymentId: string): PaymentView | null {
@@ -23,7 +24,8 @@ export function usePaymentDetailData(paymentId: string): PaymentView | null {
       ...payment,
       accountName: account?.name ?? 'Cuenta sin definir',
       ownerLabel: resolveOwnerLabel(payment.ownerType, payment.ownerId, members),
-      categoryName: categories.find((c) => c.id === payment.categoryId)?.name ?? 'Sin categoría'
+      categoryName: categories.find((c) => c.id === payment.categoryId)?.name ?? 'Sin categoría',
+      displayDate: resolvePaymentDisplayDate(payment, account)
     }
   }, [payment, account, members, categories])
 }

@@ -6,7 +6,8 @@ import {
   createVaultThunk,
   unlockVaultThunk,
   lockVaultThunk,
-  importVaultBackupThunk
+  importVaultBackupThunk,
+  enterDemoModeThunk
 } from './vaultThunks'
 
 const initialState: VaultState = {
@@ -29,6 +30,10 @@ const vaultSlice = createSlice({
       })
       .addCase(unlockVaultThunk.fulfilled, (state) => {
         state.status = VaultStatus.UNLOCKED
+        state.error = null
+      })
+      .addCase(enterDemoModeThunk.fulfilled, (state) => {
+        state.status = VaultStatus.DEMO
         state.error = null
       })
       .addCase(unlockVaultThunk.rejected, (state, action) => {

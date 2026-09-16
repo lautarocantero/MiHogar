@@ -1,7 +1,8 @@
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, Stack, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { unlockFormSchema } from '@/validation/unlockFormSchema'
+import { PasswordField } from '@/components/shared/PasswordField'
 import type { UnlockFormProps } from '../typings/props'
 import type { UnlockFormValues } from '../typings/types'
 
@@ -34,9 +35,8 @@ export function UnlockForm({
           Es la misma clave para todo: entrar a la aplicación y ver los datos guardados de cada
           pago.
         </Typography>
-        <TextField
+        <PasswordField
           label="Clave del hogar"
-          type="password"
           autoComplete="current-password"
           autoFocus
           {...register('householdKey')}

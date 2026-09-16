@@ -5,6 +5,7 @@ import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { selectAllMembers } from '@/store/household/householdSelectors'
 import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
+import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
 import { PaymentStatus } from '@/typings/domain/enums'
 import { PaymentFilter } from '../typings/enums'
 import type { PaymentView, UsePaymentFiltersResult } from '../typings/types'
@@ -20,14 +21,18 @@ export function usePaymentFilters(): UsePaymentFiltersResult {
     const accountsById = new Map(accounts.map((account) => [account.id, account]))
     const categoriesById = new Map(categories.map((category) => [category.id, category]))
 
-    return [...payments]
-      .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
-      .map((payment) => ({
-        ...payment,
-        accountName: accountsById.get(payment.accountId)?.name ?? 'Cuenta sin definir',
-        ownerLabel: resolveOwnerLabel(payment.ownerType, payment.ownerId, members),
-        categoryName: categoriesById.get(payment.categoryId)?.name ?? 'Sin categoría'
-      }))
+    return payments
+      .map((payment) => {
+        const account = accountsById.get(payment.accountId)
+        return {
+          ...payment,
+          accountName: account?.name ?? 'Cuenta sin definir',
+          ownerLabel: resolveOwnerLabel(payment.ownerType, payment.ownerId, members),
+          categoryName: categoriesById.get(payment.categoryId)?.name ?? 'Sin categoría',
+          displayDate: resolvePaymentDisplayDate(payment, account)
+        }
+      })
+      .sort((a, b) => a.displayDate.localeCompare(b.displayDate))
   }, [payments, accounts, members, categories])
 
   const pendingCount = paymentViews.filter((p) => p.status === PaymentStatus.PENDING).length

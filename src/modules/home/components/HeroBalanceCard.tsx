@@ -2,6 +2,7 @@ import { Card, Chip, Stack, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import type { HeroBalanceCardProps } from '../typings/props'
 
 export function HeroBalanceCard({
@@ -39,13 +40,21 @@ export function HeroBalanceCard({
             Esto es la plata que podés usar ahora, sumando todas tus cuentas y el efectivo.
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            {accounts.map((account) => (
-              <Chip
-                key={account.id}
-                label={`${account.name} · ${formatCurrency(account.balance)}`}
-                sx={{ backgroundColor: 'rgba(255,255,255,0.18)', color: '#ffffff' }}
-              />
-            ))}
+            {accounts.map((account) => {
+              const typeColor = resolveAccountTypeColor(account.type)
+              const hasMoney = account.balance > 0
+              return (
+                <Chip
+                  key={account.id}
+                  label={`${account.name} · ${formatCurrency(account.balance)}`}
+                  sx={{
+                    backgroundColor: typeColor.dark,
+                    color: '#ffffff',
+                    opacity: hasMoney ? 1 : 0.5
+                  }}
+                />
+              )
+            })}
           </Stack>
         </Card>
       </Grid>

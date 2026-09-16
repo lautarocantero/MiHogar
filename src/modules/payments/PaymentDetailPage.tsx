@@ -19,7 +19,7 @@ import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDueLabel } from '@/utils/formatting/formatDate'
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
 import { resolveUrlHostname } from '@/utils/resolveUrlHostname'
-import { PaymentStatus } from '@/typings/domain/enums'
+import { AmountMode, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import { ROUTES } from '@/router/routes'
 import { usePaymentDetailData } from './hooks/usePaymentDetailData'
 import { useMarkPaymentAsPaid } from './hooks/useMarkPaymentAsPaid'
@@ -51,6 +51,8 @@ export function PaymentDetailPage(): React.JSX.Element {
   }
 
   const frequencyLabel = resolveFrequencyLabel(payment.frequency)
+  const isDeposit = payment.kind === PaymentKind.DEPOSIT
+  const isVariableUnset = payment.amountMode === AmountMode.VARIABLE && payment.amount === 0
 
   return (
     <Grid container spacing={4} component="section" aria-label="Detalle del pago">
@@ -60,7 +62,11 @@ export function PaymentDetailPage(): React.JSX.Element {
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               <Chip
                 label={
-                  payment.status === PaymentStatus.PAID ? 'Pagado' : formatDueLabel(payment.dueDate)
+                  payment.status === PaymentStatus.PAID
+                    ? isDeposit
+                      ? 'Recibido'
+                      : 'Pagado'
+                    : formatDueLabel(payment.displayDate, isDeposit ? 'Entra' : 'Vence')
                 }
                 sx={{
                   backgroundColor:
@@ -110,14 +116,14 @@ export function PaymentDetailPage(): React.JSX.Element {
 
           <Box>
             <Typography variant="body1" color="text.secondary">
-              Cuánto hay que pagar
+              {isDeposit ? 'Cuánto vas a recibir' : 'Cuánto hay que pagar'}
             </Typography>
             <Typography
               variant="h2"
               component="p"
               sx={{ fontSize: { xs: '2.5rem', md: '3.75rem' } }}
             >
-              {formatCurrency(payment.amount)}
+              {isVariableUnset ? 'A confirmar' : formatCurrency(payment.amount)}
             </Typography>
           </Box>
 
@@ -125,7 +131,7 @@ export function PaymentDetailPage(): React.JSX.Element {
             {[
               { label: 'Concepto', value: payment.concept },
               { label: 'Entidad', value: payment.entity },
-              { label: 'Se paga con', value: payment.accountName },
+              { label: isDeposit ? 'Entra a' : 'Se paga con', value: payment.accountName },
               { label: 'A nombre de', value: payment.ownerLabel }
             ].map((field) => (
               <Grid key={field.label} size={{ xs: 12, sm: 6 }}>
@@ -150,11 +156,22 @@ export function PaymentDetailPage(): React.JSX.Element {
             <Button
               variant="contained"
               size="large"
-              disabled={payment.status === PaymentStatus.PAID || isSubmitting}
+              disabled={payment.status === PaymentStatus.PAID || isSubmitting || isVariableUnset}
               onClick={markAsPaid}
             >
-              {payment.status === PaymentStatus.PAID ? 'Ya está pagado' : 'Marcar como pagado'}
+              {payment.status === PaymentStatus.PAID
+                ? isDeposit
+                  ? 'Ya está recibido'
+                  : 'Ya está pagado'
+                : isDeposit
+                  ? 'Marcar como recibido'
+                  : 'Marcar como pagado'}
             </Button>
+            {isVariableUnset && payment.status !== PaymentStatus.PAID && (
+              <Typography variant="body2" color="text.secondary" width="100%">
+                Editá el pago para cargar el monto recibido antes de confirmarlo.
+              </Typography>
+            )}
             {payment.providerUrl && (
               <Button
                 variant="outlined"

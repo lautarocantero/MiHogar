@@ -2,5 +2,6 @@ export enum VaultStatus {
   CHECKING = 'CHECKING',
   NOT_CREATED = 'NOT_CREATED',
   LOCKED = 'LOCKED',
-  UNLOCKED = 'UNLOCKED'
+  UNLOCKED = 'UNLOCKED',
+  DEMO = 'DEMO'
 }

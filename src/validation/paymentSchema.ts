@@ -1,5 +1,11 @@
 import { z } from 'zod'
-import { OwnerType, PaymentFrequency, PaymentStatus } from '@/typings/domain/enums'
+import {
+  AmountMode,
+  OwnerType,
+  PaymentFrequency,
+  PaymentKind,
+  PaymentStatus
+} from '@/typings/domain/enums'
 
 export const attachmentMetaSchema = z.object({
   id: z.string().min(1),
@@ -33,5 +39,7 @@ export const paymentSchema = z.object({
   providerUrl: z.string().url().optional(),
   credentials: paymentCredentialsSchema.optional(),
   attachments: z.array(attachmentMetaSchema),
-  reminderEnabled: z.boolean().optional()
+  reminderEnabled: z.boolean().optional(),
+  kind: z.nativeEnum(PaymentKind).default(PaymentKind.EXPENSE),
+  amountMode: z.nativeEnum(AmountMode).default(AmountMode.FIXED)
 })

@@ -3,6 +3,7 @@ import type { Account, Movement, Payment } from '@/typings/domain/types'
 export type UpcomingPaymentView = {
   payment: Payment
   accountName: string
+  displayDate: string
 }
 
 export type RecentMovementView = {

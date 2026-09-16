@@ -30,6 +30,8 @@ export type UseExportImportVaultResult = {
 export type UseReminderPreferenceResult = {
   isEnabled: boolean
   setEnabled: (enabled: boolean) => void
+  leadDays: number
+  setLeadDays: (leadDays: number) => void
   isLoading: boolean
   errorMessage: string | null
 }

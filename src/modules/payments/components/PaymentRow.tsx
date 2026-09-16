@@ -17,12 +17,15 @@ import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDayMonth } from '@/utils/formatting/formatDate'
 import { buildPaymentDetailPath } from '@/router/routes'
-import { PaymentStatus } from '@/typings/domain/enums'
+import { AmountMode, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import type { PaymentRowProps } from '../typings/props'
 
 export function PaymentRow({ payment, onEdit, onDelete }: PaymentRowProps): React.JSX.Element {
-  const { day, month } = formatDayMonth(payment.dueDate)
+  const { day, month } = formatDayMonth(payment.displayDate)
   const isPaid = payment.status === PaymentStatus.PAID
+  const isDeposit = payment.kind === PaymentKind.DEPOSIT
+  const isVariableUnset = payment.amountMode === AmountMode.VARIABLE && payment.amount === 0
+  const accentColor = isDeposit ? organicColors.sage : organicColors.orange
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   return (
@@ -30,8 +33,8 @@ export function PaymentRow({ payment, onEdit, onDelete }: PaymentRowProps): Reac
       <Stack direction="row" alignItems="center" spacing={2}>
         <Avatar
           sx={{
-            bgcolor: isPaid ? organicColors.neutral.border : organicColors.orange.tint,
-            color: isPaid ? organicColors.neutral.textSecondary : organicColors.orange.dark,
+            bgcolor: isPaid ? organicColors.neutral.border : accentColor.tint,
+            color: isPaid ? organicColors.neutral.textSecondary : accentColor.dark,
             width: 56,
             height: 56
           }}
@@ -58,8 +61,8 @@ export function PaymentRow({ payment, onEdit, onDelete }: PaymentRowProps): Reac
           size="small"
           sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
         />
-        <Typography variant="h6" component="p" color={organicColors.orange.dark} minWidth={110}>
-          {formatCurrency(payment.amount)}
+        <Typography variant="h6" component="p" color={accentColor.dark} minWidth={110}>
+          {isVariableUnset ? 'A confirmar' : formatCurrency(payment.amount)}
         </Typography>
         <Button component={RouterLink} to={buildPaymentDetailPath(payment.id)} variant="outlined">
           Ver

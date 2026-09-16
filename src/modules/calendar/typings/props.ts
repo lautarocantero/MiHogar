@@ -4,6 +4,10 @@ export type MonthGridProps = {
   weeks: CalendarDay[][]
 }
 
+export type WeekdayHeaderProps = {
+  days: CalendarDay[]
+}
+
 export type MonthGridCellProps = {
   day: CalendarDay
 }

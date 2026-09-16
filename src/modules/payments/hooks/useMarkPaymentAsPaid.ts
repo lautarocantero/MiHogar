@@ -3,7 +3,7 @@ import { useAppDispatch } from '@/store/hooks'
 import { updatePayment } from '@/store/payments/paymentsSlice'
 import { recordMovementThunk } from '@/store/movements/movementThunks'
 import { useLoader } from '@/hooks/shared/useLoader'
-import { MovementType, PaymentStatus } from '@/typings/domain/enums'
+import { MovementType, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import type { PaymentView, UseMarkPaymentAsPaidResult } from '../typings/types'
 
 export function useMarkPaymentAsPaid(payment: PaymentView | null): UseMarkPaymentAsPaidResult {
@@ -19,7 +19,7 @@ export function useMarkPaymentAsPaid(payment: PaymentView | null): UseMarkPaymen
       dispatch(updatePayment({ ...payment, status: PaymentStatus.PAID }))
       await dispatch(
         recordMovementThunk({
-          type: MovementType.EXPENSE,
+          type: payment.kind === PaymentKind.DEPOSIT ? MovementType.INCOME : MovementType.EXPENSE,
           amount: payment.amount,
           date: today,
           accountId: payment.accountId,

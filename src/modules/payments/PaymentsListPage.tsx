@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button, Stack, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
+import { PaymentKind } from '@/typings/domain/enums'
 import { PaymentFilterPills } from './components/PaymentFilterPills'
 import { PaymentRow } from './components/PaymentRow'
 import { AddPaymentDialog } from './components/AddPaymentDialog'
@@ -12,7 +13,7 @@ import type { PaymentView } from './typings/types'
 export function PaymentsListPage(): React.JSX.Element {
   const { activeFilter, setActiveFilter, filteredPayments, pendingCount, paidCount, totalCount } =
     usePaymentFilters()
-  const [isAddPaymentOpen, setIsAddPaymentOpen] = useState(false)
+  const [addPaymentKind, setAddPaymentKind] = useState<PaymentKind | null>(null)
   const [editingPayment, setEditingPayment] = useState<PaymentView | null>(null)
   const [deletingPayment, setDeletingPayment] = useState<PaymentView | null>(null)
 
@@ -32,14 +33,24 @@ export function PaymentsListPage(): React.JSX.Element {
           totalCount={totalCount}
           onChange={setActiveFilter}
         />
-        <Button
-          variant="contained"
-          size="large"
-          startIcon={<AddIcon />}
-          onClick={() => setIsAddPaymentOpen(true)}
-        >
-          Agregar un pago
-        </Button>
+        <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<AddIcon />}
+            onClick={() => setAddPaymentKind(PaymentKind.EXPENSE)}
+          >
+            Agregar un pago fijo
+          </Button>
+          <Button
+            variant="outlined"
+            size="large"
+            startIcon={<AddIcon />}
+            onClick={() => setAddPaymentKind(PaymentKind.DEPOSIT)}
+          >
+            Agregar un depósito fijo
+          </Button>
+        </Stack>
       </Stack>
 
       {filteredPayments.length === 0 ? (
@@ -59,7 +70,13 @@ export function PaymentsListPage(): React.JSX.Element {
         </Stack>
       )}
 
-      <AddPaymentDialog open={isAddPaymentOpen} onClose={() => setIsAddPaymentOpen(false)} />
+      {addPaymentKind && (
+        <AddPaymentDialog
+          kind={addPaymentKind}
+          open={Boolean(addPaymentKind)}
+          onClose={() => setAddPaymentKind(null)}
+        />
+      )}
       {editingPayment && (
         <EditPaymentDialog
           payment={editingPayment}

@@ -1,7 +1,7 @@
 import { Card, Stack, Typography } from '@mui/material'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
-import { formatDueLabel } from '@/utils/formatting/formatDate'
+import { formatDaysRemainingLabel } from '@/utils/formatting/formatDate'
 import type { WeekAheadListProps } from '../typings/props'
 
 export function WeekAheadList({ payments }: WeekAheadListProps): React.JSX.Element {
@@ -21,7 +21,7 @@ export function WeekAheadList({ payments }: WeekAheadListProps): React.JSX.Eleme
             <Stack>
               <Typography variant="body1">{payment.concept}</Typography>
               <Typography variant="body2" color="text.secondary">
-                {formatDueLabel(payment.dueDate)} · {payment.accountName}
+                {formatDaysRemainingLabel(payment.displayDate)} · {payment.accountName}
               </Typography>
             </Stack>
             <Typography variant="body1" color={organicColors.orange.dark}>

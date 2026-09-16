@@ -17,6 +17,16 @@ export const organicColors = {
     dark: '#3d472b',
     tint: '#f0fae1'
   },
+  brown: {
+    main: '#7a4a23',
+    dark: '#4f2f15',
+    tint: '#f7ece1'
+  },
+  blue: {
+    main: '#3f6a8a',
+    dark: '#254a63',
+    tint: '#e9f1f6'
+  },
   neutral: {
     textSecondary: '#645c50',
     border: '#dcd3c4'
@@ -35,6 +45,8 @@ export const organicShape = {
 } as const
 
 export const organicFontScaleLevels: Record<FontSizeLevel, number> = {
+  [FontSizeLevel.XSMALL]: 0.8,
+  [FontSizeLevel.SMALL]: 0.9,
   [FontSizeLevel.NORMAL]: 1,
   [FontSizeLevel.LARGE]: 1.15,
   [FontSizeLevel.XLARGE]: 1.3

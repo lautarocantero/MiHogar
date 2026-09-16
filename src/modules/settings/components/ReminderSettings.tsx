@@ -1,8 +1,24 @@
-import { Alert, Card, FormControlLabel, Stack, Switch, Typography } from '@mui/material'
+import {
+  Alert,
+  Card,
+  FormControlLabel,
+  MenuItem,
+  Stack,
+  Switch,
+  TextField,
+  Typography
+} from '@mui/material'
 import { useReminderPreference } from '../useReminderPreference'
 
+const LEAD_DAYS_OPTIONS: Array<{ value: number; label: string }> = [
+  { value: 0, label: 'El mismo día' },
+  { value: 1, label: '1 día antes' },
+  { value: 3, label: '3 días antes' },
+  { value: 7, label: '1 semana antes' }
+]
+
 export function ReminderSettings(): React.JSX.Element {
-  const { isEnabled, setEnabled, errorMessage } = useReminderPreference()
+  const { isEnabled, setEnabled, leadDays, setLeadDays, errorMessage } = useReminderPreference()
 
   return (
     <Card sx={{ p: 3 }} elevation={0}>
@@ -11,7 +27,7 @@ export function ReminderSettings(): React.JSX.Element {
           Recordatorios de pago
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Te avisamos con una notificación cuando un pago vence hoy o mañana.
+          Te avisamos con una notificación con la anticipación que elijas.
         </Typography>
         <FormControlLabel
           control={
@@ -23,6 +39,21 @@ export function ReminderSettings(): React.JSX.Element {
           }
           label={isEnabled ? 'Activados' : 'Desactivados'}
         />
+        {isEnabled && (
+          <TextField
+            label="Avisar con"
+            select
+            value={leadDays}
+            onChange={(event) => setLeadDays(Number(event.target.value))}
+            sx={{ maxWidth: 260 }}
+          >
+            {LEAD_DAYS_OPTIONS.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       </Stack>
     </Card>
