@@ -26,17 +26,17 @@ UI que lo dispare.
 
 ## 3. Tabla de prioridades
 
-| Entidad | Gap | Impacto | Esfuerzo | Prioridad | Estado |
-|---|---|---|---|---|---|
-| Cuentas | Sin editar ni eliminar | Alto — es de las pantallas más usadas | Medio | Alta | Implementado esta sesión |
-| Movimientos (gastos) | Sin editar ni eliminar | Alto — errores de carga son inevitables | Alto (efecto en saldos) | Alta | Implementado esta sesión |
-| Selector de integrante | Dropdown vacío sin alta inline | Alto — bloquea el alta de cuentas/pagos/ahorros por integrante | Bajo | Alta | Implementado esta sesión |
-| Pagos | Sin edición general (concepto/monto/vencimiento/entidad/categoría), sin eliminar | Medio-Alto | Medio | Alta | Pendiente |
-| Ahorros | Sin editar ni eliminar | Medio | Bajo-Medio | Media | Pendiente |
-| Integrantes del hogar | Sin editar ni eliminar | Medio | Bajo | Media | Pendiente |
-| Nombre del hogar | Sin UI para renombrar | Bajo | Bajo | Baja | Pendiente |
-| Categorías | Sin alta/edición/borrado — solo existen las sembradas al crear el hogar | Medio-Alto — categorías fijas para siempre | Medio | Alta | Pendiente |
-| Adjuntos de pagos | — | — | — | Ya completo (caso de control) |
+| Entidad                | Gap                                                                              | Impacto                                                        | Esfuerzo                | Prioridad                     | Estado                   |
+| ---------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------- | ----------------------------- | ------------------------ |
+| Cuentas                | Sin editar ni eliminar                                                           | Alto — es de las pantallas más usadas                          | Medio                   | Alta                          | Implementado esta sesión |
+| Movimientos (gastos)   | Sin editar ni eliminar                                                           | Alto — errores de carga son inevitables                        | Alto (efecto en saldos) | Alta                          | Implementado esta sesión |
+| Selector de integrante | Dropdown vacío sin alta inline                                                   | Alto — bloquea el alta de cuentas/pagos/ahorros por integrante | Bajo                    | Alta                          | Implementado esta sesión |
+| Pagos                  | Sin edición general (concepto/monto/vencimiento/entidad/categoría), sin eliminar | Medio-Alto                                                     | Medio                   | Alta                          | Implementado esta sesión |
+| Ahorros                | Sin editar ni eliminar                                                           | Medio                                                          | Bajo-Medio              | Media                         | Pendiente                |
+| Integrantes del hogar  | Sin editar ni eliminar                                                           | Medio                                                          | Bajo                    | Media                         | Pendiente                |
+| Nombre del hogar       | Sin UI para renombrar                                                            | Bajo                                                           | Bajo                    | Baja                          | Pendiente                |
+| Categorías             | Sin alta/edición/borrado — solo existen las sembradas al crear el hogar          | Medio-Alto — categorías fijas para siempre                     | Medio                   | Alta                          | Pendiente                |
+| Adjuntos de pagos      | —                                                                                | —                                                              | —                       | Ya completo (caso de control) |
 
 ## 4. Cuentas (Accounts) — implementado esta sesión
 
@@ -78,17 +78,21 @@ UI que lo dispare.
   diálogo de alta de integrante existente (`AddMemberDialog`) inline y selecciona
   automáticamente al integrante recién creado.
 
-## 7. Pagos (Payments) — pendiente
+## 7. Pagos (Payments) — implementado en sesión posterior
 
-- Slice: `src/store/payments/paymentsSlice.ts` — `updatePayment` solo se usa para casos
-  angostos: `src/modules/payments/hooks/useMarkPaymentAsPaid.ts` (cambiar estado) y
-  `src/modules/payments/hooks/useUpdateCredentials.ts` (credenciales). No existe edición
-  general de concepto, monto, entidad, vencimiento, categoría o cuenta. `removePayment`
-  nunca se despacha — no hay forma de eliminar un pago/servicio cargado por error.
-- Relacionado: los movimientos que un pago genera al marcarse como pagado
-  (`movement.paymentId`) no se pueden editar/eliminar desde Movimientos sin desincronizar
-  el estado del pago — falta diseñar la reconciliación (por ejemplo, si se borra ese
-  movimiento, el pago debería volver a "pendiente").
+- Slice: `src/store/payments/paymentsSlice.ts` — `updatePayment`/`removePayment` ya
+  existían pero solo se usaban para casos angostos (estado, credenciales). Se agregó
+  edición general (concepto, entidad, cuenta, categoría, dueño, recurrencia, frecuencia,
+  vencimiento, monto) vía menú en `PaymentRow` (lista) y en `PaymentDetailPage`
+  (`EditPaymentDialog`/`EditPaymentForm`, reutilizando `PaymentFormFields` extraído de
+  `AddPaymentForm`), y borrado (`DeletePaymentDialog`) con el mismo patrón de aviso no
+  bloqueante que Cuentas.
+- Reconciliación con movimientos: se optó por el mismo criterio que Cuentas — si el pago
+  tiene movimientos generados al marcarlo como pagado (`movement.paymentId`), se avisa
+  pero no se bloquea el borrado; esos movimientos quedan como registro histórico con una
+  referencia a un pago que ya no existe. No se implementó la reconciliación automática
+  (volver el pago a "pendiente" si se borra su movimiento) — sigue pendiente si hace
+  falta ese nivel de sincronización.
 
 ## 8. Ahorros (Savings instruments) — pendiente
 
@@ -135,7 +139,8 @@ UI que lo dispare.
 ## 14. Próximos pasos sugeridos
 
 1. Categorías: alta/edición/borrado (impacto alto, esfuerzo medio).
-2. Pagos: edición general + borrado, y reconciliación con movimientos generados al pagar.
+2. ~~Pagos: edición general + borrado~~ — implementado (sección 7). Pendiente: reconciliación
+   automática con movimientos generados al pagar.
 3. Ahorros: edición y borrado (mismo patrón ya aplicado a cuentas).
 4. Integrantes del hogar: edición y borrado, con aviso de referencias huérfanas.
 5. Nombre del hogar: campo editable en Ajustes.

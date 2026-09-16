@@ -1,5 +1,18 @@
-import { Avatar, Box, Button, Card, Chip, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  Stack,
+  Typography
+} from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDayMonth } from '@/utils/formatting/formatDate'
@@ -7,9 +20,10 @@ import { buildPaymentDetailPath } from '@/router/routes'
 import { PaymentStatus } from '@/typings/domain/enums'
 import type { PaymentRowProps } from '../typings/props'
 
-export function PaymentRow({ payment }: PaymentRowProps): React.JSX.Element {
+export function PaymentRow({ payment, onEdit, onDelete }: PaymentRowProps): React.JSX.Element {
   const { day, month } = formatDayMonth(payment.dueDate)
   const isPaid = payment.status === PaymentStatus.PAID
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   return (
     <Card component="li" sx={{ p: 2, listStyle: 'none' }} elevation={0}>
@@ -50,6 +64,31 @@ export function PaymentRow({ payment }: PaymentRowProps): React.JSX.Element {
         <Button component={RouterLink} to={buildPaymentDetailPath(payment.id)} variant="outlined">
           Ver
         </Button>
+        <IconButton
+          size="small"
+          aria-label={`Opciones de ${payment.concept}`}
+          onClick={(event) => setMenuAnchor(event.currentTarget)}
+        >
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
+        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+          <MenuItem
+            onClick={() => {
+              setMenuAnchor(null)
+              onEdit()
+            }}
+          >
+            Editar
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setMenuAnchor(null)
+              onDelete()
+            }}
+          >
+            Eliminar
+          </MenuItem>
+        </Menu>
       </Stack>
     </Card>
   )

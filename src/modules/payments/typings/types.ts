@@ -61,6 +61,18 @@ export type UseCreatePaymentResult = {
   errorMessage: string | null
 }
 
+export type UseUpdatePaymentResult = {
+  submit: (values: AddPaymentFormValues) => void
+  isSubmitting: boolean
+  errorMessage: string | null
+}
+
+export type UseDeletePaymentResult = {
+  submit: () => void
+  isSubmitting: boolean
+  errorMessage: string | null
+}
+
 export type UsePaymentFiltersResult = {
   activeFilter: PaymentFilter
   setActiveFilter: (filter: PaymentFilter) => void

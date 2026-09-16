@@ -1,13 +1,26 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { Box, Button, Chip, Grid2 as Grid, Link as MuiLink, Stack, Typography } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Box,
+  Button,
+  Chip,
+  Grid2 as Grid,
+  IconButton,
+  Link as MuiLink,
+  Menu,
+  MenuItem,
+  Stack,
+  Typography
+} from '@mui/material'
 import LaunchIcon from '@mui/icons-material/Launch'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDueLabel } from '@/utils/formatting/formatDate'
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
 import { resolveUrlHostname } from '@/utils/resolveUrlHostname'
 import { PaymentStatus } from '@/typings/domain/enums'
+import { ROUTES } from '@/router/routes'
 import { usePaymentDetailData } from './hooks/usePaymentDetailData'
 import { useMarkPaymentAsPaid } from './hooks/useMarkPaymentAsPaid'
 import { useUnlockCredentials } from './hooks/useUnlockCredentials'
@@ -17,15 +30,21 @@ import { CredentialsPanel } from './components/CredentialsPanel'
 import { AttachmentList } from './components/AttachmentList'
 import { PaymentHistoryCard } from './components/PaymentHistoryCard'
 import { EditCredentialsDialog } from './components/EditCredentialsDialog'
+import { EditPaymentDialog } from './components/EditPaymentDialog'
+import { DeletePaymentDialog } from './components/DeletePaymentDialog'
 import { PlaceholderPage } from '@/modules/placeholder/PlaceholderPage'
 
 export function PaymentDetailPage(): React.JSX.Element {
   const { paymentId } = useParams<{ paymentId: string }>()
+  const navigate = useNavigate()
   const payment = usePaymentDetailData(paymentId ?? '')
   const { markAsPaid, isSubmitting } = useMarkPaymentAsPaid(payment)
   const unlockCredentials = useUnlockCredentials()
   const history = usePaymentHistory(paymentId ?? '')
   const [isEditCredentialsOpen, setIsEditCredentialsOpen] = useState(false)
+  const [isEditPaymentOpen, setIsEditPaymentOpen] = useState(false)
+  const [isDeletePaymentOpen, setIsDeletePaymentOpen] = useState(false)
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   if (!payment) {
     return <PlaceholderPage title="No encontramos este pago" />
@@ -37,26 +56,56 @@ export function PaymentDetailPage(): React.JSX.Element {
     <Grid container spacing={4} component="section" aria-label="Detalle del pago">
       <Grid size={{ xs: 12, md: 7 }}>
         <Stack spacing={3}>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            <Chip
-              label={
-                payment.status === PaymentStatus.PAID ? 'Pagado' : formatDueLabel(payment.dueDate)
-              }
-              sx={{
-                backgroundColor:
-                  payment.status === PaymentStatus.PAID
-                    ? organicColors.sage.tint
-                    : organicColors.orange.tint,
-                color:
-                  payment.status === PaymentStatus.PAID
-                    ? organicColors.sage.dark
-                    : organicColors.orange.dark
-              }}
-            />
-            <Chip
-              label={`${payment.categoryName}${frequencyLabel ? ` · ${frequencyLabel}` : ''}`}
-              variant="outlined"
-            />
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              <Chip
+                label={
+                  payment.status === PaymentStatus.PAID ? 'Pagado' : formatDueLabel(payment.dueDate)
+                }
+                sx={{
+                  backgroundColor:
+                    payment.status === PaymentStatus.PAID
+                      ? organicColors.sage.tint
+                      : organicColors.orange.tint,
+                  color:
+                    payment.status === PaymentStatus.PAID
+                      ? organicColors.sage.dark
+                      : organicColors.orange.dark
+                }}
+              />
+              <Chip
+                label={`${payment.categoryName}${frequencyLabel ? ` · ${frequencyLabel}` : ''}`}
+                variant="outlined"
+              />
+            </Stack>
+            <IconButton
+              aria-label={`Opciones de ${payment.concept}`}
+              onClick={(event) => setMenuAnchor(event.currentTarget)}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={() => setMenuAnchor(null)}
+            >
+              <MenuItem
+                onClick={() => {
+                  setMenuAnchor(null)
+                  setIsEditPaymentOpen(true)
+                }}
+              >
+                Editar
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setMenuAnchor(null)
+                  setIsDeletePaymentOpen(true)
+                }}
+              >
+                Eliminar
+              </MenuItem>
+            </Menu>
           </Stack>
 
           <Box>
@@ -148,6 +197,17 @@ export function PaymentDetailPage(): React.JSX.Element {
         payment={payment}
         open={isEditCredentialsOpen}
         onClose={() => setIsEditCredentialsOpen(false)}
+      />
+      <EditPaymentDialog
+        payment={payment}
+        open={isEditPaymentOpen}
+        onClose={() => setIsEditPaymentOpen(false)}
+      />
+      <DeletePaymentDialog
+        payment={payment}
+        open={isDeletePaymentOpen}
+        onClose={() => setIsDeletePaymentOpen(false)}
+        onDeleted={() => navigate(ROUTES.PAYMENTS)}
       />
     </Grid>
   )
