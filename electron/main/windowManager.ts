@@ -15,7 +15,17 @@ export function createMainWindow(): BrowserWindow {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: true
+      // El sandbox OS-level de Chromium para el renderer requiere el helper
+      // chrome-sandbox con setuid root, que un AppImage sin instalar no
+      // tiene. Con sandbox:true, Electron agrega --enable-sandbox al
+      // renderer sin importar el --no-sandbox global de index.ts, y bajo el
+      // scope de systemd que usa GNOME Shell para lanzar apps, el kernel
+      // (AppArmor restringiendo user namespaces sin privilegios en Ubuntu
+      // 24.04+) rechaza esa inicialización y Chromium aborta con
+      // "SUID sandbox helper... not configured correctly". La app no carga
+      // contenido remoto, así que queda cubierta por contextIsolation +
+      // nodeIntegration:false sin necesitar el sandbox de proceso de Chromium.
+      sandbox: false
     }
   })
 

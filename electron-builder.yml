@@ -13,6 +13,8 @@ files:
 
 asar: true
 
+afterPack: scripts/afterPack.cjs
+
 publish:
   provider: github
   owner: lautarocantero
