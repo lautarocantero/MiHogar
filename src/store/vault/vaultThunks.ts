@@ -22,6 +22,7 @@ import { hydrateSavings } from '@/store/savings/savingsSlice'
 import { hydrateCategories } from '@/store/categories/categoriesSlice'
 import { buildDefaultCategories } from '@/utils/domain/buildDefaultCategories'
 import { buildVaultFileFromState } from './buildVaultFileFromState'
+import { buildDemoVaultFile } from './demoVaultData'
 
 const thunkTypes = createAsyncThunk.withTypes<{ state: RootState; dispatch: AppDispatch }>()
 
@@ -58,6 +59,15 @@ export const unlockVaultThunk = thunkTypes(
     hydrateDomainSlices(dispatch, vaultFile)
   }
 )
+
+export const enterDemoModeThunk = thunkTypes('vault/enterDemo', async (_: void, { dispatch }) => {
+  const demoVaultFile = vaultFileSchema.parse(buildDemoVaultFile())
+  hydrateDomainSlices(dispatch, demoVaultFile)
+})
+
+export const exitDemoModeThunk = thunkTypes('vault/exitDemo', async (_: void, { dispatch }) => {
+  await dispatch(checkVaultExistsThunk()).unwrap()
+})
 
 export const lockVaultThunk = thunkTypes('vault/lock', async () => {
   await lockVaultFile()

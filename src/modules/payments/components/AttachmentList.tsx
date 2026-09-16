@@ -4,10 +4,13 @@ import UploadFileIcon from '@mui/icons-material/UploadFile'
 import { AttachmentItem } from './AttachmentItem'
 import { useAttachments } from '../hooks/useAttachments'
 import type { AttachmentListProps } from '../typings/props'
+import { useAppSelector } from '@/store/hooks'
+import { selectIsDemoMode } from '@/store/vault/vaultSelectors'
 
 export function AttachmentList({ payment }: AttachmentListProps): React.JSX.Element {
   const { uploadFile, openFile, removeFile, isLoading, errorMessage } = useAttachments(payment)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const isDemoMode = useAppSelector(selectIsDemoMode)
 
   return (
     <Stack spacing={2}>
@@ -31,27 +34,33 @@ export function AttachmentList({ payment }: AttachmentListProps): React.JSX.Elem
         </Stack>
       )}
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      <Button
-        variant="outlined"
-        startIcon={<UploadFileIcon />}
-        disabled={isLoading}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        Agregar un archivo
-      </Button>
-      <input
-        ref={fileInputRef}
-        type="file"
-        hidden
-        accept="application/pdf,image/*"
-        onChange={(event) => {
-          const file = event.target.files?.[0]
-          if (file) {
-            uploadFile(file)
-          }
-          event.target.value = ''
-        }}
-      />
+      {isDemoMode ? (
+        <Alert severity="info">Los archivos adjuntos no están disponibles en el modo demo.</Alert>
+      ) : (
+        <>
+          <Button
+            variant="outlined"
+            startIcon={<UploadFileIcon />}
+            disabled={isLoading}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Agregar un archivo
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            hidden
+            accept="application/pdf,image/*"
+            onChange={(event) => {
+              const file = event.target.files?.[0]
+              if (file) {
+                uploadFile(file)
+              }
+              event.target.value = ''
+            }}
+          />
+        </>
+      )}
     </Stack>
   )
 }

@@ -16,3 +16,8 @@ export type UnlockFormProps = {
   isSubmitting: boolean
   errorMessage: string | null
 }
+
+export type DemoModeButtonProps = {
+  onClick: () => void
+  isLoading: boolean
+}
