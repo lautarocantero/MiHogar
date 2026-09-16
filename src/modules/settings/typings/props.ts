@@ -18,3 +18,8 @@ export type AddMemberDialogProps = {
   onClose: () => void
   onCreated?: (memberId: string) => void
 }
+
+export type FactoryResetDialogProps = {
+  open: boolean
+  onClose: () => void
+}

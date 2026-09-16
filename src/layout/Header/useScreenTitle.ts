@@ -11,7 +11,7 @@ const SCREEN_TITLES: Array<{ path: string; title: string }> = [
   { path: ROUTES.PROJECTION, title: 'Proyección del mes' },
   { path: ROUTES.SAVINGS, title: 'Ahorros e inversiones' },
   { path: ROUTES.REPORTS, title: 'Informes' },
-  { path: ROUTES.SETTINGS, title: 'Ajustes y letra' }
+  { path: ROUTES.SETTINGS, title: 'Configuración' }
 ]
 
 export function useScreenTitle(): string {

@@ -6,7 +6,7 @@ import { SidebarItem } from './SidebarItem'
 import { useSidebarItems } from './useSidebarItems'
 
 const SIDEBAR_WIDTH = 290
-const SETTINGS_ITEM = { label: 'Ajustes y letra', path: ROUTES.SETTINGS, icon: SettingsIcon }
+const SETTINGS_ITEM = { label: 'Configuración', path: ROUTES.SETTINGS, icon: SettingsIcon }
 
 export function Sidebar(): React.JSX.Element {
   const items = useSidebarItems()
