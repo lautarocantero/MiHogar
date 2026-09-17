@@ -1,6 +1,6 @@
 {
   "name": "mi-hogar",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "App de escritorio para llevar las finanzas de un hogar",
   "main": "./out/main/index.js",
   "author": "Lautaro Cantero",
