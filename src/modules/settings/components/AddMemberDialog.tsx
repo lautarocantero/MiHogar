@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { AddMemberForm } from './AddMemberForm'
 import { useAddMember } from '../useAddMember'
 import type { AddMemberDialogProps } from '../typings/props'
@@ -21,7 +22,9 @@ export function AddMemberDialog({
       maxWidth="xs"
       aria-labelledby="add-member-title"
     >
-      <DialogTitle id="add-member-title">Agregar quién usa la app</DialogTitle>
+      <DialogHeader id="add-member-title" onClose={onClose}>
+        Agregar quién usa la app
+      </DialogHeader>
       <DialogContent>
         <AddMemberForm onSubmit={submit} isSubmitting={isSubmitting} errorMessage={errorMessage} />
       </DialogContent>

@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { EditAccountForm } from './EditAccountForm'
 import { useUpdateAccount } from '../useUpdateAccount'
 import type { EditAccountDialogProps } from '../typings/props'
@@ -15,10 +16,12 @@ export function EditAccountDialog({
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
       aria-labelledby="edit-account-title"
     >
-      <DialogTitle id="edit-account-title">Editar cuenta</DialogTitle>
+      <DialogHeader id="edit-account-title" onClose={onClose}>
+        Editar cuenta
+      </DialogHeader>
       <DialogContent>
         <EditAccountForm
           account={account}

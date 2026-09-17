@@ -7,6 +7,7 @@ import { paymentsReducer } from './payments/paymentsSlice'
 import { movementsReducer } from './movements/movementsSlice'
 import { savingsReducer } from './savings/savingsSlice'
 import { categoriesReducer } from './categories/categoriesSlice'
+import { notificationsReducer } from './notifications/notificationsSlice'
 import { uiReducer } from './ui/uiSlice'
 
 export const rootReducer = combineReducers({
@@ -18,6 +19,7 @@ export const rootReducer = combineReducers({
   movements: movementsReducer,
   savings: savingsReducer,
   categories: categoriesReducer,
+  notifications: notificationsReducer,
   ui: uiReducer
 })
 

@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { EditMovementForm } from './EditMovementForm'
 import { useUpdateMovement } from '../useUpdateMovement'
 import type { EditMovementDialogProps } from '../typings/props'
@@ -18,7 +19,9 @@ export function EditMovementDialog({
       maxWidth="sm"
       aria-labelledby="edit-movement-title"
     >
-      <DialogTitle id="edit-movement-title">Editar movimiento</DialogTitle>
+      <DialogHeader id="edit-movement-title" onClose={onClose}>
+        Editar movimiento
+      </DialogHeader>
       <DialogContent>
         <EditMovementForm
           movement={movement}

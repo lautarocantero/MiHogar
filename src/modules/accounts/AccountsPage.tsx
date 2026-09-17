@@ -12,7 +12,7 @@ import { DeleteAccountDialog } from './components/DeleteAccountDialog'
 import { useAccountsData } from './useAccountsData'
 
 export function AccountsPage(): React.JSX.Element {
-  const { totalAvailable, creditCardDebt, accountViews } = useAccountsData()
+  const { totalAvailable, totalCreditAvailable, accountViews } = useAccountsData()
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false)
   const [editingAccount, setEditingAccount] = useState<Account | null>(null)
   const [deletingAccount, setDeletingAccount] = useState<Account | null>(null)
@@ -40,10 +40,10 @@ export function AccountsPage(): React.JSX.Element {
         </Box>
         <Box flexGrow={1}>
           <Typography variant="body2" color="text.secondary">
-            Menos lo que debés en tarjetas
+            Disponible en tarjetas
           </Typography>
           <Typography variant="h4" component="p" color={organicColors.orange.dark}>
-            {formatCurrency(creditCardDebt)}
+            {formatCurrency(totalCreditAvailable)}
           </Typography>
         </Box>
         <Button

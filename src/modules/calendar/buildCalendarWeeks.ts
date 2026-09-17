@@ -17,7 +17,7 @@ const DAYS_PER_WEEK = 7
 export function buildCalendarWeeks(
   referenceDate: Date,
   today: Date,
-  eventsByIsoDate: Map<string, CalendarDayEvent>
+  eventsByIsoDate: Map<string, CalendarDayEvent[]>
 ): CalendarDay[][] {
   const monthStart = startOfMonth(referenceDate)
   const monthEnd = endOfMonth(referenceDate)
@@ -32,7 +32,7 @@ export function buildCalendarWeeks(
       isToday: isSameDay(date, today),
       isCurrentMonth: isSameMonth(date, referenceDate),
       isPast: isBefore(date, today) && !isSameDay(date, today),
-      event: eventsByIsoDate.get(isoDate) ?? null
+      events: eventsByIsoDate.get(isoDate) ?? []
     }
     return day
   })

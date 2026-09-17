@@ -4,7 +4,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { MovementType } from '@/typings/domain/enums'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
-import { formatDayMonth } from '@/utils/formatting/formatDate'
+import { formatShortDate } from '@/utils/formatting/formatDate'
 import type { TimelineEntryCardProps } from '../typings/props'
 
 function getDotColor(type: MovementType): string {
@@ -33,18 +33,15 @@ export function TimelineEntryCard({
   onDelete
 }: TimelineEntryCardProps): React.JSX.Element {
   const { movement, concept, detail, isEstimated, isPast } = entry
-  const { day, month } = formatDayMonth(movement.date)
+  const shortDate = formatShortDate(movement.date)
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
   const comesFromPayment = Boolean(movement.paymentId)
 
   return (
     <Stack direction="row" spacing={2} component="li" sx={{ listStyle: 'none' }}>
-      <Box width={56} textAlign="center" flexShrink={0}>
-        <Typography variant="h6" component="div" color={isPast ? 'text.secondary' : 'text.primary'}>
-          {day}
-        </Typography>
-        <Typography variant="caption" color="text.secondary" textTransform="capitalize">
-          {month}
+      <Box width={64} textAlign="center" flexShrink={0}>
+        <Typography variant="body2" color={isPast ? 'text.secondary' : 'text.primary'}>
+          {shortDate}
         </Typography>
       </Box>
       <Box

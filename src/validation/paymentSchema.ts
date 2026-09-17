@@ -36,6 +36,10 @@ export const paymentSchema = z.object({
   amount: z.number(),
   status: z.nativeEnum(PaymentStatus),
   categoryId: z.string().min(1),
+  installmentsTotal: z.number().int().min(1).optional(),
+  installmentsPaid: z.number().int().min(0).optional(),
+  /** @deprecated legacy field, kept only so old saved vault files still parse. Use installmentsTotal/installmentsPaid instead. */
+  installmentsRemaining: z.number().int().min(0).optional(),
   providerUrl: z.string().url().optional(),
   credentials: paymentCredentialsSchema.optional(),
   attachments: z.array(attachmentMetaSchema),

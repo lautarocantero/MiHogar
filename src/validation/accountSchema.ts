@@ -9,7 +9,11 @@ export const accountSchema = z.object({
   ownerId: z.string().optional(),
   balance: z.number(),
   contextPhrase: z.string().optional(),
+  sourceAccountId: z.string().optional(),
+  creditLimit: z.number().optional(),
+  usedAmount: z.number().nonnegative().optional(),
   closingDay: z.number().int().min(1).max(31).optional(),
   dueDay: z.number().int().min(1).max(31).optional(),
-  installmentsRemaining: z.number().int().min(0).optional()
+  nextClosingDay: z.number().int().min(1).max(31).optional(),
+  nextDueDay: z.number().int().min(1).max(31).optional()
 })

@@ -25,8 +25,15 @@ export function AddAccountForm({
       type: AccountType.BANK,
       ownerType: OwnerType.HOUSEHOLD,
       ownerId: '',
-      balance: 0,
-      contextPhrase: ''
+      balance: undefined,
+      contextPhrase: '',
+      sourceAccountId: '',
+      creditLimit: undefined,
+      usedAmount: undefined,
+      closingDay: undefined,
+      dueDay: undefined,
+      nextClosingDay: undefined,
+      nextDueDay: undefined
     }
   })
 
@@ -44,7 +51,13 @@ export function AddAccountForm({
           selectedOwnerType={selectedOwnerType}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={isSubmitting}
+          sx={{ alignSelf: 'flex-start' }}
+        >
           {isSubmitting ? 'Guardando…' : 'Agregar la cuenta'}
         </Button>
       </Stack>

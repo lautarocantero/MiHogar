@@ -6,8 +6,8 @@ import { selectAllMembers } from '@/store/household/householdSelectors'
 import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
-import { PaymentStatus } from '@/typings/domain/enums'
-import { PaymentFilter } from '../typings/enums'
+import { AccountType, PaymentStatus } from '@/typings/domain/enums'
+import { PaymentFilter, PaymentMethodFilter, PaymentSortBy } from '../typings/enums'
 import type { PaymentView, UsePaymentFiltersResult } from '../typings/types'
 
 export function usePaymentFilters(): UsePaymentFiltersResult {
@@ -16,6 +16,8 @@ export function usePaymentFilters(): UsePaymentFiltersResult {
   const members = useAppSelector(selectAllMembers)
   const categories = useAppSelector(selectAllCategories)
   const [activeFilter, setActiveFilter] = useState(PaymentFilter.PENDING)
+  const [sortBy, setSortBy] = useState(PaymentSortBy.DATE)
+  const [methodFilter, setMethodFilter] = useState(PaymentMethodFilter.ALL)
 
   const paymentViews = useMemo<PaymentView[]>(() => {
     const accountsById = new Map(accounts.map((account) => [account.id, account]))
@@ -27,6 +29,7 @@ export function usePaymentFilters(): UsePaymentFiltersResult {
         return {
           ...payment,
           accountName: account?.name ?? 'Cuenta sin definir',
+          accountType: account?.type,
           ownerLabel: resolveOwnerLabel(payment.ownerType, payment.ownerId, members),
           categoryName: categoriesById.get(payment.categoryId)?.name ?? 'Sin categoría',
           displayDate: resolvePaymentDisplayDate(payment, account)
@@ -39,21 +42,43 @@ export function usePaymentFilters(): UsePaymentFiltersResult {
   const paidCount = paymentViews.filter((p) => p.status === PaymentStatus.PAID).length
 
   const filteredPayments = useMemo(() => {
-    if (activeFilter === PaymentFilter.PENDING) {
-      return paymentViews.filter((p) => p.status === PaymentStatus.PENDING)
+    const byStatus =
+      activeFilter === PaymentFilter.PENDING
+        ? paymentViews.filter((p) => p.status === PaymentStatus.PENDING)
+        : activeFilter === PaymentFilter.PAID
+          ? paymentViews.filter((p) => p.status === PaymentStatus.PAID)
+          : paymentViews
+
+    const byMethod =
+      methodFilter === PaymentMethodFilter.ALL
+        ? byStatus
+        : byStatus.filter((p) => {
+            const isCard = p.accountType === AccountType.CREDIT_CARD
+            return methodFilter === PaymentMethodFilter.CREDIT_CARD ? isCard : !isCard
+          })
+
+    if (sortBy === PaymentSortBy.AMOUNT) {
+      return [...byMethod].sort((a, b) => b.amount - a.amount)
     }
-    if (activeFilter === PaymentFilter.PAID) {
-      return paymentViews.filter((p) => p.status === PaymentStatus.PAID)
-    }
-    return paymentViews
-  }, [paymentViews, activeFilter])
+    return byMethod
+  }, [paymentViews, activeFilter, methodFilter, sortBy])
+
+  const totalAmount = useMemo(
+    () => filteredPayments.reduce((sum, payment) => sum + payment.amount, 0),
+    [filteredPayments]
+  )
 
   return {
     activeFilter,
     setActiveFilter,
+    sortBy,
+    setSortBy,
+    methodFilter,
+    setMethodFilter,
     filteredPayments,
     pendingCount,
     paidCount,
-    totalCount: paymentViews.length
+    totalCount: paymentViews.length,
+    totalAmount
   }
 }

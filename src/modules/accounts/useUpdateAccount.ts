@@ -13,6 +13,7 @@ export function useUpdateAccount(account: Account, onUpdated: () => void): UseUp
   const submit = useCallback(
     (values: AddAccountFormValues) => {
       run(async () => {
+        const isCreditCard = values.type === AccountType.CREDIT_CARD
         dispatch(
           updateAccount({
             ...account,
@@ -20,12 +21,15 @@ export function useUpdateAccount(account: Account, onUpdated: () => void): UseUp
             type: values.type,
             ownerType: values.ownerType,
             ownerId: values.ownerType === OwnerType.MEMBER ? values.ownerId : undefined,
-            balance: values.balance,
+            balance: isCreditCard ? 0 : (values.balance ?? 0),
             contextPhrase: values.contextPhrase || undefined,
-            closingDay: values.type === AccountType.CREDIT_CARD ? values.closingDay : undefined,
-            dueDay: values.type === AccountType.CREDIT_CARD ? values.dueDay : undefined,
-            installmentsRemaining:
-              values.type === AccountType.CREDIT_CARD ? values.installmentsRemaining : undefined
+            sourceAccountId: isCreditCard ? values.sourceAccountId : undefined,
+            creditLimit: isCreditCard ? values.creditLimit : undefined,
+            usedAmount: isCreditCard ? values.usedAmount : undefined,
+            closingDay: isCreditCard ? values.closingDay : undefined,
+            dueDay: isCreditCard ? values.dueDay : undefined,
+            nextClosingDay: isCreditCard ? values.nextClosingDay : undefined,
+            nextDueDay: isCreditCard ? values.nextDueDay : undefined
           })
         )
         onUpdated()

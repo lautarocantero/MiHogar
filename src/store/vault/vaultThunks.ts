@@ -15,11 +15,13 @@ import type { VaultFile } from '@/typings/domain/types'
 import type { ChangeHouseholdKeyInput } from './typings/types'
 import { hydrateHousehold } from '@/store/household/householdSlice'
 import { hydrateMembers } from '@/store/household/membersSlice'
-import { hydrateAccounts } from '@/store/accounts/accountsSlice'
+import { hydrateAccounts, updateAccount } from '@/store/accounts/accountsSlice'
+import { reconcileAccountsForRollover } from '@/utils/domain/rolloverCreditCardCycle'
 import { hydratePayments } from '@/store/payments/paymentsSlice'
 import { hydrateMovements } from '@/store/movements/movementsSlice'
 import { hydrateSavings } from '@/store/savings/savingsSlice'
 import { hydrateCategories } from '@/store/categories/categoriesSlice'
+import { hydrateReadNotifications } from '@/store/notifications/notificationsSlice'
 import { buildDefaultCategories } from '@/utils/domain/buildDefaultCategories'
 import { buildVaultFileFromState } from './buildVaultFileFromState'
 import { buildDemoVaultFile } from './demoVaultData'
@@ -30,10 +32,14 @@ function hydrateDomainSlices(dispatch: AppDispatch, vaultFile: VaultFile): void 
   dispatch(hydrateHousehold(vaultFile.household))
   dispatch(hydrateMembers(vaultFile.members))
   dispatch(hydrateAccounts(vaultFile.accounts))
+  reconcileAccountsForRollover(vaultFile.accounts, new Date()).forEach((account) =>
+    dispatch(updateAccount(account))
+  )
   dispatch(hydratePayments(vaultFile.payments))
   dispatch(hydrateMovements(vaultFile.movements))
   dispatch(hydrateSavings(vaultFile.savingsInstruments))
   dispatch(hydrateCategories(vaultFile.categories))
+  dispatch(hydrateReadNotifications(vaultFile.notifications))
 }
 
 export const checkVaultExistsThunk = thunkTypes('vault/checkExists', async () => {

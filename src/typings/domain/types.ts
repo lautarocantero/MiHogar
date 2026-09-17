@@ -9,6 +9,7 @@ import type {
 import type { movementSchema } from '@/validation/movementSchema'
 import type { savingsInstrumentSchema } from '@/validation/savingsSchema'
 import type { categorySchema } from '@/validation/categorySchema'
+import type { readNotificationSchema } from '@/validation/notificationSchema'
 import type { vaultFileSchema } from '@/validation/vaultFileSchema'
 
 export type Household = z.infer<typeof householdSchema>
@@ -20,6 +21,7 @@ export type Payment = z.infer<typeof paymentSchema>
 export type Movement = z.infer<typeof movementSchema>
 export type SavingsInstrument = z.infer<typeof savingsInstrumentSchema>
 export type Category = z.infer<typeof categorySchema>
+export type ReadNotification = z.infer<typeof readNotificationSchema>
 export type VaultFile = z.infer<typeof vaultFileSchema>
 
 export type FlowSummary = {

@@ -2,13 +2,13 @@ import { Card, Stack, Typography } from '@mui/material'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDaysRemainingLabel } from '@/utils/formatting/formatDate'
-import type { WeekAheadListProps } from '../typings/props'
+import type { MonthPaymentsListProps } from '../typings/props'
 
-export function WeekAheadList({ payments }: WeekAheadListProps): React.JSX.Element {
+export function MonthPaymentsList({ payments }: MonthPaymentsListProps): React.JSX.Element {
   if (payments.length === 0) {
     return (
       <Typography variant="body2" color="text.secondary">
-        No tenés pagos en los próximos 7 días.
+        No tenés pagos pendientes este mes.
       </Typography>
     )
   }

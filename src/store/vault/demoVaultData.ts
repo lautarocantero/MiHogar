@@ -60,9 +60,14 @@ export function buildDemoVaultFile(): VaultFile {
         type: AccountType.CREDIT_CARD,
         ownerType: OwnerType.MEMBER,
         ownerId: MEMBER_ANA,
-        balance: -125000,
+        balance: 0,
+        sourceAccountId: ACCOUNT_CUENTA_SUELDO,
+        creditLimit: 375000,
+        usedAmount: 375000,
         closingDay: 20,
-        dueDay: 10
+        dueDay: 10,
+        nextClosingDay: 22,
+        nextDueDay: 12
       },
       {
         id: ACCOUNT_EFECTIVO,
@@ -77,7 +82,10 @@ export function buildDemoVaultFile(): VaultFile {
         type: AccountType.CREDIT_CARD,
         ownerType: OwnerType.MEMBER,
         ownerId: MEMBER_MARTIN,
-        balance: -48000,
+        balance: 0,
+        sourceAccountId: ACCOUNT_CUENTA_SUELDO,
+        creditLimit: 152000,
+        usedAmount: 61000,
         closingDay: 5,
         dueDay: 15
       }
@@ -245,6 +253,25 @@ export function buildDemoVaultFile(): VaultFile {
         amountMode: AmountMode.VARIABLE
       },
       {
+        id: 'demo-pay-heladera',
+        concept: 'Heladera en cuotas',
+        entity: 'Frávega',
+        accountId: ACCOUNT_TARJETA_MASTER,
+        ownerType: OwnerType.MEMBER,
+        ownerId: MEMBER_MARTIN,
+        recurring: true,
+        frequency: PaymentFrequency.MONTHLY,
+        dueDate: isoDate(addDays(today, 8)),
+        amount: 38000,
+        status: PaymentStatus.PENDING,
+        categoryId: CATEGORY_OTROS_GASTOS,
+        attachments: [],
+        kind: PaymentKind.EXPENSE,
+        amountMode: AmountMode.FIXED,
+        installmentsTotal: 6,
+        installmentsPaid: 5
+      },
+      {
         id: 'demo-pay-seguro-auto',
         concept: 'Seguro del auto',
         entity: 'La Caja Seguros',
@@ -363,6 +390,7 @@ export function buildDemoVaultFile(): VaultFile {
         ownerId: MEMBER_ANA,
         colorTag: '#6a7851'
       }
-    ]
+    ],
+    notifications: []
   }
 }

@@ -1,7 +1,7 @@
-import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
+import type { Control, FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import type { Payment } from '@/typings/domain/types'
 import type { AmountMode, OwnerType, PaymentKind } from '@/typings/domain/enums'
-import type { PaymentFilter } from './enums'
+import type { PaymentFilter, PaymentMethodFilter } from './enums'
 import type {
   AddPaymentFormValues,
   EditCredentialsFormValues,
@@ -19,11 +19,14 @@ export type PaymentRowProps = {
 export type PaymentFormFieldsProps = {
   register: UseFormRegister<AddPaymentFormValues>
   control: Control<AddPaymentFormValues>
+  setValue: UseFormSetValue<AddPaymentFormValues>
   errors: FieldErrors<AddPaymentFormValues>
   selectedOwnerType: OwnerType
   isRecurring: boolean
   kind: PaymentKind
   selectedAmountMode: AmountMode
+  hasInstallments: boolean
+  onToggleInstallments: (checked: boolean) => void
 }
 
 export type EditPaymentFormProps = {
@@ -52,6 +55,11 @@ export type PaymentFilterPillsProps = {
   paidCount: number
   totalCount: number
   onChange: (filter: PaymentFilter) => void
+}
+
+export type PaymentMethodPillsProps = {
+  activeMethod: PaymentMethodFilter
+  onChange: (method: PaymentMethodFilter) => void
 }
 
 export type AddPaymentFormProps = {

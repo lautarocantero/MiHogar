@@ -5,11 +5,12 @@ import type { addAccountFormSchema } from '@/validation/addAccountFormSchema'
 export type AccountView = Account & {
   ownerLabel: string
   typeLabel: string
+  sourceAccountName?: string
 }
 
 export type AccountsData = {
   totalAvailable: number
-  creditCardDebt: number
+  totalCreditAvailable: number
   accountViews: AccountView[]
 }
 

@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { AddAccountForm } from './AddAccountForm'
 import { useCreateAccount } from '../useCreateAccount'
 import type { AddAccountDialogProps } from '../typings/props'
@@ -11,10 +12,12 @@ export function AddAccountDialog({ open, onClose }: AddAccountDialogProps): Reac
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
       aria-labelledby="add-account-title"
     >
-      <DialogTitle id="add-account-title">Agregar una cuenta</DialogTitle>
+      <DialogHeader id="add-account-title" onClose={onClose}>
+        Agregar una cuenta
+      </DialogHeader>
       <DialogContent>
         <AddAccountForm onSubmit={submit} isSubmitting={isSubmitting} errorMessage={errorMessage} />
       </DialogContent>

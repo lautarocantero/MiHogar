@@ -1,4 +1,5 @@
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { Alert, Button, Dialog, DialogActions, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { useDeleteMovement } from '../useDeleteMovement'
 import type { DeleteMovementDialogProps } from '../typings/props'
 
@@ -17,7 +18,9 @@ export function DeleteMovementDialog({
       maxWidth="xs"
       aria-labelledby="delete-movement-title"
     >
-      <DialogTitle id="delete-movement-title">Eliminar movimiento</DialogTitle>
+      <DialogHeader id="delete-movement-title" onClose={onClose}>
+        Eliminar movimiento
+      </DialogHeader>
       <DialogContent>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
       </DialogContent>

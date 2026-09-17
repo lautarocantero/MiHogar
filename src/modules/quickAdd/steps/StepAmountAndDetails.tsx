@@ -23,7 +23,7 @@ export function StepAmountAndDetails({
     resolver: zodResolver(quickAddFormSchema),
     defaultValues: {
       type,
-      amount: 0,
+      amount: undefined,
       date: TODAY_ISO,
       categoryId: '',
       accountId: '',

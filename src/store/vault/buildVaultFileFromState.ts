@@ -6,6 +6,7 @@ import { movementsSelectors } from '@/store/movements/movementsSlice'
 import { savingsSelectors } from '@/store/savings/savingsSlice'
 import { categoriesSelectors } from '@/store/categories/categoriesSlice'
 import { membersSelectors } from '@/store/household/membersSlice'
+import { notificationsSelectors } from '@/store/notifications/notificationsSlice'
 
 export function buildVaultFileFromState(state: RootState): VaultFile {
   return {
@@ -16,6 +17,7 @@ export function buildVaultFileFromState(state: RootState): VaultFile {
     payments: paymentsSelectors.selectAll(state.payments),
     movements: movementsSelectors.selectAll(state.movements),
     savingsInstruments: savingsSelectors.selectAll(state.savings),
-    categories: categoriesSelectors.selectAll(state.categories)
+    categories: categoriesSelectors.selectAll(state.categories),
+    notifications: notificationsSelectors.selectAll(state.notifications)
   }
 }

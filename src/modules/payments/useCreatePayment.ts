@@ -29,6 +29,8 @@ export function useCreatePayment(kind: PaymentKind, onCreated: () => void): UseC
               amount: values.amount,
               status: PaymentStatus.PENDING,
               categoryId: values.categoryId,
+              installmentsTotal: values.installmentsTotal,
+              installmentsPaid: values.installmentsPaid,
               attachments: [],
               kind,
               amountMode: values.amountMode

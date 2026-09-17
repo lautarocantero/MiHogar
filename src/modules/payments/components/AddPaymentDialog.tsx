@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { PaymentKind } from '@/typings/domain/enums'
 import { AddPaymentForm } from './AddPaymentForm'
 import { useCreatePayment } from '../useCreatePayment'
@@ -16,12 +17,12 @@ export function AddPaymentDialog({
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="sm"
+      maxWidth="lg"
       aria-labelledby="add-payment-title"
     >
-      <DialogTitle id="add-payment-title">
+      <DialogHeader id="add-payment-title" onClose={onClose}>
         {kind === PaymentKind.DEPOSIT ? 'Agregar un depósito fijo' : 'Agregar un pago fijo'}
-      </DialogTitle>
+      </DialogHeader>
       <DialogContent>
         <AddPaymentForm
           kind={kind}

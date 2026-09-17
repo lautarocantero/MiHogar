@@ -4,6 +4,8 @@ import type { CalendarEventKind } from './enums'
 export type CalendarDayEvent = {
   kind: CalendarEventKind
   amount: number
+  label: string
+  isFinalInstallment?: boolean
 }
 
 export type CalendarDay = {
@@ -12,7 +14,7 @@ export type CalendarDay = {
   isToday: boolean
   isCurrentMonth: boolean
   isPast: boolean
-  event: CalendarDayEvent | null
+  events: CalendarDayEvent[]
 }
 
 export type MonthlyProgress = {
@@ -21,14 +23,20 @@ export type MonthlyProgress = {
   progressPercent: number
 }
 
-export type WeekAheadPayment = Payment & {
+export type CalendarPayment = Payment & {
   accountName: string
   displayDate: string
+}
+
+export type FinalInstallmentSummary = {
+  concept: string
+  daysUntil: number
 }
 
 export type CalendarData = {
   weeks: CalendarDay[][]
   monthLabel: string
   progress: MonthlyProgress
-  weekAheadPayments: WeekAheadPayment[]
+  monthPayments: CalendarPayment[]
+  finalInstallmentPayments: FinalInstallmentSummary[]
 }

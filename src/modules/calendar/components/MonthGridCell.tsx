@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Stack, Tooltip, Typography } from '@mui/material'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { CalendarEventKind } from '../typings/enums'
@@ -25,14 +25,22 @@ const EVENT_STYLES: Record<
   }
 }
 
-export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
-  const eventStyle = day.event ? EVENT_STYLES[day.event.kind] : null
+const MAX_VISIBLE_EVENTS = 2
 
-  return (
+export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
+  const hasFinalInstallment = day.events.some((event) => event.isFinalInstallment)
+  const primaryEvent = day.events[0] ?? null
+  const eventStyle = primaryEvent ? EVENT_STYLES[primaryEvent.kind] : null
+  const visibleEvents = day.events.slice(0, MAX_VISIBLE_EVENTS)
+  const hiddenCount = day.events.length - visibleEvents.length
+
+  const cell = (
     <Box
-      component={day.event ? 'article' : 'div'}
+      component={day.events.length > 0 ? 'article' : 'div'}
       aria-label={
-        day.event ? `Día ${day.dayOfMonth}, ${formatCurrency(day.event.amount)}` : undefined
+        day.events.length > 0
+          ? `Día ${day.dayOfMonth}, ${day.events.length} evento(s), total ${formatCurrency(day.events.reduce((sum, e) => sum + e.amount, 0))}`
+          : undefined
       }
       sx={{
         aspectRatio: '1 / 1',
@@ -42,22 +50,60 @@ export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
         flexDirection: 'column',
         gap: 0.5,
         backgroundColor: day.isToday
-          ? organicColors.orange.tint
+          ? organicColors.blue.tint
           : (eventStyle?.background ?? organicColors.surface),
-        border: day.isToday
-          ? `2px solid ${organicColors.orange.main}`
-          : `1px solid ${eventStyle?.border ?? organicColors.neutral.border}`,
+        border: hasFinalInstallment
+          ? `3px solid ${organicColors.sage.main}`
+          : day.isToday
+            ? `3px solid ${organicColors.blue.main}`
+            : `1px solid ${eventStyle?.border ?? organicColors.neutral.border}`,
+        boxShadow: day.isToday ? `0 0 0 2px ${organicColors.blue.tint}` : 'none',
         opacity: !day.isCurrentMonth ? 0.4 : day.isPast ? 0.55 : 1
       }}
     >
-      <Typography variant="body2" fontWeight={day.isToday ? 700 : 400}>
+      <Typography
+        variant="body2"
+        fontWeight={day.isToday ? 700 : 400}
+        color={day.isToday ? organicColors.blue.dark : undefined}
+      >
         {day.dayOfMonth}
       </Typography>
-      {day.event && (
-        <Typography variant="caption" sx={{ color: eventStyle?.text }}>
-          {formatCurrency(day.event.amount)}
+      {visibleEvents.map((event, index) => (
+        <Typography
+          key={index}
+          variant="caption"
+          sx={{ color: EVENT_STYLES[event.kind].text, lineHeight: 1.2 }}
+          noWrap
+        >
+          {formatCurrency(event.amount)}
+        </Typography>
+      ))}
+      {hiddenCount > 0 && (
+        <Typography variant="caption" color="text.secondary">
+          +{hiddenCount} más
         </Typography>
       )}
     </Box>
+  )
+
+  if (day.events.length === 0) {
+    return cell
+  }
+
+  return (
+    <Tooltip
+      title={
+        <Stack spacing={0.5}>
+          {day.events.map((event, index) => (
+            <Typography key={index} variant="caption" component="div">
+              {event.label} — {formatCurrency(event.amount)}
+              {event.isFinalInstallment ? ' (última cuota)' : ''}
+            </Typography>
+          ))}
+        </Stack>
+      }
+    >
+      {cell}
+    </Tooltip>
   )
 }

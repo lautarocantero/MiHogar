@@ -1,4 +1,9 @@
-import type { CalendarDay, MonthlyProgress, WeekAheadPayment } from './types'
+import type {
+  CalendarDay,
+  CalendarPayment,
+  FinalInstallmentSummary,
+  MonthlyProgress
+} from './types'
 
 export type MonthGridProps = {
   weeks: CalendarDay[][]
@@ -15,8 +20,9 @@ export type MonthGridCellProps = {
 export type MonthlyProgressCardProps = {
   monthLabel: string
   progress: MonthlyProgress
+  finalInstallmentPayments: FinalInstallmentSummary[]
 }
 
-export type WeekAheadListProps = {
-  payments: WeekAheadPayment[]
+export type MonthPaymentsListProps = {
+  payments: CalendarPayment[]
 }

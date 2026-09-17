@@ -9,6 +9,10 @@ export function formatDayMonth(isoDate: string): { day: string; month: string } 
   }
 }
 
+export function formatShortDate(isoDate: string): string {
+  return format(parseISO(isoDate), 'dd/MM/yy')
+}
+
 export function formatDueLabel(isoDate: string, verb: string = 'Vence'): string {
   const date = parseISO(isoDate)
   if (isToday(date)) {

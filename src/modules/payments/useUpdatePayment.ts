@@ -27,6 +27,8 @@ export function useUpdatePayment(payment: Payment, onUpdated: () => void): UseUp
             frequency: values.recurring ? values.frequency : undefined,
             dueDate: values.dueDate,
             amount: values.amount,
+            installmentsTotal: values.installmentsTotal,
+            installmentsPaid: values.installmentsPaid,
             amountMode: values.amountMode
           })
         )
