@@ -41,3 +41,13 @@ export enum CategoryKind {
   EXPENSE = 'EXPENSE',
   INCOME = 'INCOME'
 }
+
+export enum DebtDirection {
+  OWED_BY_HOUSEHOLD = 'OWED_BY_HOUSEHOLD',
+  OWED_TO_HOUSEHOLD = 'OWED_TO_HOUSEHOLD'
+}
+
+export enum DebtStatus {
+  ACTIVE = 'ACTIVE',
+  PAID_OFF = 'PAID_OFF'
+}

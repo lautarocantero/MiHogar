@@ -30,4 +30,5 @@ export type ReminderNotification = {
   concept: string
   dueDate: string
   amount: number
+  kind?: 'payment' | 'debt'
 }

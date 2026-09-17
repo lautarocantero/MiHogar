@@ -6,6 +6,7 @@ import { movementSchema } from './movementSchema'
 import { savingsInstrumentSchema } from './savingsSchema'
 import { categorySchema } from './categorySchema'
 import { readNotificationSchema } from './notificationSchema'
+import { debtSchema } from './debtSchema'
 
 export const vaultFileSchema = z.object({
   version: z.literal(1),
@@ -16,5 +17,6 @@ export const vaultFileSchema = z.object({
   movements: z.array(movementSchema),
   savingsInstruments: z.array(savingsInstrumentSchema),
   categories: z.array(categorySchema),
-  notifications: z.array(readNotificationSchema).default([])
+  notifications: z.array(readNotificationSchema).default([]),
+  debts: z.array(debtSchema).default([])
 })

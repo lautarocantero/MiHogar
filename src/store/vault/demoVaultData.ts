@@ -4,6 +4,8 @@ import {
   AccountType,
   AmountMode,
   CategoryKind,
+  DebtDirection,
+  DebtStatus,
   MovementType,
   OwnerType,
   PaymentFrequency,
@@ -391,6 +393,44 @@ export function buildDemoVaultFile(): VaultFile {
         colorTag: '#6a7851'
       }
     ],
-    notifications: []
+    notifications: [],
+    debts: [
+      {
+        id: 'demo-debt-prestamo-banco',
+        direction: DebtDirection.OWED_BY_HOUSEHOLD,
+        name: 'Préstamo personal',
+        counterparty: 'Banco Nación',
+        principal: 800000,
+        outstandingBalance: 560000,
+        rateAnnual: 0.65,
+        installmentAmount: 46666,
+        installmentsTotal: 18,
+        installmentsPaid: 6,
+        frequency: PaymentFrequency.MONTHLY,
+        nextInstallmentDate: isoDate(addDays(today, 5)),
+        startDate: isoDate(subDays(today, 180)),
+        ownerType: OwnerType.HOUSEHOLD,
+        reminderEnabled: true,
+        status: DebtStatus.ACTIVE
+      },
+      {
+        id: 'demo-debt-prestamo-juan',
+        direction: DebtDirection.OWED_TO_HOUSEHOLD,
+        name: 'Le prestamos a Juan',
+        counterparty: 'Juan Pérez',
+        principal: 60000,
+        outstandingBalance: 40000,
+        installmentAmount: 20000,
+        installmentsTotal: 3,
+        installmentsPaid: 1,
+        frequency: PaymentFrequency.MONTHLY,
+        nextInstallmentDate: isoDate(addDays(today, 12)),
+        startDate: isoDate(subDays(today, 30)),
+        ownerType: OwnerType.MEMBER,
+        ownerId: MEMBER_MARTIN,
+        reminderEnabled: true,
+        status: DebtStatus.ACTIVE
+      }
+    ]
   }
 }

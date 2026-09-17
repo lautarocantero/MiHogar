@@ -9,6 +9,7 @@ const SCREEN_TITLES: Array<{ path: string; title: string; parentPath?: string }>
   { path: ROUTES.ACCOUNTS, title: 'Cuentas y tarjetas' },
   { path: ROUTES.PROJECTION, title: 'Proyección del mes' },
   { path: ROUTES.SAVINGS, title: 'Ahorros e inversiones' },
+  { path: ROUTES.DEBTS, title: 'Deudas y préstamos' },
   { path: ROUTES.REPORTS, title: 'Informes' },
   { path: ROUTES.SETTINGS, title: 'Configuración' }
 ]

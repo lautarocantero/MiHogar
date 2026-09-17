@@ -6,6 +6,7 @@ export const ROUTES = {
   ACCOUNTS: '/cuentas',
   PROJECTION: '/proyeccion',
   SAVINGS: '/ahorros',
+  DEBTS: '/deudas-y-prestamos',
   REPORTS: '/informes',
   SETTINGS: '/ajustes'
 } as const

@@ -31,6 +31,9 @@ const ProjectionPage = lazy(() =>
 const SavingsPage = lazy(() =>
   import('@/modules/savings/SavingsPage').then((module) => ({ default: module.SavingsPage }))
 )
+const DebtsPage = lazy(() =>
+  import('@/modules/debts/DebtsPage').then((module) => ({ default: module.DebtsPage }))
+)
 const ReportsPage = lazy(() =>
   import('@/modules/reports/ReportsPage').then((module) => ({ default: module.ReportsPage }))
 )
@@ -50,6 +53,7 @@ export function AppRouter(): React.JSX.Element {
             <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />
             <Route path={ROUTES.PROJECTION} element={<ProjectionPage />} />
             <Route path={ROUTES.SAVINGS} element={<SavingsPage />} />
+            <Route path={ROUTES.DEBTS} element={<DebtsPage />} />
             <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
             <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
           </Route>
