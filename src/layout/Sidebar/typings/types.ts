@@ -6,3 +6,9 @@ export type SidebarItem = {
   path: string
   icon: ComponentType<SvgIconProps>
 }
+
+export type SidebarAction = {
+  label: string
+  icon: ComponentType<SvgIconProps>
+  onClick: () => void
+}
