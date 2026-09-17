@@ -20,9 +20,6 @@ const PaymentDetailPage = lazy(() =>
     default: module.PaymentDetailPage
   }))
 )
-const TimelinePage = lazy(() =>
-  import('@/modules/timeline/TimelinePage').then((module) => ({ default: module.TimelinePage }))
-)
 const CalendarPage = lazy(() =>
   import('@/modules/calendar/CalendarPage').then((module) => ({ default: module.CalendarPage }))
 )
@@ -48,7 +45,6 @@ export function AppRouter(): React.JSX.Element {
           <Route element={<AppLayout />}>
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.CALENDAR} element={<CalendarPage />} />
-            <Route path={ROUTES.TIMELINE} element={<TimelinePage />} />
             <Route path={ROUTES.PAYMENTS} element={<PaymentsListPage />} />
             <Route path={ROUTES.PAYMENT_DETAIL} element={<PaymentDetailPage />} />
             <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />

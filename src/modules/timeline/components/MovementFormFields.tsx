@@ -1,23 +1,25 @@
+import { Controller } from 'react-hook-form'
 import { InputAdornment, MenuItem, TextField } from '@mui/material'
-import { MovementType } from '@/typings/domain/enums'
+import { CategoryKind, MovementType } from '@/typings/domain/enums'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
-import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { selectAllMembers } from '@/store/household/householdSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
+import { CategoryField } from '@/components/shared/CategoryField'
 import type { MovementFormFieldsProps } from '../typings/props'
 
 export function MovementFormFields({
   register,
+  control,
   errors,
   type
 }: MovementFormFieldsProps): React.JSX.Element {
   const accounts = useAppSelector(selectAllAccounts)
-  const categories = useAppSelector(selectAllCategories)
   const members = useAppSelector(selectAllMembers)
   const isTransfer = type === MovementType.TRANSFER
+  const categoryKind = type === MovementType.INCOME ? CategoryKind.INCOME : CategoryKind.EXPENSE
 
   return (
     <>
@@ -40,19 +42,20 @@ export function MovementFormFields({
       />
 
       {!isTransfer && (
-        <TextField
-          label="Concepto de pago"
-          select
-          {...register('categoryId')}
-          error={Boolean(errors.categoryId)}
-          helperText={errors.categoryId?.message}
-        >
-          {categories.map((category) => (
-            <MenuItem key={category.id} value={category.id}>
-              {category.name}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Controller
+          name="categoryId"
+          control={control}
+          render={({ field }) => (
+            <CategoryField
+              kind={categoryKind}
+              label="Concepto de pago"
+              value={field.value ?? ''}
+              onChange={field.onChange}
+              error={Boolean(errors.categoryId)}
+              helperText={errors.categoryId?.message}
+            />
+          )}
+        />
       )}
 
       <TextField

@@ -93,7 +93,7 @@ export function buildDemoVaultFile(): VaultFile {
     categories: [
       { id: CATEGORY_SERVICIOS, name: 'Servicios', kind: CategoryKind.EXPENSE },
       { id: CATEGORY_VIVIENDA, name: 'Alquiler o vivienda', kind: CategoryKind.EXPENSE },
-      { id: CATEGORY_SUPER, name: 'Súper', kind: CategoryKind.EXPENSE },
+      { id: CATEGORY_SUPER, name: 'Supermercado', kind: CategoryKind.EXPENSE },
       { id: CATEGORY_TRANSPORTE, name: 'Transporte', kind: CategoryKind.EXPENSE },
       { id: CATEGORY_SALUD, name: 'Salud', kind: CategoryKind.EXPENSE },
       { id: CATEGORY_COLEGIO, name: 'Colegio', kind: CategoryKind.EXPENSE },

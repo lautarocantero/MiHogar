@@ -5,7 +5,7 @@ import type { Category } from '@/typings/domain/types'
 const DEFAULT_EXPENSE_CATEGORY_NAMES = [
   'Servicios',
   'Alquiler o vivienda',
-  'Súper',
+  'Supermercado',
   'Transporte',
   'Salud',
   'Otros gastos'

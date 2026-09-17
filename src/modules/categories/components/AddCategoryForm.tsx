@@ -1,22 +1,22 @@
 import { Alert, Box, Button, Stack, TextField } from '@mui/material'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { addMemberFormSchema } from '@/validation/addMemberFormSchema'
-import type { AddMemberFormProps } from '../typings/props'
-import type { AddMemberFormValues } from '../typings/types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { addCategoryFormSchema } from '@/validation/addCategoryFormSchema'
+import type { AddCategoryFormProps } from '../typings/props'
+import type { AddCategoryFormValues } from '../typings/types'
 
-export function AddMemberForm({
+export function AddCategoryForm({
   onSubmit,
   onCancel,
   isSubmitting,
   errorMessage
-}: AddMemberFormProps): React.JSX.Element {
+}: AddCategoryFormProps): React.JSX.Element {
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<AddMemberFormValues>({
-    resolver: yupResolver(addMemberFormSchema),
+  } = useForm<AddCategoryFormValues>({
+    resolver: zodResolver(addCategoryFormSchema),
     defaultValues: { name: '' }
   })
 

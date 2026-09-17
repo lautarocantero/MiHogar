@@ -14,3 +14,9 @@ export enum PaymentMethodFilter {
   CASH = 'CASH',
   CREDIT_CARD = 'CREDIT_CARD'
 }
+
+export enum PaymentTypeFilter {
+  ALL = 'ALL',
+  RECURRING = 'RECURRING',
+  ONE_OFF = 'ONE_OFF'
+}

@@ -20,6 +20,7 @@ import type { AddSavingsFormValues } from '../typings/types'
 
 export function AddSavingsForm({
   onSubmit,
+  onCancel,
   isSubmitting,
   errorMessage
 }: AddSavingsFormProps): React.JSX.Element {
@@ -132,15 +133,14 @@ export function AddSavingsForm({
           )}
         </Grid>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          disabled={isSubmitting}
-          sx={{ alignSelf: 'flex-start' }}
-        >
-          {isSubmitting ? 'Guardando…' : 'Agregar el ahorro'}
-        </Button>
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+            {isSubmitting ? 'Guardando…' : 'Agregar el ahorro'}
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   )

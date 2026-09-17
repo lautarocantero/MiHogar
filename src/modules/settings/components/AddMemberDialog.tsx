@@ -26,7 +26,12 @@ export function AddMemberDialog({
         Agregar quién usa la app
       </DialogHeader>
       <DialogContent>
-        <AddMemberForm onSubmit={submit} isSubmitting={isSubmitting} errorMessage={errorMessage} />
+        <AddMemberForm
+          onSubmit={submit}
+          onCancel={onClose}
+          isSubmitting={isSubmitting}
+          errorMessage={errorMessage}
+        />
       </DialogContent>
     </Dialog>
   )

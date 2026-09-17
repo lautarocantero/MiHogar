@@ -24,6 +24,7 @@ export type AccountFormFieldsProps = {
 
 export type AddAccountFormProps = {
   onSubmit: (values: AddAccountFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }
@@ -36,6 +37,7 @@ export type AddAccountDialogProps = {
 export type EditAccountFormProps = {
   account: Account
   onSubmit: (values: AddAccountFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }

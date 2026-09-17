@@ -9,6 +9,7 @@ import type { AddAccountFormValues } from '../typings/types'
 
 export function AddAccountForm({
   onSubmit,
+  onCancel,
   isSubmitting,
   errorMessage
 }: AddAccountFormProps): React.JSX.Element {
@@ -51,15 +52,14 @@ export function AddAccountForm({
           selectedOwnerType={selectedOwnerType}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          disabled={isSubmitting}
-          sx={{ alignSelf: 'flex-start' }}
-        >
-          {isSubmitting ? 'Guardando…' : 'Agregar la cuenta'}
-        </Button>
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+            {isSubmitting ? 'Guardando…' : 'Agregar la cuenta'}
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   )

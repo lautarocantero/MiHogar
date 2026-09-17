@@ -27,6 +27,7 @@ export function AddPaymentDialog({
         <AddPaymentForm
           kind={kind}
           onSubmit={submit}
+          onCancel={onClose}
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
         />

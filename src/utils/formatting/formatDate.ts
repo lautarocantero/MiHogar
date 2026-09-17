@@ -24,6 +24,19 @@ export function formatDueLabel(isoDate: string, verb: string = 'Vence'): string 
   return `${verb} el ${format(date, "d 'de' MMMM", { locale: es })}`
 }
 
+export function formatRelativeDaysLabel(isoDate: string, referenceDate: Date = new Date()): string {
+  const date = parseISO(isoDate)
+  const daysDiff = differenceInCalendarDays(date, referenceDate)
+  if (daysDiff === 0) {
+    return 'Hoy'
+  }
+  if (daysDiff > 0) {
+    return `Faltan ${daysDiff} día${daysDiff === 1 ? '' : 's'}`
+  }
+  const daysAgo = Math.abs(daysDiff)
+  return `Hace ${daysAgo} día${daysAgo === 1 ? '' : 's'}`
+}
+
 export function formatDaysRemainingLabel(isoDate: string): string {
   const date = parseISO(isoDate)
   if (isToday(date)) {

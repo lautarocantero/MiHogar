@@ -38,7 +38,7 @@ export function TimelineEntryCard({
   const comesFromPayment = Boolean(movement.paymentId)
 
   return (
-    <Stack direction="row" spacing={2} component="li" sx={{ listStyle: 'none' }}>
+    <Stack direction="row" spacing={2}>
       <Box width={64} textAlign="center" flexShrink={0}>
         <Typography variant="body2" color={isPast ? 'text.secondary' : 'text.primary'}>
           {shortDate}

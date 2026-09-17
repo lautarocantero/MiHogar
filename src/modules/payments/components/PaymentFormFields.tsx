@@ -11,10 +11,10 @@ import {
 } from '@/typings/domain/enums'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
-import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
 import { computeNextClosingDate } from '@/utils/domain/computeNextClosingDate'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
+import { CategoryField } from '@/components/shared/CategoryField'
 import { NumberField } from '@/components/shared/NumberField'
 import type { PaymentFormFieldsProps } from '../typings/props'
 
@@ -33,11 +33,8 @@ export function PaymentFormFields({
   onToggleInstallments
 }: PaymentFormFieldsProps): React.JSX.Element {
   const accounts = useAppSelector(selectAllAccounts)
-  const allCategories = useAppSelector(selectAllCategories)
   const isDeposit = kind === PaymentKind.DEPOSIT
-  const categories = allCategories.filter(
-    (category) => category.kind === (isDeposit ? CategoryKind.INCOME : CategoryKind.EXPENSE)
-  )
+  const categoryKind = isDeposit ? CategoryKind.INCOME : CategoryKind.EXPENSE
   const selectedAccountId = useWatch({ control, name: 'accountId' })
   const selectedAccount = accounts.find((account) => account.id === selectedAccountId)
   const isCardPayment = selectedAccount?.type === AccountType.CREDIT_CARD
@@ -109,22 +106,14 @@ export function PaymentFormFields({
           name="categoryId"
           control={control}
           render={({ field }) => (
-            <TextField
-              fullWidth
+            <CategoryField
+              kind={categoryKind}
               label="Categoría"
-              select
               value={field.value ?? ''}
               onChange={field.onChange}
-              onBlur={field.onBlur}
               error={Boolean(errors.categoryId)}
               helperText={errors.categoryId?.message}
-            >
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
           )}
         />
       </Grid>

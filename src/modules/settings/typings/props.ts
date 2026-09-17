@@ -9,6 +9,7 @@ export type HouseholdKeyFormProps = {
 
 export type AddMemberFormProps = {
   onSubmit: (values: AddMemberFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }

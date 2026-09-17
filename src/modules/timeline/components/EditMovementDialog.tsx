@@ -26,6 +26,7 @@ export function EditMovementDialog({
         <EditMovementForm
           movement={movement}
           onSubmit={submit}
+          onCancel={onClose}
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
         />

@@ -1,7 +1,6 @@
 export const ROUTES = {
   HOME: '/',
   CALENDAR: '/calendario',
-  TIMELINE: '/linea-de-tiempo',
   PAYMENTS: '/pagos',
   PAYMENT_DETAIL: '/pagos/:paymentId',
   ACCOUNTS: '/cuentas',

@@ -27,7 +27,12 @@ const EVENT_STYLES: Record<
 
 const MAX_VISIBLE_EVENTS = 2
 
-export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
+export function MonthGridCell({
+  day,
+  isSelected,
+  isHighlighted,
+  onSelect
+}: MonthGridCellProps): React.JSX.Element {
   const hasFinalInstallment = day.events.some((event) => event.isFinalInstallment)
   const primaryEvent = day.events[0] ?? null
   const eventStyle = primaryEvent ? EVENT_STYLES[primaryEvent.kind] : null
@@ -37,10 +42,20 @@ export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
   const cell = (
     <Box
       component={day.events.length > 0 ? 'article' : 'div'}
+      role="button"
+      tabIndex={0}
+      onClick={onSelect}
+      onKeyDown={(event: React.KeyboardEvent) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onSelect()
+        }
+      }}
+      aria-pressed={isSelected}
       aria-label={
         day.events.length > 0
           ? `Día ${day.dayOfMonth}, ${day.events.length} evento(s), total ${formatCurrency(day.events.reduce((sum, e) => sum + e.amount, 0))}`
-          : undefined
+          : `Día ${day.dayOfMonth}`
       }
       sx={{
         aspectRatio: '1 / 1',
@@ -49,6 +64,7 @@ export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
         display: 'flex',
         flexDirection: 'column',
         gap: 0.5,
+        cursor: 'pointer',
         backgroundColor: day.isToday
           ? organicColors.blue.tint
           : (eventStyle?.background ?? organicColors.surface),
@@ -57,8 +73,15 @@ export function MonthGridCell({ day }: MonthGridCellProps): React.JSX.Element {
           : day.isToday
             ? `3px solid ${organicColors.blue.main}`
             : `1px solid ${eventStyle?.border ?? organicColors.neutral.border}`,
-        boxShadow: day.isToday ? `0 0 0 2px ${organicColors.blue.tint}` : 'none',
-        opacity: !day.isCurrentMonth ? 0.4 : day.isPast ? 0.55 : 1
+        boxShadow: isHighlighted
+          ? `0 0 0 3px ${organicColors.brown.main}`
+          : isSelected
+            ? `0 0 0 2px ${organicColors.blue.main}`
+            : day.isToday
+              ? `0 0 0 2px ${organicColors.blue.tint}`
+              : 'none',
+        opacity: !day.isCurrentMonth ? 0.4 : day.isPast ? 0.55 : 1,
+        transition: 'box-shadow 0.15s ease'
       }}
     >
       <Typography

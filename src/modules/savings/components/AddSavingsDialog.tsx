@@ -19,7 +19,12 @@ export function AddSavingsDialog({ open, onClose }: AddSavingsDialogProps): Reac
         Agregar un ahorro
       </DialogHeader>
       <DialogContent>
-        <AddSavingsForm onSubmit={submit} isSubmitting={isSubmitting} errorMessage={errorMessage} />
+        <AddSavingsForm
+          onSubmit={submit}
+          onCancel={onClose}
+          isSubmitting={isSubmitting}
+          errorMessage={errorMessage}
+        />
       </DialogContent>
     </Dialog>
   )

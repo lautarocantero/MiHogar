@@ -2,7 +2,12 @@ import { Box } from '@mui/material'
 import { MonthGridCell } from './MonthGridCell'
 import type { MonthGridProps } from '../typings/props'
 
-export function MonthGrid({ weeks }: MonthGridProps): React.JSX.Element {
+export function MonthGrid({
+  weeks,
+  selectedDate,
+  highlightedDate,
+  onSelectDate
+}: MonthGridProps): React.JSX.Element {
   return (
     <Box
       component="table"
@@ -20,7 +25,12 @@ export function MonthGrid({ weeks }: MonthGridProps): React.JSX.Element {
                 role="gridcell"
                 sx={{ width: '14.28%', p: 0.5 }}
               >
-                <MonthGridCell day={day} />
+                <MonthGridCell
+                  day={day}
+                  isSelected={day.isoDate === selectedDate}
+                  isHighlighted={day.isoDate === highlightedDate}
+                  onSelect={() => onSelectDate(day.isoDate)}
+                />
               </Box>
             ))}
           </Box>

@@ -16,12 +16,32 @@ export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
 
   const chooseType = useCallback((type: MovementType) => {
     setSelectedType(type)
+    setStep(
+      type === MovementType.TRANSFER
+        ? QuickAddStep.AMOUNT_AND_DETAILS
+        : QuickAddStep.CHOOSE_FREQUENCY
+    )
+  }, [])
+
+  const chooseOneOff = useCallback(() => {
     setStep(QuickAddStep.AMOUNT_AND_DETAILS)
   }, [])
 
-  const goBackToChooseType = useCallback(() => {
-    setStep(QuickAddStep.CHOOSE_TYPE)
+  const chooseRecurring = useCallback(() => {
+    setStep(QuickAddStep.RECURRING_DETAILS)
   }, [])
+
+  const goBack = useCallback(() => {
+    setStep((currentStep) => {
+      if (currentStep === QuickAddStep.CHOOSE_FREQUENCY) {
+        return QuickAddStep.CHOOSE_TYPE
+      }
+      if (selectedType === MovementType.TRANSFER) {
+        return QuickAddStep.CHOOSE_TYPE
+      }
+      return QuickAddStep.CHOOSE_FREQUENCY
+    })
+  }, [selectedType])
 
   const submit = useCallback(
     (values: QuickAddFormValues) => {
@@ -48,11 +68,13 @@ export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
 
   return {
     step,
+    selectedType,
     chooseType,
-    goBackToChooseType,
+    chooseOneOff,
+    chooseRecurring,
+    goBack,
     submit,
     isSubmitting: isLoading,
-    errorMessage: error,
-    selectedType
+    errorMessage: error
   }
 }

@@ -49,7 +49,7 @@ export function AppHeader({ onOpenQuickAdd }: AppHeaderProps): React.JSX.Element
           startIcon={<AttachMoneyIcon />}
           onClick={onOpenQuickAdd}
         >
-          Anotar movimiento
+          Nuevo movimiento
         </Button>
       </Toolbar>
     </AppBar>

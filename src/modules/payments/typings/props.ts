@@ -1,19 +1,32 @@
 import type { Control, FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form'
-import type { Payment } from '@/typings/domain/types'
+import type { Movement, Payment } from '@/typings/domain/types'
 import type { AmountMode, OwnerType, PaymentKind } from '@/typings/domain/enums'
-import type { PaymentFilter, PaymentMethodFilter } from './enums'
 import type {
   AddPaymentFormValues,
   EditCredentialsFormValues,
   PaymentHistoryData,
   PaymentView,
+  UnifiedEntry,
   UnlockCredentialsFormValues
 } from './types'
 
-export type PaymentRowProps = {
-  payment: PaymentView
-  onEdit: () => void
-  onDelete: () => void
+export type PaymentsTableProps = {
+  entries: UnifiedEntry[]
+  focusEntryId: string | null
+  onEditPayment: (payment: PaymentView) => void
+  onDeletePayment: (payment: PaymentView) => void
+  onEditMovement: (movement: Movement) => void
+  onDeleteMovement: (movement: Movement) => void
+}
+
+export type PaymentTableRowProps = {
+  entry: UnifiedEntry
+  isFocused: boolean
+  rowRef: (node: HTMLTableRowElement | null) => void
+  onEditPayment: (payment: PaymentView) => void
+  onDeletePayment: (payment: PaymentView) => void
+  onEditMovement: (movement: Movement) => void
+  onDeleteMovement: (movement: Movement) => void
 }
 
 export type PaymentFormFieldsProps = {
@@ -32,6 +45,7 @@ export type PaymentFormFieldsProps = {
 export type EditPaymentFormProps = {
   payment: Payment
   onSubmit: (values: AddPaymentFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }
@@ -49,22 +63,11 @@ export type DeletePaymentDialogProps = {
   onDeleted: () => void
 }
 
-export type PaymentFilterPillsProps = {
-  activeFilter: PaymentFilter
-  pendingCount: number
-  paidCount: number
-  totalCount: number
-  onChange: (filter: PaymentFilter) => void
-}
-
-export type PaymentMethodPillsProps = {
-  activeMethod: PaymentMethodFilter
-  onChange: (method: PaymentMethodFilter) => void
-}
-
 export type AddPaymentFormProps = {
   kind: PaymentKind
   onSubmit: (values: AddPaymentFormValues) => void
+  onCancel: () => void
+  cancelLabel?: string
   isSubmitting: boolean
   errorMessage: string | null
 }
@@ -109,6 +112,7 @@ export type PaymentHistoryCardProps = {
 export type EditCredentialsFormProps = {
   payment: PaymentView
   onSubmit: (values: EditCredentialsFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }

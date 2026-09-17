@@ -26,6 +26,7 @@ export function EditAccountDialog({
         <EditAccountForm
           account={account}
           onSubmit={submit}
+          onCancel={onClose}
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
         />

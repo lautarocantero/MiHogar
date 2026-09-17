@@ -48,7 +48,7 @@ export function HomePage(): React.JSX.Element {
         <RecentMovementsList movements={recentMovements} />
         <MuiLink
           component={RouterLink}
-          to={ROUTES.TIMELINE}
+          to={ROUTES.CALENDAR}
           sx={{ display: 'inline-block', mt: 2 }}
         >
           Ver toda la línea de tiempo →

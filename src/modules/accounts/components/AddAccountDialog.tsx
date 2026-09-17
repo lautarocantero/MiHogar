@@ -19,7 +19,12 @@ export function AddAccountDialog({ open, onClose }: AddAccountDialogProps): Reac
         Agregar una cuenta
       </DialogHeader>
       <DialogContent>
-        <AddAccountForm onSubmit={submit} isSubmitting={isSubmitting} errorMessage={errorMessage} />
+        <AddAccountForm
+          onSubmit={submit}
+          onCancel={onClose}
+          isSubmitting={isSubmitting}
+          errorMessage={errorMessage}
+        />
       </DialogContent>
     </Dialog>
   )

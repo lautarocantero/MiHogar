@@ -1,4 +1,3 @@
-import type { Payment } from '@/typings/domain/types'
 import type { CalendarEventKind } from './enums'
 
 export type CalendarDayEvent = {
@@ -23,11 +22,6 @@ export type MonthlyProgress = {
   progressPercent: number
 }
 
-export type CalendarPayment = Payment & {
-  accountName: string
-  displayDate: string
-}
-
 export type FinalInstallmentSummary = {
   concept: string
   daysUntil: number
@@ -37,6 +31,5 @@ export type CalendarData = {
   weeks: CalendarDay[][]
   monthLabel: string
   progress: MonthlyProgress
-  monthPayments: CalendarPayment[]
   finalInstallmentPayments: FinalInstallmentSummary[]
 }

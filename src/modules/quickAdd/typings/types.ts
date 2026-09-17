@@ -7,10 +7,12 @@ export type QuickAddFormValues = z.infer<typeof quickAddFormSchema>
 
 export type UseQuickAddFormResult = {
   step: QuickAddStep
+  selectedType: MovementType | null
   chooseType: (type: MovementType) => void
-  goBackToChooseType: () => void
+  chooseOneOff: () => void
+  chooseRecurring: () => void
+  goBack: () => void
   submit: (values: QuickAddFormValues) => void
   isSubmitting: boolean
   errorMessage: string | null
-  selectedType: MovementType | null
 }

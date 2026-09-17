@@ -93,10 +93,6 @@ export function useCalendarData(monthOffset = 0): CalendarData {
       .filter((payment) => payment.status === PaymentStatus.PAID)
       .reduce((total, payment) => total + payment.amount, 0)
 
-    const monthPayments = paymentsThisMonth
-      .filter((payment) => payment.status === PaymentStatus.PENDING)
-      .sort((a, b) => a.displayDate.localeCompare(b.displayDate))
-
     const finalInstallmentPayments: FinalInstallmentSummary[] = paymentsThisMonth
       .filter((payment) => isFinalInstallmentPayment(payment))
       .map((payment) => ({
@@ -114,7 +110,6 @@ export function useCalendarData(monthOffset = 0): CalendarData {
         paidSoFar,
         progressPercent: totalDue > 0 ? Math.min(100, Math.round((paidSoFar / totalDue) * 100)) : 0
       },
-      monthPayments,
       finalInstallmentPayments
     }
   }, [payments, movements, accounts, categories, monthOffset])

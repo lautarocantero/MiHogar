@@ -11,6 +11,7 @@ import type { AddPaymentFormValues } from '../typings/types'
 export function EditPaymentForm({
   payment,
   onSubmit,
+  onCancel,
   isSubmitting,
   errorMessage
 }: EditPaymentFormProps): React.JSX.Element {
@@ -72,15 +73,14 @@ export function EditPaymentForm({
           onToggleInstallments={toggleInstallments}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          disabled={isSubmitting}
-          sx={{ alignSelf: 'flex-start' }}
-        >
-          {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
-        </Button>
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+            {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   )

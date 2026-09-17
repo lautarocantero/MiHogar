@@ -26,6 +26,7 @@ export function EditPaymentDialog({
         <EditPaymentForm
           payment={payment}
           onSubmit={submit}
+          onCancel={onClose}
           isSubmitting={isSubmitting}
           errorMessage={errorMessage}
         />

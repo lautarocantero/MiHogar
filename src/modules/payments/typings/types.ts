@@ -1,10 +1,10 @@
 import type { z } from 'zod'
 import type { Movement, Payment } from '@/typings/domain/types'
-import type { AccountType } from '@/typings/domain/enums'
+import type { AccountType, AmountMode, PaymentStatus } from '@/typings/domain/enums'
 import type { addPaymentFormSchema } from '@/validation/addPaymentFormSchema'
 import type { unlockFormSchema } from '@/validation/unlockFormSchema'
 import type { editCredentialsFormSchema } from '@/validation/editCredentialsFormSchema'
-import type { PaymentFilter, PaymentMethodFilter, PaymentSortBy } from './enums'
+import type { PaymentFilter, PaymentMethodFilter, PaymentSortBy, PaymentTypeFilter } from './enums'
 
 export type PaymentView = Payment & {
   accountName: string
@@ -13,6 +13,31 @@ export type PaymentView = Payment & {
   categoryName: string
   displayDate: string
 }
+
+export type PaymentOriginEntry = PaymentView & { origin: 'payment'; isPast: boolean }
+
+export type MovementOriginEntry = {
+  origin: 'movement'
+  id: string
+  amount: number
+  displayDate: string
+  status: PaymentStatus
+  accountType?: AccountType
+  accountName: string
+  ownerLabel: string
+  categoryName: string
+  recurring: false
+  amountMode?: AmountMode
+  movement: Movement
+  concept: string
+  detail: string
+  isEstimated: boolean
+  isPast: boolean
+}
+
+export type UnifiedEntry = PaymentOriginEntry | MovementOriginEntry
+
+export type FilterOption = { value: string; label: string }
 
 export type UnlockCredentialsFormValues = z.infer<typeof unlockFormSchema>
 
@@ -89,7 +114,18 @@ export type UsePaymentFiltersResult = {
   setSortBy: (sortBy: PaymentSortBy) => void
   methodFilter: PaymentMethodFilter
   setMethodFilter: (filter: PaymentMethodFilter) => void
-  filteredPayments: PaymentView[]
+  typeFilter: PaymentTypeFilter
+  setTypeFilter: (filter: PaymentTypeFilter) => void
+  accountFilter: string
+  setAccountFilter: (filter: string) => void
+  categoryFilter: string
+  setCategoryFilter: (filter: string) => void
+  ownerFilter: string
+  setOwnerFilter: (filter: string) => void
+  accountOptions: FilterOption[]
+  categoryOptions: FilterOption[]
+  ownerOptions: FilterOption[]
+  filteredEntries: UnifiedEntry[]
   pendingCount: number
   paidCount: number
   totalCount: number

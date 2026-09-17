@@ -10,6 +10,7 @@ export type SavingsInstrumentRowProps = {
 
 export type AddSavingsFormProps = {
   onSubmit: (values: AddSavingsFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }

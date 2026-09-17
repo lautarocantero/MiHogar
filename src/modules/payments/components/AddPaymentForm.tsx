@@ -11,6 +11,8 @@ import type { AddPaymentFormValues } from '../typings/types'
 export function AddPaymentForm({
   kind,
   onSubmit,
+  onCancel,
+  cancelLabel = 'Cancelar',
   isSubmitting,
   errorMessage
 }: AddPaymentFormProps): React.JSX.Element {
@@ -70,19 +72,18 @@ export function AddPaymentForm({
           onToggleInstallments={toggleInstallments}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          disabled={isSubmitting}
-          sx={{ alignSelf: 'flex-start' }}
-        >
-          {isSubmitting
-            ? 'Guardando…'
-            : kind === PaymentKind.DEPOSIT
-              ? 'Agregar el depósito'
-              : 'Agregar el pago'}
-        </Button>
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
+            {cancelLabel}
+          </Button>
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+            {isSubmitting
+              ? 'Guardando…'
+              : kind === PaymentKind.DEPOSIT
+                ? 'Agregar el depósito'
+                : 'Agregar el pago'}
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   )

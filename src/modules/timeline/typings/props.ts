@@ -1,4 +1,4 @@
-import type { FieldErrors, UseFormRegister } from 'react-hook-form'
+import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
 import type { FlowSummary, Movement } from '@/typings/domain/types'
 import type { MovementType } from '@/typings/domain/enums'
 import type { QuickAddFormValues } from '@/modules/quickAdd/typings/types'
@@ -16,6 +16,7 @@ export type TimelineEntryCardProps = {
 
 export type MovementFormFieldsProps = {
   register: UseFormRegister<QuickAddFormValues>
+  control: Control<QuickAddFormValues>
   errors: FieldErrors<QuickAddFormValues>
   type: MovementType
 }
@@ -23,6 +24,7 @@ export type MovementFormFieldsProps = {
 export type EditMovementFormProps = {
   movement: Movement
   onSubmit: (values: QuickAddFormValues) => void
+  onCancel: () => void
   isSubmitting: boolean
   errorMessage: string | null
 }

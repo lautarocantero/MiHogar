@@ -17,6 +17,7 @@ export function StepAmountAndDetails({
 }: StepAmountAndDetailsProps): React.JSX.Element {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors }
   } = useForm<QuickAddFormValues>({
@@ -34,15 +35,15 @@ export function StepAmountAndDetails({
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
       <Stack spacing={3}>
-        <MovementFormFields register={register} errors={errors} type={type} />
+        <MovementFormFields register={register} control={control} errors={errors} type={type} />
 
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
-        <Stack direction="row" spacing={2}>
-          <Button variant="outlined" size="large" onClick={onBack} fullWidth>
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" size="large" onClick={onBack} disabled={isSubmitting}>
             Cancelar
           </Button>
-          <Button type="submit" variant="contained" size="large" fullWidth disabled={isSubmitting}>
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
             {isSubmitting ? 'Guardando…' : 'Guardar el movimiento'}
           </Button>
         </Stack>

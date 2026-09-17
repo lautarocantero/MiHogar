@@ -13,11 +13,13 @@ const MOVEMENT_TYPES = [MovementType.EXPENSE, MovementType.INCOME, MovementType.
 export function EditMovementForm({
   movement,
   onSubmit,
+  onCancel,
   isSubmitting,
   errorMessage
 }: EditMovementFormProps): React.JSX.Element {
   const {
     register,
+    control,
     handleSubmit,
     watch,
     formState: { errors }
@@ -46,11 +48,21 @@ export function EditMovementForm({
             </MenuItem>
           ))}
         </TextField>
-        <MovementFormFields register={register} errors={errors} type={selectedType} />
+        <MovementFormFields
+          register={register}
+          control={control}
+          errors={errors}
+          type={selectedType}
+        />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-          {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
-        </Button>
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+            {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
+          </Button>
+        </Stack>
       </Stack>
     </Box>
   )
