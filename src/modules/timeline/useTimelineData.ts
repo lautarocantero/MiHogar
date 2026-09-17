@@ -8,12 +8,13 @@ import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveMovementConcept } from '@/utils/domain/resolveMovementConcept'
 import { resolveMovementDetail } from '@/utils/domain/resolveMovementDetail'
 import { computeFlowSummary } from '@/utils/domain/computeFlowSummary'
-import type { TimelineData } from './typings/types'
+import type { TimelineData, TimelineRange } from './typings/types'
 
 const WINDOW_DAYS_PAST = 30
 const WINDOW_DAYS_FUTURE = 15
+const DEFAULT_RANGE: TimelineRange = { from: null, to: null }
 
-export function useTimelineData(): TimelineData {
+export function useTimelineData(range: TimelineRange = DEFAULT_RANGE): TimelineData {
   const movements = useAppSelector(selectAllMovements)
   const accounts = useAppSelector(selectAllAccounts)
   const payments = useAppSelector(selectAllPayments)
@@ -21,10 +22,17 @@ export function useTimelineData(): TimelineData {
 
   return useMemo(() => {
     const today = new Date()
-    const windowedMovements = movements.filter((movement) => {
-      const daysFromToday = differenceInCalendarDays(parseISO(movement.date), today)
-      return daysFromToday >= -WINDOW_DAYS_PAST && daysFromToday <= WINDOW_DAYS_FUTURE
-    })
+    const windowedMovements = movements
+      .filter((movement) => {
+        if (range.from || range.to) {
+          const isAfterFrom = !range.from || movement.date >= range.from
+          const isBeforeTo = !range.to || movement.date <= range.to
+          return isAfterFrom && isBeforeTo
+        }
+        const daysFromToday = differenceInCalendarDays(parseISO(movement.date), today)
+        return daysFromToday >= -WINDOW_DAYS_PAST && daysFromToday <= WINDOW_DAYS_FUTURE
+      })
+      .sort((a, b) => a.date.localeCompare(b.date))
 
     const entries = windowedMovements.map((movement) => {
       const daysFromToday = differenceInCalendarDays(parseISO(movement.date), today)
@@ -41,5 +49,5 @@ export function useTimelineData(): TimelineData {
       summary: computeFlowSummary(windowedMovements),
       entries
     }
-  }, [movements, accounts, payments, categories])
+  }, [movements, accounts, payments, categories, range.from, range.to])
 }

@@ -16,7 +16,17 @@ export function useMarkPaymentAsPaid(payment: PaymentView | null): UseMarkPaymen
     }
     run(async () => {
       const today = new Date().toISOString().slice(0, 10)
-      dispatch(updatePayment({ ...payment, status: PaymentStatus.PAID }))
+      const nextInstallmentsPaid =
+        typeof payment.installmentsTotal === 'number'
+          ? Math.min((payment.installmentsPaid ?? 0) + 1, payment.installmentsTotal)
+          : payment.installmentsPaid
+      dispatch(
+        updatePayment({
+          ...payment,
+          status: PaymentStatus.PAID,
+          installmentsPaid: nextInstallmentsPaid
+        })
+      )
       await dispatch(
         recordMovementThunk({
           type: payment.kind === PaymentKind.DEPOSIT ? MovementType.INCOME : MovementType.EXPENSE,

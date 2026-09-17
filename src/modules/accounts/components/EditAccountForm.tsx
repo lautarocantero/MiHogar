@@ -27,9 +27,13 @@ export function EditAccountForm({
       ownerId: account.ownerId ?? '',
       balance: account.balance,
       contextPhrase: account.contextPhrase ?? '',
+      sourceAccountId: account.sourceAccountId ?? '',
+      creditLimit: account.creditLimit,
+      usedAmount: account.usedAmount,
       closingDay: account.closingDay,
       dueDay: account.dueDay,
-      installmentsRemaining: account.installmentsRemaining
+      nextClosingDay: account.nextClosingDay,
+      nextDueDay: account.nextDueDay
     }
   })
 
@@ -47,7 +51,13 @@ export function EditAccountForm({
           selectedOwnerType={selectedOwnerType}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={isSubmitting}
+          sx={{ alignSelf: 'flex-start' }}
+        >
           {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
         </Button>
       </Stack>

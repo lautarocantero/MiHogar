@@ -5,3 +5,9 @@ export type MemberOwnerFieldProps = {
   helperText?: string
   label?: string
 }
+
+export type DialogHeaderProps = {
+  id?: string
+  onClose: () => void
+  children: React.ReactNode
+}

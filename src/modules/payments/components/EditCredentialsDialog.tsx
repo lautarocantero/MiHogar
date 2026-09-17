@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { EditCredentialsForm } from './EditCredentialsForm'
 import { useUpdateCredentials } from '../useUpdateCredentials'
 import type { EditCredentialsDialogProps } from '../typings/props'
@@ -18,7 +19,9 @@ export function EditCredentialsDialog({
       maxWidth="sm"
       aria-labelledby="edit-credentials-title"
     >
-      <DialogTitle id="edit-credentials-title">Datos para entrar</DialogTitle>
+      <DialogHeader id="edit-credentials-title" onClose={onClose}>
+        Datos para entrar
+      </DialogHeader>
       <DialogContent>
         <EditCredentialsForm
           payment={payment}

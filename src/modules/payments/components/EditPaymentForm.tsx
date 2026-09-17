@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Alert, Box, Button, Stack } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,6 +19,7 @@ export function EditPaymentForm({
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors }
   } = useForm<AddPaymentFormValues>({
     resolver: zodResolver(addPaymentFormSchema),
@@ -32,6 +34,8 @@ export function EditPaymentForm({
       frequency: payment.frequency ?? PaymentFrequency.MONTHLY,
       dueDate: payment.dueDate,
       amount: payment.amount,
+      installmentsTotal: payment.installmentsTotal,
+      installmentsPaid: payment.installmentsPaid,
       kind: payment.kind ?? PaymentKind.EXPENSE,
       amountMode: payment.amountMode ?? AmountMode.FIXED
     }
@@ -40,6 +44,17 @@ export function EditPaymentForm({
   const selectedOwnerType = watch('ownerType')
   const isRecurring = watch('recurring')
   const selectedAmountMode = watch('amountMode')
+  const [hasInstallments, setHasInstallments] = useState(
+    typeof payment.installmentsTotal === 'number'
+  )
+
+  const toggleInstallments = (checked: boolean): void => {
+    setHasInstallments(checked)
+    if (!checked) {
+      setValue('installmentsTotal', undefined)
+      setValue('installmentsPaid', undefined)
+    }
+  }
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -47,14 +62,23 @@ export function EditPaymentForm({
         <PaymentFormFields
           register={register}
           control={control}
+          setValue={setValue}
           errors={errors}
           selectedOwnerType={selectedOwnerType}
           isRecurring={isRecurring}
           kind={payment.kind ?? PaymentKind.EXPENSE}
           selectedAmountMode={selectedAmountMode}
+          hasInstallments={hasInstallments}
+          onToggleInstallments={toggleInstallments}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={isSubmitting}
+          sx={{ alignSelf: 'flex-start' }}
+        >
           {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
         </Button>
       </Stack>

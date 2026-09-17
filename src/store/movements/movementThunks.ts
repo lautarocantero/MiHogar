@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 import type { RootState, AppDispatch } from '@/store'
 import type { Movement } from '@/typings/domain/types'
-import { MovementType } from '@/typings/domain/enums'
+import { AccountType, MovementType } from '@/typings/domain/enums'
 import { addMovement, movementsSelectors, removeMovement, updateMovement } from './movementsSlice'
 import { accountsSelectors, updateAccount } from '@/store/accounts/accountsSlice'
 
@@ -23,10 +23,16 @@ function applyMovementBalanceEffect(
   sign: 1 | -1
 ): void {
   const state = getState()
-  const sourceAccount = accountsSelectors.selectById(state.accounts, movement.accountId)
-  if (sourceAccount) {
+  const linkedAccount = accountsSelectors.selectById(state.accounts, movement.accountId)
+  const debitedAccount =
+    linkedAccount?.type === AccountType.CREDIT_CARD && linkedAccount.sourceAccountId
+      ? accountsSelectors.selectById(state.accounts, linkedAccount.sourceAccountId)
+      : linkedAccount
+  if (debitedAccount) {
     const baseDelta = movement.type === MovementType.INCOME ? movement.amount : -movement.amount
-    dispatch(updateAccount({ ...sourceAccount, balance: sourceAccount.balance + baseDelta * sign }))
+    dispatch(
+      updateAccount({ ...debitedAccount, balance: debitedAccount.balance + baseDelta * sign })
+    )
   }
 
   if (movement.type === MovementType.TRANSFER && movement.toAccountId) {

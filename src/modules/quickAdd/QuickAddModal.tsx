@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Chip, DialogContent, Dialog } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { QuickAddStep } from './typings/enums'
 import { StepChooseType } from './steps/StepChooseType'
 import { StepAmountAndDetails } from './steps/StepAmountAndDetails'
@@ -11,8 +12,15 @@ export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" aria-labelledby="quick-add-title">
-      <DialogTitle id="quick-add-title">Anotar movimiento</DialogTitle>
+      <DialogHeader id="quick-add-title" onClose={onClose}>
+        Anotar movimiento
+      </DialogHeader>
       <DialogContent>
+        <Chip
+          size="small"
+          label="Para gastos e ingresos puntuales. Para pagos fijos o recurrentes, usá Pagos y Servicios."
+          sx={{ mb: 2, height: 'auto', '& .MuiChip-label': { whiteSpace: 'normal', py: 0.5 } }}
+        />
         {step === QuickAddStep.CHOOSE_TYPE && <StepChooseType onChoose={chooseType} />}
         {step === QuickAddStep.AMOUNT_AND_DETAILS && selectedType && (
           <StepAmountAndDetails

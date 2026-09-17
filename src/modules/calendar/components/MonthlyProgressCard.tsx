@@ -5,7 +5,8 @@ import type { MonthlyProgressCardProps } from '../typings/props'
 
 export function MonthlyProgressCard({
   monthLabel,
-  progress
+  progress,
+  finalInstallmentPayments
 }: MonthlyProgressCardProps): React.JSX.Element {
   return (
     <Card sx={{ p: 3 }} elevation={0}>
@@ -33,6 +34,16 @@ export function MonthlyProgressCard({
           Ya pagaste {formatCurrency(progress.paidSoFar)} de los {formatCurrency(progress.totalDue)}{' '}
           del mes.
         </Typography>
+        {finalInstallmentPayments.map((entry) => (
+          <Typography
+            key={entry.concept}
+            variant="body2"
+            sx={{ color: organicColors.sage.dark, fontWeight: 600 }}
+          >
+            Faltan {entry.daysUntil} día{entry.daysUntil === 1 ? '' : 's'}: este mes terminás de
+            pagar {entry.concept} con tarjeta de crédito.
+          </Typography>
+        ))}
       </Stack>
     </Card>
   )

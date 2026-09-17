@@ -1,12 +1,5 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack
-} from '@mui/material'
+import { Alert, Button, Dialog, DialogActions, DialogContent, Stack } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { useAppSelector } from '@/store/hooks'
 import { selectMovementsByPaymentId } from '@/store/movements/movementsSelectors'
 import { useDeletePayment } from '../useDeletePayment'
@@ -29,7 +22,9 @@ export function DeletePaymentDialog({
       maxWidth="xs"
       aria-labelledby="delete-payment-title"
     >
-      <DialogTitle id="delete-payment-title">Eliminar &quot;{payment.concept}&quot;</DialogTitle>
+      <DialogHeader id="delete-payment-title" onClose={onClose}>
+        Eliminar &quot;{payment.concept}&quot;
+      </DialogHeader>
       <DialogContent>
         <Stack spacing={2}>
           {relatedMovements.length > 0 && (

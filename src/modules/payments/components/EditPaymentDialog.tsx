@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog, DialogContent } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { EditPaymentForm } from './EditPaymentForm'
 import { useUpdatePayment } from '../useUpdatePayment'
 import type { EditPaymentDialogProps } from '../typings/props'
@@ -15,10 +16,12 @@ export function EditPaymentDialog({
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="sm"
+      maxWidth="lg"
       aria-labelledby="edit-payment-title"
     >
-      <DialogTitle id="edit-payment-title">Editar pago</DialogTitle>
+      <DialogHeader id="edit-payment-title" onClose={onClose}>
+        Editar pago
+      </DialogHeader>
       <DialogContent>
         <EditPaymentForm
           payment={payment}

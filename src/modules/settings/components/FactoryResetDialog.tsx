@@ -6,11 +6,11 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Divider,
   FormControlLabel,
   Stack
 } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { useFactoryReset } from '../useFactoryReset'
 import { FactoryResetCategory } from '../typings/enums'
 import type { FactoryResetDialogProps } from '../typings/props'
@@ -57,7 +57,9 @@ export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): 
       maxWidth="xs"
       aria-labelledby="factory-reset-title"
     >
-      <DialogTitle id="factory-reset-title">Volver a estado de fábrica</DialogTitle>
+      <DialogHeader id="factory-reset-title" onClose={handleClose}>
+        Volver a estado de fábrica
+      </DialogHeader>
       <DialogContent>
         <Stack spacing={2}>
           <Alert severity="warning">

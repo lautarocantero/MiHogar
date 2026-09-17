@@ -12,7 +12,6 @@ export type AccountCardProps = {
 export type CreditCardInfoLineProps = {
   closingDay?: number
   dueDay?: number
-  installmentsRemaining?: number
 }
 
 export type AccountFormFieldsProps = {

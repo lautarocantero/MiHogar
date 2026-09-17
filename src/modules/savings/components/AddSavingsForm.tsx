@@ -8,11 +8,13 @@ import {
   Switch,
   TextField
 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addSavingsFormSchema } from '@/validation/addSavingsFormSchema'
 import { OwnerType } from '@/typings/domain/enums'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
+import { NumberField } from '@/components/shared/NumberField'
 import type { AddSavingsFormProps } from '../typings/props'
 import type { AddSavingsFormValues } from '../typings/types'
 
@@ -31,9 +33,9 @@ export function AddSavingsForm({
     resolver: zodResolver(addSavingsFormSchema),
     defaultValues: {
       name: '',
-      principal: 0,
-      monthlyInterestEstimate: 0,
-      rateAnnual: 0,
+      principal: undefined,
+      monthlyInterestEstimate: undefined,
+      rateAnnual: undefined,
       maturityDate: '',
       liquidAnytime: true,
       ownerType: OwnerType.HOUSEHOLD,
@@ -47,65 +49,96 @@ export function AddSavingsForm({
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
       <Stack spacing={3}>
-        <TextField
-          label="Nombre"
-          placeholder="Ej: Plazo fijo Banco Nación"
-          {...register('name')}
-          error={Boolean(errors.name)}
-          helperText={errors.name?.message}
-        />
-        <TextField
-          label="Monto guardado"
-          type="number"
-          {...register('principal')}
-          error={Boolean(errors.principal)}
-          helperText={errors.principal?.message}
-        />
-        <TextField
-          label="Interés estimado por mes (opcional)"
-          type="number"
-          {...register('monthlyInterestEstimate')}
-        />
-        <TextField
-          label="¿De quién es?"
-          select
-          {...register('ownerType')}
-          defaultValue={OwnerType.HOUSEHOLD}
-        >
-          <MenuItem value={OwnerType.HOUSEHOLD}>Del hogar</MenuItem>
-          <MenuItem value={OwnerType.MEMBER}>De un integrante</MenuItem>
-        </TextField>
-        {selectedOwnerType === OwnerType.MEMBER && (
-          <Controller
-            name="ownerId"
-            control={control}
-            render={({ field }) => (
-              <MemberOwnerField
-                value={field.value ?? ''}
-                onChange={field.onChange}
-                error={Boolean(errors.ownerId)}
-                helperText={errors.ownerId?.message}
-              />
-            )}
-          />
-        )}
-        <FormControlLabel
-          control={<Switch defaultChecked {...register('liquidAnytime')} />}
-          label="Podés sacarlo cuando quieras"
-        />
-        {!isLiquid && (
-          <>
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
-              label="Fecha de vencimiento"
-              type="date"
-              slotProps={{ inputLabel: { shrink: true } }}
-              {...register('maturityDate')}
+              fullWidth
+              label="Nombre"
+              placeholder="Ej: Plazo fijo Banco Nación"
+              {...register('name')}
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message}
             />
-            <TextField label="Tasa anual (%)" type="number" {...register('rateAnnual')} />
-          </>
-        )}
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <NumberField
+              fullWidth
+              label="Monto guardado"
+              {...register('principal', { valueAsNumber: true })}
+              error={Boolean(errors.principal)}
+              helperText={errors.principal?.message}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <NumberField
+              fullWidth
+              label="Interés estimado por mes (opcional)"
+              {...register('monthlyInterestEstimate', { valueAsNumber: true })}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
+            <TextField
+              fullWidth
+              label="¿De quién es?"
+              select
+              {...register('ownerType')}
+              defaultValue={OwnerType.HOUSEHOLD}
+            >
+              <MenuItem value={OwnerType.HOUSEHOLD}>Del hogar</MenuItem>
+              <MenuItem value={OwnerType.MEMBER}>De un integrante</MenuItem>
+            </TextField>
+          </Grid>
+          {selectedOwnerType === OwnerType.MEMBER && (
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="ownerId"
+                control={control}
+                render={({ field }) => (
+                  <MemberOwnerField
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                    error={Boolean(errors.ownerId)}
+                    helperText={errors.ownerId?.message}
+                  />
+                )}
+              />
+            </Grid>
+          )}
+          <Grid size={12}>
+            <FormControlLabel
+              control={<Switch defaultChecked {...register('liquidAnytime')} />}
+              label="Podés sacarlo cuando quieras"
+            />
+          </Grid>
+          {!isLiquid && (
+            <>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  label="Fecha de vencimiento"
+                  type="date"
+                  slotProps={{ inputLabel: { shrink: true } }}
+                  {...register('maturityDate')}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <NumberField
+                  fullWidth
+                  label="Tasa anual (%)"
+                  {...register('rateAnnual', { valueAsNumber: true })}
+                />
+              </Grid>
+            </>
+          )}
+        </Grid>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={isSubmitting}
+          sx={{ alignSelf: 'flex-start' }}
+        >
           {isSubmitting ? 'Guardando…' : 'Agregar el ahorro'}
         </Button>
       </Stack>

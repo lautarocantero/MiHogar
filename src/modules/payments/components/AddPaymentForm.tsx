@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Alert, Box, Button, Stack } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,6 +19,7 @@ export function AddPaymentForm({
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors }
   } = useForm<AddPaymentFormValues>({
     resolver: zodResolver(addPaymentFormSchema),
@@ -31,7 +33,9 @@ export function AddPaymentForm({
       recurring: true,
       frequency: PaymentFrequency.MONTHLY,
       dueDate: '',
-      amount: 0,
+      amount: undefined,
+      installmentsTotal: undefined,
+      installmentsPaid: undefined,
       kind,
       amountMode: AmountMode.FIXED
     }
@@ -40,6 +44,15 @@ export function AddPaymentForm({
   const selectedOwnerType = watch('ownerType')
   const isRecurring = watch('recurring')
   const selectedAmountMode = watch('amountMode')
+  const [hasInstallments, setHasInstallments] = useState(false)
+
+  const toggleInstallments = (checked: boolean): void => {
+    setHasInstallments(checked)
+    if (!checked) {
+      setValue('installmentsTotal', undefined)
+      setValue('installmentsPaid', undefined)
+    }
+  }
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -47,14 +60,23 @@ export function AddPaymentForm({
         <PaymentFormFields
           register={register}
           control={control}
+          setValue={setValue}
           errors={errors}
           selectedOwnerType={selectedOwnerType}
           isRecurring={isRecurring}
           kind={kind}
           selectedAmountMode={selectedAmountMode}
+          hasInstallments={hasInstallments}
+          onToggleInstallments={toggleInstallments}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          disabled={isSubmitting}
+          sx={{ alignSelf: 'flex-start' }}
+        >
           {isSubmitting
             ? 'Guardando…'
             : kind === PaymentKind.DEPOSIT

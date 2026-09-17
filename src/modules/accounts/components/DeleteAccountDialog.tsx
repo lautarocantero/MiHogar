@@ -1,12 +1,5 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack
-} from '@mui/material'
+import { Alert, Button, Dialog, DialogActions, DialogContent, Stack } from '@mui/material'
+import { DialogHeader } from '@/components/shared/DialogHeader'
 import { useAppSelector } from '@/store/hooks'
 import { selectMovementsByAccountId } from '@/store/movements/movementsSelectors'
 import { selectPaymentsByAccountId } from '@/store/payments/paymentsSelectors'
@@ -32,7 +25,9 @@ export function DeleteAccountDialog({
       maxWidth="xs"
       aria-labelledby="delete-account-title"
     >
-      <DialogTitle id="delete-account-title">Eliminar &quot;{account.name}&quot;</DialogTitle>
+      <DialogHeader id="delete-account-title" onClose={onClose}>
+        Eliminar &quot;{account.name}&quot;
+      </DialogHeader>
       <DialogContent>
         <Stack spacing={2}>
           {hasReferences && (

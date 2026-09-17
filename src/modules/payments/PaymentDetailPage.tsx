@@ -19,10 +19,12 @@ import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDueLabel } from '@/utils/formatting/formatDate'
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
 import { resolveUrlHostname } from '@/utils/resolveUrlHostname'
+import { computeInstallmentsRemaining } from '@/utils/domain/computeInstallmentsRemaining'
 import { AmountMode, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import { ROUTES } from '@/router/routes'
 import { usePaymentDetailData } from './hooks/usePaymentDetailData'
 import { useMarkPaymentAsPaid } from './hooks/useMarkPaymentAsPaid'
+import { useCancelPayment } from './hooks/useCancelPayment'
 import { useUnlockCredentials } from './hooks/useUnlockCredentials'
 import { usePaymentHistory } from './hooks/usePaymentHistory'
 import { SectionLockGate } from './components/SectionLockGate'
@@ -38,7 +40,8 @@ export function PaymentDetailPage(): React.JSX.Element {
   const { paymentId } = useParams<{ paymentId: string }>()
   const navigate = useNavigate()
   const payment = usePaymentDetailData(paymentId ?? '')
-  const { markAsPaid, isSubmitting } = useMarkPaymentAsPaid(payment)
+  const { markAsPaid, isSubmitting: isMarkingPaid } = useMarkPaymentAsPaid(payment)
+  const { cancel, isSubmitting: isCancelling } = useCancelPayment(payment)
   const unlockCredentials = useUnlockCredentials()
   const history = usePaymentHistory(paymentId ?? '')
   const [isEditCredentialsOpen, setIsEditCredentialsOpen] = useState(false)
@@ -132,7 +135,15 @@ export function PaymentDetailPage(): React.JSX.Element {
               { label: 'Concepto', value: payment.concept },
               { label: 'Entidad', value: payment.entity },
               { label: isDeposit ? 'Entra a' : 'Se paga con', value: payment.accountName },
-              { label: 'A nombre de', value: payment.ownerLabel }
+              { label: 'A nombre de', value: payment.ownerLabel },
+              ...(typeof payment.installmentsTotal === 'number'
+                ? [
+                    {
+                      label: 'Cuotas',
+                      value: `${payment.installmentsPaid ?? 0} de ${payment.installmentsTotal} (quedan ${computeInstallmentsRemaining(payment)})`
+                    }
+                  ]
+                : [])
             ].map((field) => (
               <Grid key={field.label} size={{ xs: 12, sm: 6 }}>
                 <Box
@@ -153,20 +164,20 @@ export function PaymentDetailPage(): React.JSX.Element {
           </Grid>
 
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-            <Button
-              variant="contained"
-              size="large"
-              disabled={payment.status === PaymentStatus.PAID || isSubmitting || isVariableUnset}
-              onClick={markAsPaid}
-            >
-              {payment.status === PaymentStatus.PAID
-                ? isDeposit
-                  ? 'Ya está recibido'
-                  : 'Ya está pagado'
-                : isDeposit
-                  ? 'Marcar como recibido'
-                  : 'Marcar como pagado'}
-            </Button>
+            {payment.status === PaymentStatus.PAID ? (
+              <Button variant="outlined" size="large" disabled={isCancelling} onClick={cancel}>
+                {isDeposit ? 'Cancelar cobro' : 'Cancelar pago'}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                size="large"
+                disabled={isMarkingPaid || isVariableUnset}
+                onClick={markAsPaid}
+              >
+                {isDeposit ? 'Marcar como recibido' : 'Marcar como pagado'}
+              </Button>
+            )}
             {isVariableUnset && payment.status !== PaymentStatus.PAID && (
               <Typography variant="body2" color="text.secondary" width="100%">
                 Editá el pago para cargar el monto recibido antes de confirmarlo.

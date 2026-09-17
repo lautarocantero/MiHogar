@@ -14,6 +14,11 @@ export type TimelineData = {
   entries: TimelineEntry[]
 }
 
+export type TimelineRange = {
+  from: string | null
+  to: string | null
+}
+
 export type UseUpdateMovementResult = {
   submit: (values: QuickAddFormValues) => void
   isSubmitting: boolean

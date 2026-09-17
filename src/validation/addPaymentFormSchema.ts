@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { AmountMode, OwnerType, PaymentFrequency, PaymentKind } from '@/typings/domain/enums'
+import { numberField } from './zodNumberField'
 
 export const addPaymentFormSchema = z
   .object({
@@ -12,9 +13,11 @@ export const addPaymentFormSchema = z
     recurring: z.boolean(),
     frequency: z.nativeEnum(PaymentFrequency).optional(),
     dueDate: z.string().min(1, 'Elegí la fecha de vencimiento'),
-    amount: z.coerce
-      .number({ message: 'Ingresá un monto' })
-      .nonnegative('El monto no puede ser negativo'),
+    amount: numberField(
+      z.number({ message: 'Ingresá un monto' }).nonnegative('El monto no puede ser negativo')
+    ),
+    installmentsTotal: numberField(z.number().int().min(1).optional()),
+    installmentsPaid: numberField(z.number().int().min(0).optional()),
     kind: z.nativeEnum(PaymentKind).default(PaymentKind.EXPENSE),
     amountMode: z.nativeEnum(AmountMode).default(AmountMode.FIXED)
   })
@@ -26,3 +29,13 @@ export const addPaymentFormSchema = z
     message: 'Ingresá un monto mayor a 0',
     path: ['amount']
   })
+  .refine(
+    (data) =>
+      typeof data.installmentsTotal !== 'number' ||
+      typeof data.installmentsPaid !== 'number' ||
+      data.installmentsPaid <= data.installmentsTotal,
+    {
+      message: 'No puede haber más cuotas pagadas que el total',
+      path: ['installmentsPaid']
+    }
+  )

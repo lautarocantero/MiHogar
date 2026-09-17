@@ -5,16 +5,17 @@ import { AccountType } from '@/typings/domain/enums'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { computeCreditCardInfoText } from '@/utils/domain/computeCreditCardInfoText'
+import { computeSingleCardAvailable } from '@/utils/domain/computeCreditCardAvailable'
 import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import type { AccountCardProps } from '../typings/props'
 
 export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): React.JSX.Element {
-  const isNegativeBalance = account.balance < 0
+  const isCreditCard = account.type === AccountType.CREDIT_CARD
+  const isNegativeBalance = !isCreditCard && account.balance < 0
   const typeColor = resolveAccountTypeColor(account.type)
-  const creditCardInfoText =
-    account.type === AccountType.CREDIT_CARD
-      ? computeCreditCardInfoText(account.closingDay, account.dueDay, account.installmentsRemaining)
-      : null
+  const creditCardInfoText = isCreditCard
+    ? computeCreditCardInfoText(account.closingDay, account.dueDay)
+    : null
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   return (
@@ -79,8 +80,19 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
           component="p"
           color={isNegativeBalance ? organicColors.orange.dark : 'text.primary'}
         >
-          {formatCurrency(account.balance)}
+          {formatCurrency(isCreditCard ? computeSingleCardAvailable(account) : account.balance)}
         </Typography>
+        {isCreditCard && (
+          <Typography variant="body2" color="text.secondary">
+            Disponible de {formatCurrency(account.creditLimit ?? 0)}
+            {account.usedAmount ? ` · usaste ${formatCurrency(account.usedAmount)}` : ''}
+          </Typography>
+        )}
+        {isCreditCard && account.sourceAccountName && (
+          <Typography variant="body2" color="text.secondary">
+            Sale de {account.sourceAccountName}
+          </Typography>
+        )}
         {account.contextPhrase && (
           <Typography variant="body2" color="text.secondary">
             {account.contextPhrase}

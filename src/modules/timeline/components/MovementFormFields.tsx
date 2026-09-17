@@ -6,6 +6,7 @@ import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { selectAllMembers } from '@/store/household/householdSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors } from '@/theme/tokens'
+import { NumberField } from '@/components/shared/NumberField'
 import type { MovementFormFieldsProps } from '../typings/props'
 
 export function MovementFormFields({
@@ -20,11 +21,10 @@ export function MovementFormFields({
 
   return (
     <>
-      <TextField
+      <NumberField
         label="¿Cuánto fue?"
-        type="number"
         autoFocus
-        {...register('amount')}
+        {...register('amount', { valueAsNumber: true })}
         error={Boolean(errors.amount)}
         helperText={errors.amount?.message}
         slotProps={{
@@ -41,7 +41,7 @@ export function MovementFormFields({
 
       {!isTransfer && (
         <TextField
-          label="¿De qué fue?"
+          label="Concepto de pago"
           select
           {...register('categoryId')}
           error={Boolean(errors.categoryId)}
@@ -54,6 +54,16 @@ export function MovementFormFields({
           ))}
         </TextField>
       )}
+
+      <TextField
+        label="Nota/aclaración (opcional)"
+        placeholder="Agregá contexto si hace falta"
+        multiline
+        minRows={2}
+        {...register('note')}
+        error={Boolean(errors.note)}
+        helperText={errors.note?.message}
+      />
 
       <TextField
         label={isTransfer ? '¿De qué cuenta sale?' : '¿Con qué cuenta?'}

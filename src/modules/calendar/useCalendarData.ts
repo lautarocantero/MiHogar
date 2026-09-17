@@ -1,26 +1,29 @@
 import { useMemo } from 'react'
-import { addDays, format, isWithinInterval, parseISO } from 'date-fns'
+import { addMonths, differenceInCalendarDays, format, parseISO, startOfDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllPayments } from '@/store/payments/paymentsSelectors'
 import { selectAllMovements } from '@/store/movements/movementsSelectors'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
+import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { PaymentKind, PaymentStatus, MovementType } from '@/typings/domain/enums'
 import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
+import { resolveMovementConcept } from '@/utils/domain/resolveMovementConcept'
+import { isFinalInstallmentPayment } from '@/utils/domain/isFinalInstallmentPayment'
 import { buildCalendarWeeks } from './buildCalendarWeeks'
 import { CalendarEventKind } from './typings/enums'
-import type { CalendarData, CalendarDayEvent } from './typings/types'
+import type { CalendarData, CalendarDayEvent, FinalInstallmentSummary } from './typings/types'
 
-const WEEK_AHEAD_DAYS = 6
-
-export function useCalendarData(): CalendarData {
+export function useCalendarData(monthOffset = 0): CalendarData {
   const payments = useAppSelector(selectAllPayments)
   const movements = useAppSelector(selectAllMovements)
   const accounts = useAppSelector(selectAllAccounts)
+  const categories = useAppSelector(selectAllCategories)
 
   return useMemo(() => {
-    const today = new Date()
-    const currentMonth = format(today, 'yyyy-MM')
+    const today = startOfDay(new Date())
+    const referenceDate = addMonths(today, monthOffset)
+    const currentMonth = format(referenceDate, 'yyyy-MM')
     const accountsById = new Map(accounts.map((account) => [account.id, account]))
 
     const paymentsWithDisplayDate = payments.map((payment) => ({
@@ -35,29 +38,52 @@ export function useCalendarData(): CalendarData {
     const incomesThisMonth = movements.filter(
       (movement) => movement.type === MovementType.INCOME && movement.date.startsWith(currentMonth)
     )
+    const looseMovementsThisMonth = movements.filter(
+      (movement) =>
+        movement.type !== MovementType.INCOME &&
+        movement.paymentId == null &&
+        movement.date.startsWith(currentMonth)
+    )
 
-    const eventsByIsoDate = new Map<string, CalendarDayEvent>()
+    const eventsByIsoDate = new Map<string, CalendarDayEvent[]>()
+    const pushEvent = (isoDate: string, event: CalendarDayEvent): void => {
+      const existing = eventsByIsoDate.get(isoDate)
+      if (existing) {
+        existing.push(event)
+      } else {
+        eventsByIsoDate.set(isoDate, [event])
+      }
+    }
+
     paymentsThisMonth.forEach((payment) => {
-      eventsByIsoDate.set(payment.displayDate, {
+      pushEvent(payment.displayDate, {
         kind:
           payment.kind === PaymentKind.DEPOSIT
             ? CalendarEventKind.INCOME
             : payment.status === PaymentStatus.PAID
               ? CalendarEventKind.PAID
               : CalendarEventKind.PENDING,
-        amount: payment.amount
+        amount: payment.amount,
+        label: payment.concept,
+        isFinalInstallment: isFinalInstallmentPayment(payment)
       })
     })
     incomesThisMonth.forEach((movement) => {
-      if (!eventsByIsoDate.has(movement.date)) {
-        eventsByIsoDate.set(movement.date, {
-          kind: CalendarEventKind.INCOME,
-          amount: movement.amount
-        })
-      }
+      pushEvent(movement.date, {
+        kind: CalendarEventKind.INCOME,
+        amount: movement.amount,
+        label: resolveMovementConcept(movement, payments, categories)
+      })
+    })
+    looseMovementsThisMonth.forEach((movement) => {
+      pushEvent(movement.date, {
+        kind: CalendarEventKind.PAID,
+        amount: movement.amount,
+        label: resolveMovementConcept(movement, payments, categories)
+      })
     })
 
-    const weeks = buildCalendarWeeks(today, today, eventsByIsoDate)
+    const weeks = buildCalendarWeeks(referenceDate, today, eventsByIsoDate)
 
     const expensesThisMonth = paymentsThisMonth.filter(
       (payment) => payment.kind !== PaymentKind.DEPOSIT
@@ -67,24 +93,29 @@ export function useCalendarData(): CalendarData {
       .filter((payment) => payment.status === PaymentStatus.PAID)
       .reduce((total, payment) => total + payment.amount, 0)
 
-    const weekEnd = addDays(today, WEEK_AHEAD_DAYS)
-    const weekAheadPayments = paymentsWithDisplayDate
-      .filter(
-        (payment) =>
-          payment.status === PaymentStatus.PENDING &&
-          isWithinInterval(parseISO(payment.displayDate), { start: today, end: weekEnd })
-      )
+    const monthPayments = paymentsThisMonth
+      .filter((payment) => payment.status === PaymentStatus.PENDING)
       .sort((a, b) => a.displayDate.localeCompare(b.displayDate))
+
+    const finalInstallmentPayments: FinalInstallmentSummary[] = paymentsThisMonth
+      .filter((payment) => isFinalInstallmentPayment(payment))
+      .map((payment) => ({
+        concept: payment.concept,
+        daysUntil: differenceInCalendarDays(parseISO(payment.displayDate), today)
+      }))
+      .filter((entry) => entry.daysUntil >= 0)
+      .sort((a, b) => a.daysUntil - b.daysUntil)
 
     return {
       weeks,
-      monthLabel: format(today, 'MMMM', { locale: es }),
+      monthLabel: format(referenceDate, 'MMMM', { locale: es }),
       progress: {
         totalDue,
         paidSoFar,
         progressPercent: totalDue > 0 ? Math.min(100, Math.round((paidSoFar / totalDue) * 100)) : 0
       },
-      weekAheadPayments
+      monthPayments,
+      finalInstallmentPayments
     }
-  }, [payments, movements, accounts])
+  }, [payments, movements, accounts, categories, monthOffset])
 }
