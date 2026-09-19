@@ -9,3 +9,4 @@ build/icon.*
 .env
 .env.local
 *.tsbuildinfo
+docs/inspiration
