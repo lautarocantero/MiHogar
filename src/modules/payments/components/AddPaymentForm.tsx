@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addPaymentFormSchema } from '@/validation/addPaymentFormSchema'
 import { AmountMode, OwnerType, PaymentFrequency, PaymentKind } from '@/typings/domain/enums'
+import { LeafButton } from '@/components/shared/LeafButton'
 import { PaymentFormFields } from './PaymentFormFields'
 import type { AddPaymentFormProps } from '../typings/props'
 import type { AddPaymentFormValues } from '../typings/types'
@@ -72,17 +73,23 @@ export function AddPaymentForm({
           onToggleInstallments={toggleInstallments}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
+        <Stack direction="row" spacing={2} justifyContent="space-between">
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            sx={{ borderRadius: 0 }}
+          >
             {cancelLabel}
           </Button>
-          <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
+          <LeafButton type="submit" size="large" disabled={isSubmitting}>
             {isSubmitting
               ? 'Guardando…'
               : kind === PaymentKind.DEPOSIT
                 ? 'Agregar el depósito'
                 : 'Agregar el pago'}
-          </Button>
+          </LeafButton>
         </Stack>
       </Stack>
     </Box>

@@ -35,13 +35,14 @@ export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.
   } = useCreatePayment(recurringKind, onClose)
 
   const isRecurringStep = step === QuickAddStep.RECURRING_DETAILS
+  const isDetailsStep = step === QuickAddStep.AMOUNT_AND_DETAILS
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth={isRecurringStep ? 'lg' : 'sm'}
+      maxWidth={isRecurringStep || isDetailsStep ? 'lg' : 'sm'}
       aria-labelledby="quick-add-title"
     >
       <DialogHeader id="quick-add-title" onClose={onClose}>

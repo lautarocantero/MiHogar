@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Alert, Box, Button, MenuItem, Stack, TextField, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { AccountType, Currency, MovementType } from '@/typings/domain/enums'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
@@ -7,6 +8,8 @@ import { selectAllMembers } from '@/store/household/householdSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
+import { LeafButton } from '@/components/shared/LeafButton'
+import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { StepAmountAndDetailsProps } from '../typings/props'
@@ -100,124 +103,170 @@ export function StepCardPaymentDetails({
 
   return (
     <Stack spacing={2.5}>
-      <TextField
-        label="¿Qué tarjeta pagás?"
-        select
-        value={cardAccountId}
-        onChange={(event) => setCardAccountId(event.target.value)}
-      >
-        {cardAccounts.map((account) => (
-          <MenuItem key={account.id} value={account.id}>
-            {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
-          </MenuItem>
-        ))}
-      </TextField>
+      <Grid container spacing={2.5}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Stack spacing={2.5}>
+            <FormSectionHeader
+              step={1}
+              title="Información básica"
+              subtitle="Completá los datos del pago"
+            />
+            <TextField
+              fullWidth
+              label="¿Qué tarjeta pagás?"
+              select
+              value={cardAccountId}
+              onChange={(event) => setCardAccountId(event.target.value)}
+            >
+              {cardAccounts.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
+                </MenuItem>
+              ))}
+            </TextField>
 
-      {selectedCard && (
-        <Typography variant="body2" color="text.secondary">
-          Usado en esta tarjeta: {formatCurrency(cardDebt)}
-        </Typography>
-      )}
+            {selectedCard && (
+              <Typography variant="body2" color="text.secondary">
+                Usado en esta tarjeta: {formatCurrency(cardDebt)}
+              </Typography>
+            )}
 
-      <Box
-        component="fieldset"
-        sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
-      >
-        <Typography component="legend" variant="caption" color="text.secondary" sx={{ px: 0.5 }}>
-          ¿Pagás todo o una parte?
-        </Typography>
-        <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
-          {[
-            { id: 'total' as const, label: 'Pago total' },
-            { id: 'partial' as const, label: 'Pago parcial' }
-          ].map((option) => (
-            <Box key={option.id} component="label" sx={pillStyle(payMode === option.id)}>
-              <input
-                type="radio"
-                name="payMode"
-                checked={payMode === option.id}
-                onChange={() => setPayMode(option.id)}
-                style={{ accentColor: organicColors.blue.dark, width: 15, height: 15 }}
-              />
-              <span>{option.label}</span>
+            <Box
+              component="fieldset"
+              sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
+            >
+              <Typography
+                component="legend"
+                variant="caption"
+                color="text.secondary"
+                sx={{ px: 0.5 }}
+              >
+                ¿Pagás todo o una parte?
+              </Typography>
+              <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+                {[
+                  { id: 'total' as const, label: 'Pago total' },
+                  { id: 'partial' as const, label: 'Pago parcial' }
+                ].map((option) => (
+                  <Box key={option.id} component="label" sx={pillStyle(payMode === option.id)}>
+                    <input
+                      type="radio"
+                      name="payMode"
+                      checked={payMode === option.id}
+                      onChange={() => setPayMode(option.id)}
+                      style={{ accentColor: organicColors.blue.dark, width: 15, height: 15 }}
+                    />
+                    <span>{option.label}</span>
+                  </Box>
+                ))}
+              </Stack>
             </Box>
-          ))}
-        </Stack>
-      </Box>
 
-      {payMode === 'partial' && (
-        <NumberField
-          label="¿Cuánto pagás?"
-          value={partialAmount}
-          onChange={(event) => setPartialAmount(event.target.value)}
-          placeholder="0"
-        />
-      )}
-
-      <Box
-        component="fieldset"
-        sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
-      >
-        <Typography component="legend" variant="caption" color="text.secondary" sx={{ px: 0.5 }}>
-          Moneda
-        </Typography>
-        <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
-          {[
-            { id: Currency.ARS, label: 'Pesos' },
-            { id: Currency.USD, label: 'Dólares' }
-          ].map((option) => (
-            <Box key={option.id} component="label" sx={pillStyle(currency === option.id)}>
-              <input
-                type="radio"
-                name="currency"
-                checked={currency === option.id}
-                onChange={() => setCurrency(option.id)}
-                style={{ accentColor: organicColors.blue.dark, width: 15, height: 15 }}
+            {payMode === 'partial' && (
+              <NumberField
+                fullWidth
+                label="¿Cuánto pagás?"
+                value={partialAmount}
+                onChange={(event) => setPartialAmount(event.target.value)}
+                placeholder="0"
               />
-              <span>{option.label}</span>
+            )}
+
+            <Box
+              component="fieldset"
+              sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
+            >
+              <Typography
+                component="legend"
+                variant="caption"
+                color="text.secondary"
+                sx={{ px: 0.5 }}
+              >
+                Moneda
+              </Typography>
+              <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+                {[
+                  { id: Currency.ARS, label: 'Pesos' },
+                  { id: Currency.USD, label: 'Dólares' }
+                ].map((option) => (
+                  <Box key={option.id} component="label" sx={pillStyle(currency === option.id)}>
+                    <input
+                      type="radio"
+                      name="currency"
+                      checked={currency === option.id}
+                      onChange={() => setCurrency(option.id)}
+                      style={{ accentColor: organicColors.blue.dark, width: 15, height: 15 }}
+                    />
+                    <span>{option.label}</span>
+                  </Box>
+                ))}
+              </Stack>
             </Box>
-          ))}
-        </Stack>
-      </Box>
+          </Stack>
+        </Grid>
 
-      <TextField
-        label="¿Con qué cuenta pagás?"
-        select
-        value={payerAccountId}
-        onChange={(event) => setPayerAccountId(event.target.value)}
-      >
-        {payerAccounts.map((account) => (
-          <MenuItem key={account.id} value={account.id}>
-            {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
-          </MenuItem>
-        ))}
-      </TextField>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Stack spacing={2.5}>
+            <FormSectionHeader
+              step={2}
+              title="Detalles del pago"
+              subtitle="Completá la información adicional"
+            />
+            <TextField
+              fullWidth
+              label="¿Con qué cuenta pagás?"
+              select
+              value={payerAccountId}
+              onChange={(event) => setPayerAccountId(event.target.value)}
+            >
+              {payerAccounts.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
+                </MenuItem>
+              ))}
+            </TextField>
 
-      <TextField
-        label="Nota/aclaración (opcional)"
-        multiline
-        minRows={2}
-        value={note}
-        onChange={(event) => setNote(event.target.value)}
-      />
+            <TextField
+              fullWidth
+              label="Nota/aclaración (opcional)"
+              multiline
+              minRows={2}
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+            />
 
-      <TextField
-        label="¿Qué día?"
-        type="date"
-        slotProps={{ inputLabel: { shrink: true } }}
-        value={date}
-        onChange={(event) => setDate(event.target.value)}
-      />
+            <TextField
+              fullWidth
+              label="¿Qué día?"
+              type="date"
+              slotProps={{ inputLabel: { shrink: true } }}
+              value={date}
+              onChange={(event) => setDate(event.target.value)}
+            />
+          </Stack>
+        </Grid>
+      </Grid>
 
       {(formError || errorMessage) && <Alert severity="error">{formError ?? errorMessage}</Alert>}
 
-      <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ pt: 1 }}>
-        <Button variant="outlined" size="large" onClick={onBack} disabled={isSubmitting}>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-between"
+        sx={{ pt: 1, borderTop: `1px solid ${organicColors.neutral.border}` }}
+      >
+        <Button
+          variant="outlined"
+          size="large"
+          onClick={onBack}
+          disabled={isSubmitting}
+          sx={{ borderRadius: 0 }}
+        >
           Cancelar
         </Button>
-        <Button variant="contained" size="large" onClick={handleSave} disabled={isSubmitting}>
+        <LeafButton size="large" onClick={handleSave} disabled={isSubmitting}>
           {isSubmitting ? 'Guardando…' : 'Guardar el pago'}
-        </Button>
+        </LeafButton>
       </Stack>
     </Stack>
   )

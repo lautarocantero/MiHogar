@@ -22,6 +22,7 @@ export function CategoryField({
   return (
     <>
       <TextField
+        fullWidth
         label={label}
         select
         value={value}
@@ -34,6 +35,7 @@ export function CategoryField({
         }}
         error={error}
         helperText={helperText}
+        sx={{ minWidth: 200 }}
       >
         {categories.map((category) => (
           <MenuItem key={category.id} value={category.id}>

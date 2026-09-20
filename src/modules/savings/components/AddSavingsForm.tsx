@@ -15,6 +15,7 @@ import { addSavingsFormSchema } from '@/validation/addSavingsFormSchema'
 import { OwnerType } from '@/typings/domain/enums'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { NumberField } from '@/components/shared/NumberField'
+import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { AddSavingsFormProps } from '../typings/props'
 import type { AddSavingsFormValues } from '../typings/types'
@@ -52,86 +53,109 @@ export function AddSavingsForm({
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
       <Stack spacing={3}>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField
-              fullWidth
-              label="Nombre"
-              placeholder="Ej: Plazo fijo Banco Nación"
-              {...register('name')}
-              error={Boolean(errors.name)}
-              helperText={errors.name?.message}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <NumberField
-              fullWidth
-              label="Monto guardado"
-              {...register('principal', { setValueAs: parseAmountInput })}
-              error={Boolean(errors.principal)}
-              helperText={errors.principal?.message}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <NumberField
-              fullWidth
-              label="Interés estimado por mes (opcional)"
-              {...register('monthlyInterestEstimate', { setValueAs: parseAmountInput })}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
-            <TextField
-              fullWidth
-              label="¿De quién es?"
-              select
-              {...register('ownerType')}
-              defaultValue={OwnerType.HOUSEHOLD}
-            >
-              <MenuItem value={OwnerType.HOUSEHOLD}>Del hogar</MenuItem>
-              <MenuItem value={OwnerType.MEMBER}>De un integrante</MenuItem>
-            </TextField>
-          </Grid>
-          {selectedOwnerType === OwnerType.MEMBER && (
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Controller
-                name="ownerId"
-                control={control}
-                render={({ field }) => (
-                  <MemberOwnerField
-                    value={field.value ?? ''}
-                    onChange={field.onChange}
-                    error={Boolean(errors.ownerId)}
-                    helperText={errors.ownerId?.message}
-                  />
-                )}
-              />
-            </Grid>
-          )}
-          <Grid size={12}>
-            <FormControlLabel
-              control={<Switch defaultChecked {...register('liquidAnytime')} />}
-              label="Podés sacarlo cuando quieras"
-            />
-          </Grid>
-          {!isLiquid && (
-            <>
-              <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Grid container spacing={3}>
+              <Grid size={12}>
+                <FormSectionHeader
+                  step={1}
+                  title="Información básica"
+                  subtitle="Completá los datos del ahorro"
+                />
+              </Grid>
+              <Grid size={12}>
                 <TextField
                   fullWidth
-                  label="Fecha de vencimiento"
-                  type="date"
-                  slotProps={{ inputLabel: { shrink: true } }}
-                  {...register('maturityDate')}
+                  label="Nombre"
+                  placeholder="Ej: Plazo fijo Banco Nación"
+                  {...register('name')}
+                  error={Boolean(errors.name)}
+                  helperText={errors.name?.message}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
+                <TextField
+                  fullWidth
+                  label="¿De quién es?"
+                  select
+                  {...register('ownerType')}
+                  defaultValue={OwnerType.HOUSEHOLD}
+                >
+                  <MenuItem value={OwnerType.HOUSEHOLD}>Del hogar</MenuItem>
+                  <MenuItem value={OwnerType.MEMBER}>De un integrante</MenuItem>
+                </TextField>
+              </Grid>
+              {selectedOwnerType === OwnerType.MEMBER && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Controller
+                    name="ownerId"
+                    control={control}
+                    render={({ field }) => (
+                      <MemberOwnerField
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                        error={Boolean(errors.ownerId)}
+                        helperText={errors.ownerId?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Grid container spacing={3}>
+              <Grid size={12}>
+                <FormSectionHeader
+                  step={2}
+                  title="Detalles del ahorro"
+                  subtitle="Completá la información adicional"
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Tasa anual (%)"
-                  {...register('rateAnnual', { setValueAs: parseAmountInput })}
+                  label="Monto guardado"
+                  {...register('principal', { setValueAs: parseAmountInput })}
+                  error={Boolean(errors.principal)}
+                  helperText={errors.principal?.message}
                 />
               </Grid>
-            </>
-          )}
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <NumberField
+                  fullWidth
+                  label="Interés estimado por mes (opcional)"
+                  {...register('monthlyInterestEstimate', { setValueAs: parseAmountInput })}
+                />
+              </Grid>
+              <Grid size={12}>
+                <FormControlLabel
+                  control={<Switch defaultChecked {...register('liquidAnytime')} />}
+                  label="Podés sacarlo cuando quieras"
+                />
+              </Grid>
+              {!isLiquid && (
+                <>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <TextField
+                      fullWidth
+                      label="Fecha de vencimiento"
+                      type="date"
+                      slotProps={{ inputLabel: { shrink: true } }}
+                      {...register('maturityDate')}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <NumberField
+                      fullWidth
+                      label="Tasa anual (%)"
+                      {...register('rateAnnual', { setValueAs: parseAmountInput })}
+                    />
+                  </Grid>
+                </>
+              )}
+            </Grid>
+          </Grid>
         </Grid>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Stack direction="row" spacing={2} justifyContent="flex-end">

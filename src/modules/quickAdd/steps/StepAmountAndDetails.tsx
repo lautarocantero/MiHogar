@@ -9,6 +9,7 @@ import {
   TextField,
   Typography
 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import AddIcon from '@mui/icons-material/Add'
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag'
 import { AccountType, CategoryKind, Currency, MovementType } from '@/typings/domain/enums'
@@ -19,6 +20,8 @@ import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors, organicTypography } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
 import { CategoryField } from '@/components/shared/CategoryField'
+import { LeafButton } from '@/components/shared/LeafButton'
+import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { StepAmountAndDetailsProps } from '../typings/props'
@@ -70,6 +73,8 @@ export function StepAmountAndDetails({
   const [items, setItems] = useState<DraftItem[]>([])
   const [formError, setFormError] = useState<string | null>(null)
 
+  const isMulti = itemMode === 'multi' && !isTransfer
+
   const nonCardAccounts = useMemo(
     () => accounts.filter((account) => account.type !== AccountType.CREDIT_CARD),
     [accounts]
@@ -116,11 +121,11 @@ export function StepAmountAndDetails({
   const handleAddItem = (): void => {
     const value = parseAmountInput(amount)
     if (!value || value <= 0) {
-      setFormError('Ingresá un monto para el ítem')
+      setFormError('Ingresá un monto para el elemento')
       return
     }
     if (!note.trim()) {
-      setFormError('Escribí la nota/aclaración del ítem')
+      setFormError('Escribí la nota/aclaración del elemento')
       return
     }
     setFormError(null)
@@ -136,7 +141,7 @@ export function StepAmountAndDetails({
       return
     }
 
-    if (itemMode === 'multi' && items.length > 0) {
+    if (isMulti && items.length > 0) {
       onSubmit(items.map((item) => buildValues(item.amount, item.label)))
       return
     }
@@ -152,188 +157,233 @@ export function StepAmountAndDetails({
 
   return (
     <Stack spacing={2.5}>
-      <Stack spacing={0.75}>
-        <Typography variant="caption" color="text.secondary">
-          ¿Cuánto fue?
-        </Typography>
-        <NumberField
-          autoFocus
-          value={amount}
-          onChange={(event) => setAmount(event.target.value)}
-          placeholder="0"
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: 30,
-                      height: 30,
-                      borderRadius: '50%',
-                      backgroundColor: organicColors.orange.main,
-                      color: '#fffdf9',
-                      fontWeight: 700
-                    }}
-                  >
-                    $
-                  </Box>
-                </InputAdornment>
-              )
-            },
-            htmlInput: { style: { fontSize: '1.5rem' } }
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': { borderColor: organicColors.orange.main, borderWidth: 2 }
-            }
-          }}
-        />
-      </Stack>
-
-      {!isTransfer && (
-        <Box
-          component="fieldset"
-          sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
-        >
-          <Typography component="legend" variant="caption" color="text.secondary" sx={{ px: 0.5 }}>
-            ¿Cuántos ítems tiene esta compra?
-          </Typography>
-          <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
-            {[
-              { id: 'single' as const, label: 'Un solo ítem' },
-              { id: 'multi' as const, label: 'Varios ítems' }
-            ].map((option) => (
-              <Box key={option.id} component="label" sx={pillStyle(itemMode === option.id)}>
-                <input
-                  type="radio"
-                  name="itemMode"
-                  checked={itemMode === option.id}
-                  onChange={() => setItemMode(option.id)}
-                  style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
-                />
-                <span>{option.label}</span>
+      <Grid container spacing={2.5}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Stack spacing={2.5}>
+            <FormSectionHeader
+              step={1}
+              title="Información básica"
+              subtitle="Completá los datos del movimiento"
+            />
+            {!isTransfer && (
+              <Box
+                component="fieldset"
+                sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
+              >
+                <Typography
+                  component="legend"
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ px: 0.5 }}
+                >
+                  ¿Cuántos elementos tiene esta compra?
+                </Typography>
+                <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+                  {[
+                    { id: 'single' as const, label: 'Un solo elemento' },
+                    { id: 'multi' as const, label: 'Varios elementos' }
+                  ].map((option) => (
+                    <Box key={option.id} component="label" sx={pillStyle(itemMode === option.id)}>
+                      <input
+                        type="radio"
+                        name="itemMode"
+                        checked={itemMode === option.id}
+                        onChange={() => setItemMode(option.id)}
+                        style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
+                      />
+                      <span>{option.label}</span>
+                    </Box>
+                  ))}
+                </Stack>
               </Box>
-            ))}
-          </Stack>
-        </Box>
-      )}
+            )}
 
-      {!isTransfer && (
-        <Box
-          component="fieldset"
-          sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
-        >
-          <Typography component="legend" variant="caption" color="text.secondary" sx={{ px: 0.5 }}>
-            Método de pago
-          </Typography>
-          <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
-            {[
-              { id: 'cash' as const, label: 'Efectivo' },
-              { id: 'transfer' as const, label: 'Transferencia' },
-              { id: 'card' as const, label: 'Tarjeta de crédito' }
-            ].map((option) => (
-              <Box key={option.id} component="label" sx={pillStyle(method === option.id)}>
-                <input
-                  type="radio"
-                  name="method"
-                  checked={method === option.id}
-                  onChange={() => {
-                    setMethod(option.id)
-                    setAccountId('')
-                  }}
-                  style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
-                />
-                <span>{option.label}</span>
-              </Box>
-            ))}
-          </Stack>
-        </Box>
-      )}
-
-      <Box
-        component="fieldset"
-        sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
-      >
-        <Typography component="legend" variant="caption" color="text.secondary" sx={{ px: 0.5 }}>
-          Moneda
-        </Typography>
-        <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
-          {[
-            { id: Currency.ARS, label: 'Pesos' },
-            { id: Currency.USD, label: 'Dólares' }
-          ].map((option) => (
-            <Box key={option.id} component="label" sx={pillStyle(currency === option.id)}>
-              <input
-                type="radio"
-                name="currency"
-                checked={currency === option.id}
-                onChange={() => setCurrency(option.id)}
-                style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
+            <Stack spacing={0.75}>
+              <Typography variant="caption" color="text.secondary">
+                {isMulti ? '¿Cuánto sale cada elemento?' : '¿Cuánto fue?'}
+              </Typography>
+              <NumberField
+                autoFocus
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+                placeholder="0"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: 30,
+                            height: 30,
+                            borderRadius: '50%',
+                            backgroundColor: organicColors.orange.main,
+                            color: '#fffdf9',
+                            fontWeight: 700
+                          }}
+                        >
+                          $
+                        </Box>
+                      </InputAdornment>
+                    )
+                  },
+                  htmlInput: { style: { fontSize: '1.5rem' } }
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: organicColors.orange.main, borderWidth: 2 }
+                  }
+                }}
               />
-              <span>{option.label}</span>
+              {isMulti && (
+                <Typography variant="caption" color="text.secondary">
+                  Precio individual por elemento
+                </Typography>
+              )}
+            </Stack>
+
+            {!isTransfer && (
+              <Box
+                component="fieldset"
+                sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
+              >
+                <Typography
+                  component="legend"
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ px: 0.5 }}
+                >
+                  Método de pago
+                </Typography>
+                <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+                  {[
+                    { id: 'cash' as const, label: 'Efectivo' },
+                    { id: 'transfer' as const, label: 'Transferencia' },
+                    { id: 'card' as const, label: 'Tarjeta de crédito' }
+                  ].map((option) => (
+                    <Box key={option.id} component="label" sx={pillStyle(method === option.id)}>
+                      <input
+                        type="radio"
+                        name="method"
+                        checked={method === option.id}
+                        onChange={() => {
+                          setMethod(option.id)
+                          setAccountId('')
+                        }}
+                        style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
+                      />
+                      <span>{option.label}</span>
+                    </Box>
+                  ))}
+                </Stack>
+              </Box>
+            )}
+
+            <Box
+              component="fieldset"
+              sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
+            >
+              <Typography
+                component="legend"
+                variant="caption"
+                color="text.secondary"
+                sx={{ px: 0.5 }}
+              >
+                Moneda
+              </Typography>
+              <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+                {[
+                  { id: Currency.ARS, label: 'Pesos' },
+                  { id: Currency.USD, label: 'Dólares' }
+                ].map((option) => (
+                  <Box key={option.id} component="label" sx={pillStyle(currency === option.id)}>
+                    <input
+                      type="radio"
+                      name="currency"
+                      checked={currency === option.id}
+                      onChange={() => setCurrency(option.id)}
+                      style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
+                    />
+                    <span>{option.label}</span>
+                  </Box>
+                ))}
+              </Stack>
             </Box>
-          ))}
-        </Stack>
-      </Box>
+          </Stack>
+        </Grid>
 
-      {!isTransfer && (
-        <CategoryField
-          kind={categoryKind}
-          label="Concepto de pago"
-          value={categoryId}
-          onChange={setCategoryId}
-        />
-      )}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Stack spacing={2.5}>
+            <FormSectionHeader
+              step={2}
+              title="Detalles del movimiento"
+              subtitle="Completá la información adicional"
+            />
+            {!isTransfer && (
+              <CategoryField
+                kind={categoryKind}
+                label="Concepto de pago"
+                value={categoryId}
+                onChange={setCategoryId}
+              />
+            )}
 
-      <TextField
-        label="Nota/aclaración (opcional)"
-        placeholder="Describí qué es este ítem"
-        multiline
-        minRows={2}
-        value={note}
-        onChange={(event) => setNote(event.target.value)}
-      />
+            <TextField
+              fullWidth
+              label="Nota/aclaración (opcional)"
+              placeholder="Describí qué es este elemento"
+              multiline
+              minRows={2}
+              value={note}
+              onChange={(event) => setNote(event.target.value)}
+            />
 
-      <TextField
-        label={accountLabel}
-        select
-        value={accountId}
-        onChange={(event) => setAccountId(event.target.value)}
-      >
-        {accountOptions.map((account) => (
-          <MenuItem key={account.id} value={account.id}>
-            {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
-          </MenuItem>
-        ))}
-      </TextField>
+            <TextField
+              fullWidth
+              label={accountLabel}
+              select
+              value={accountId}
+              onChange={(event) => setAccountId(event.target.value)}
+            >
+              {accountOptions.map((account) => (
+                <MenuItem key={account.id} value={account.id}>
+                  {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
+                </MenuItem>
+              ))}
+            </TextField>
 
-      {isTransfer && (
-        <TextField
-          label="¿A qué cuenta entra?"
-          select
-          value={toAccountId}
-          onChange={(event) => setToAccountId(event.target.value)}
-        >
-          {nonCardAccounts.map((account) => (
-            <MenuItem key={account.id} value={account.id}>
-              {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
+            {isTransfer && (
+              <TextField
+                fullWidth
+                label="¿A qué cuenta entra?"
+                select
+                value={toAccountId}
+                onChange={(event) => setToAccountId(event.target.value)}
+              >
+                {nonCardAccounts.map((account) => (
+                  <MenuItem key={account.id} value={account.id}>
+                    {account.name} ·{' '}
+                    {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
 
-      <TextField
-        label="¿Qué día?"
-        type="date"
-        slotProps={{ inputLabel: { shrink: true } }}
-        value={date}
-        onChange={(event) => setDate(event.target.value)}
-      />
+            <TextField
+              fullWidth
+              label="¿Qué día?"
+              type="date"
+              slotProps={{ inputLabel: { shrink: true } }}
+              value={date}
+              onChange={(event) => setDate(event.target.value)}
+            />
+          </Stack>
+        </Grid>
+      </Grid>
 
-      {items.length > 0 && (
+      {isMulti && items.length > 0 && (
         <Box
           sx={{
             border: `1px solid ${organicColors.neutral.border}`,
@@ -342,7 +392,7 @@ export function StepAmountAndDetails({
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            Ítems cargados en esta compra ({items.length})
+            Elementos cargados en esta compra ({items.length})
           </Typography>
           <Stack spacing={1} sx={{ maxHeight: 168, overflowY: 'auto', mt: 1, pr: 0.5 }}>
             {items.map((item, index) => (
@@ -396,27 +446,34 @@ export function StepAmountAndDetails({
       {(formError || errorMessage) && <Alert severity="error">{formError ?? errorMessage}</Alert>}
 
       <Stack spacing={1.25} sx={{ borderTop: `1px solid ${organicColors.neutral.border}`, pt: 2 }}>
-        {!isTransfer && itemMode === 'multi' && (
+        {isMulti && (
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
             onClick={handleAddItem}
             sx={{
+              borderRadius: 0,
               borderStyle: 'dashed',
               borderColor: organicColors.orange.main,
               color: organicColors.orange.dark
             }}
           >
-            Agregar otro ítem
+            Agregar otro elemento
           </Button>
         )}
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="outlined" size="large" onClick={onBack} disabled={isSubmitting}>
+        <Stack direction="row" spacing={2} justifyContent="space-between">
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={onBack}
+            disabled={isSubmitting}
+            sx={{ borderRadius: 0 }}
+          >
             Cancelar
           </Button>
-          <Button variant="contained" size="large" onClick={handleSave} disabled={isSubmitting}>
+          <LeafButton size="large" onClick={handleSave} disabled={isSubmitting}>
             {isSubmitting ? 'Guardando…' : 'Guardar el movimiento'}
-          </Button>
+          </LeafButton>
         </Stack>
       </Stack>
     </Stack>

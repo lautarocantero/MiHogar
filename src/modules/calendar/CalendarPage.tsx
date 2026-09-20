@@ -177,12 +177,19 @@ function MinPaymentTile({
           onChange={(event) => setDraft(event.target.value)}
           onBlur={commit}
           onKeyDown={(event) => {
+            if (event.key === '-' || event.key === 'e') {
+              event.preventDefault()
+              return
+            }
             if (event.key === 'Enter') {
               event.preventDefault()
               ;(event.target as HTMLInputElement).blur()
             }
           }}
-          slotProps={{ input: { sx: { fontFamily: organicTypography.titleFontFamily } } }}
+          slotProps={{
+            input: { sx: { fontFamily: organicTypography.titleFontFamily } },
+            htmlInput: { min: 0 }
+          }}
           sx={{ mt: 0.25, width: '100%' }}
         />
       </Box>
