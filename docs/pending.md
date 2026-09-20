@@ -35,3 +35,8 @@ Bugs y cosas por agregar a la aplicación.
 - Agregar actualizaciones automáticas.
 - Agregar radio button de Moneda (Pesos/Dólares) en movimientos de pago/recepción y en cuentas.
 - Formulario propio para "Recibí dinero" (monto, método de pago sin tarjeta, moneda, concepto, nota, cuenta destino, fecha), separado del formulario de gasto.
+- Adaptar a tamaño tablet.
+- Implementar Google Calendar.
+- Hacer landing page.
+- Subir a portafolio personal.
+- Notificación de hace cuánto tiempo no se sube un nuevo registro.
