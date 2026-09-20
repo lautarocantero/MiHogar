@@ -13,7 +13,10 @@ const MUTATING_ACTION_PREFIXES = [
   'movements/',
   'savings/',
   'categories/',
-  'notifications/'
+  'notifications/',
+  'debts/',
+  'savingsGoals/',
+  'savingsSnapshots/'
 ]
 
 const HYDRATE_ACTION_SUFFIX = /^hydrate/

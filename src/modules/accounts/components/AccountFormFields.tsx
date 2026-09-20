@@ -1,4 +1,4 @@
-import { MenuItem, TextField } from '@mui/material'
+import { Box, MenuItem, TextField, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { Controller } from 'react-hook-form'
 import { AccountType, OwnerType } from '@/typings/domain/enums'
@@ -179,6 +179,44 @@ export function AccountFormFields({
           />
         </Grid>
       )}
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <Controller
+          name="color"
+          control={control}
+          render={({ field }) => (
+            <Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ display: 'block', mb: 0.5 }}
+              >
+                Color de la cuenta
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box
+                  component="input"
+                  type="color"
+                  value={field.value ?? '#7a4a23'}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    field.onChange(event.target.value)
+                  }
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    padding: 0,
+                    border: '1px solid #e4d8c9',
+                    cursor: 'pointer',
+                    backgroundColor: 'transparent'
+                  }}
+                />
+                <Typography variant="body2" color="text.secondary">
+                  Se usa para distinguir esta cuenta o tarjeta
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        />
+      </Grid>
       <Grid size={12}>
         <TextField
           fullWidth

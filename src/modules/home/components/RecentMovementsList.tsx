@@ -1,6 +1,6 @@
 import { Box, Card, Stack, Typography } from '@mui/material'
 import { MovementType } from '@/typings/domain/enums'
-import { organicColors } from '@/theme/tokens'
+import { organicColors, organicTypography } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import type { RecentMovementsListProps } from '../typings/props'
 
@@ -46,7 +46,15 @@ export function RecentMovementsList({ movements }: RecentMovementsListProps): Re
                 {accountName} · {movement.date}
               </Typography>
             </Box>
-            <Typography variant="h6" component="p" color={getMovementColor(movement.type)}>
+            <Typography
+              component="p"
+              sx={{
+                fontFamily: organicTypography.titleFontFamily,
+                fontSize: '1.1875rem',
+                whiteSpace: 'nowrap',
+                color: getMovementColor(movement.type)
+              }}
+            >
               {getSignedAmountLabel(movement.type, movement.amount)}
             </Typography>
           </Stack>

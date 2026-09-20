@@ -3,8 +3,6 @@ import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import type { MonthlyBarsChartProps } from '../typings/props'
 
-const ARENA_COLOR = '#dcd3c4'
-
 export function MonthlyBarsChart({ series }: MonthlyBarsChartProps): React.JSX.Element {
   return (
     <BarChart
@@ -15,7 +13,7 @@ export function MonthlyBarsChart({ series }: MonthlyBarsChartProps): React.JSX.E
         {
           id: 'previous',
           data: series.map((point) => (point.isCurrentMonth ? null : point.total)),
-          color: ARENA_COLOR,
+          color: organicColors.neutral.border,
           stack: 'total',
           valueFormatter: (value: number | null) => (value === null ? '' : formatCurrency(value))
         },

@@ -5,7 +5,7 @@ import { Sidebar } from './Sidebar/Sidebar'
 import { AppHeader } from './Header/AppHeader'
 import { usePaymentReminderScheduler } from '@/hooks/shared/usePaymentReminderScheduler'
 import { ToastHost } from '@/components/shared/ToastHost'
-import { DemoModeExitButton } from '@/components/shared/DemoModeExitButton'
+import { organicColors } from '@/theme/tokens'
 
 const QuickAddModal = lazy(() =>
   import('@/modules/quickAdd/QuickAddModal').then((module) => ({ default: module.QuickAddModal }))
@@ -16,11 +16,26 @@ export function AppLayout(): React.JSX.Element {
   usePaymentReminderScheduler()
 
   return (
-    <Box display="flex" minHeight="100vh">
+    <Box display="flex" height="100vh" overflow="hidden">
       <Sidebar />
-      <Box component="div" display="flex" flexDirection="column" flexGrow={1} minWidth={0}>
+      <Box
+        component="div"
+        display="flex"
+        flexDirection="column"
+        flexGrow={1}
+        minWidth={0}
+        height="100%"
+        overflow="hidden"
+      >
         <AppHeader onOpenQuickAdd={() => setIsQuickAddOpen(true)} />
-        <Box component="main" flexGrow={1} p={4}>
+        <Box
+          component="main"
+          flexGrow={1}
+          minHeight={0}
+          overflow="auto"
+          p={4}
+          sx={{ backgroundColor: organicColors.surface }}
+        >
           <Outlet />
         </Box>
       </Box>
@@ -30,7 +45,6 @@ export function AppLayout(): React.JSX.Element {
         </Suspense>
       )}
       <ToastHost />
-      <DemoModeExitButton />
     </Box>
   )
 }

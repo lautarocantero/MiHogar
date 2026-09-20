@@ -19,7 +19,7 @@ export type StepChooseFrequencyProps = {
 
 export type StepAmountAndDetailsProps = {
   type: MovementType
-  onSubmit: (values: QuickAddFormValues) => void
+  onSubmit: (values: QuickAddFormValues[]) => void
   onBack: () => void
   isSubmitting: boolean
   errorMessage: string | null

@@ -28,10 +28,10 @@ export function CreateHouseholdKeyForm({
       aria-labelledby="create-household-key-title"
     >
       <Stack spacing={3}>
-        <Typography id="create-household-key-title" variant="h4" component="h1">
+        <Typography id="create-household-key-title" variant="h6" component="h2">
           Creá la clave del hogar
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body2" color="text.secondary">
           Esta clave protege todos tus datos. Es una sola, para todo el hogar. Guardala en un lugar
           seguro: si la olvidás, no vamos a poder recuperar la información.
         </Typography>

@@ -12,7 +12,7 @@ export type UseQuickAddFormResult = {
   chooseOneOff: () => void
   chooseRecurring: () => void
   goBack: () => void
-  submit: (values: QuickAddFormValues) => void
+  submit: (values: QuickAddFormValues[]) => void
   isSubmitting: boolean
   errorMessage: string | null
 }

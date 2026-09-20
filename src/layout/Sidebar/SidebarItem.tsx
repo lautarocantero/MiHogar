@@ -1,6 +1,6 @@
 import { ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material'
 import { NavLink } from 'react-router-dom'
-import { organicColors } from '@/theme/tokens'
+import { sidebarColors } from '@/theme/tokens'
 import type { SidebarItemProps } from './typings/props'
 
 export function SidebarItem({
@@ -17,19 +17,23 @@ export function SidebarItem({
       end={item.path === '/'}
       onClick={onNavigate}
       sx={{
-        borderRadius: 999,
-        mx: 1,
+        borderRadius: 0,
         minHeight: 48,
         justifyContent: collapsed ? 'center' : 'flex-start',
         px: collapsed ? 1.5 : 2,
+        color: 'rgba(255,253,249,0.9)',
+        '&:hover': { backgroundColor: 'rgba(255,253,249,0.10)' },
         '&.active': {
-          backgroundColor: organicColors.orange.tint,
-          color: organicColors.orange.dark,
-          '& .MuiListItemIcon-root': { color: organicColors.orange.dark }
+          backgroundColor: 'rgba(255,253,249,0.16)',
+          color: sidebarColors.onDark,
+          boxShadow: 'inset 0 0 0 1px rgba(255,253,249,0.14)',
+          '& .MuiListItemIcon-root': { color: sidebarColors.onDark }
         }
       }}
     >
-      <ListItemIcon sx={{ minWidth: collapsed ? 0 : 40, justifyContent: 'center' }}>
+      <ListItemIcon
+        sx={{ minWidth: collapsed ? 0 : 40, justifyContent: 'center', color: 'inherit' }}
+      >
         <Icon aria-hidden="true" />
       </ListItemIcon>
       {!collapsed && (

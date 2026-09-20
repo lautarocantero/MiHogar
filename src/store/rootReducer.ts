@@ -9,6 +9,8 @@ import { savingsReducer } from './savings/savingsSlice'
 import { categoriesReducer } from './categories/categoriesSlice'
 import { notificationsReducer } from './notifications/notificationsSlice'
 import { debtsReducer } from './debts/debtsSlice'
+import { savingsGoalsReducer } from './savingsGoals/savingsGoalsSlice'
+import { savingsSnapshotsReducer } from './savingsSnapshots/savingsSnapshotsSlice'
 import { uiReducer } from './ui/uiSlice'
 
 export const rootReducer = combineReducers({
@@ -22,6 +24,8 @@ export const rootReducer = combineReducers({
   categories: categoriesReducer,
   notifications: notificationsReducer,
   debts: debtsReducer,
+  savingsGoals: savingsGoalsReducer,
+  savingsSnapshots: savingsSnapshotsReducer,
   ui: uiReducer
 })
 

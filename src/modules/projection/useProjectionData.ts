@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { addDays, endOfMonth, format, isWithinInterval, parseISO } from 'date-fns'
+import { addDays, endOfMonth, format, isWithinInterval, parseISO, startOfMonth } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useAppSelector } from '@/store/hooks'
 import { selectTotalAvailableBalance } from '@/store/accounts/accountsSelectors'
@@ -8,9 +8,12 @@ import { selectAllMovements } from '@/store/movements/movementsSelectors'
 import { MovementType, PaymentKind } from '@/typings/domain/enums'
 import { computeProjectionSeries } from '@/utils/domain/computeProjectionSeries'
 import { computePendingTotal } from '@/utils/domain/computePendingTotal'
+import { ProjectionPeriodMode } from './typings/enums'
 import type { ProjectionData } from './typings/types'
 
-export function useProjectionData(): ProjectionData {
+export function useProjectionData(
+  periodMode: ProjectionPeriodMode = ProjectionPeriodMode.FROM_TODAY
+): ProjectionData {
   const todayBalance = useAppSelector(selectTotalAvailableBalance)
   const pendingPayments = useAppSelector(selectPendingPayments)
   const movements = useAppSelector(selectAllMovements)
@@ -18,8 +21,12 @@ export function useProjectionData(): ProjectionData {
   return useMemo(() => {
     const today = new Date()
     const monthEnd = endOfMonth(today)
-    const pendingRangeInterval = { start: today, end: monthEnd }
-    const futureIncomeRangeInterval = { start: addDays(today, 1), end: monthEnd }
+    const rangeStart = periodMode === ProjectionPeriodMode.FULL_MONTH ? startOfMonth(today) : today
+    const pendingRangeInterval = { start: rangeStart, end: monthEnd }
+    const futureIncomeRangeInterval = {
+      start: periodMode === ProjectionPeriodMode.FULL_MONTH ? rangeStart : addDays(today, 1),
+      end: monthEnd
+    }
 
     const pendingThisRange = pendingPayments.filter((payment) =>
       isWithinInterval(parseISO(payment.dueDate), pendingRangeInterval)
@@ -43,7 +50,7 @@ export function useProjectionData(): ProjectionData {
 
     const series = computeProjectionSeries(
       todayBalance,
-      today,
+      rangeStart,
       monthEnd,
       pendingExpensesThisRange,
       incomeThisRange,
@@ -61,5 +68,5 @@ export function useProjectionData(): ProjectionData {
       endOfMonthLabel: format(monthEnd, "d 'de' MMM", { locale: es }),
       isPositive: endOfMonthBalance >= 0
     }
-  }, [todayBalance, pendingPayments, movements])
+  }, [todayBalance, pendingPayments, movements, periodMode])
 }

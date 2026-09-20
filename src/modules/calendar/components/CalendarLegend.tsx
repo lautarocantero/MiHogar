@@ -14,22 +14,27 @@ export function CalendarLegend(): React.JSX.Element {
         label="Pago por vencer"
         size="small"
         sx={{
-          backgroundColor: organicColors.orange.tint,
-          color: organicColors.orange.dark,
-          border: `1px solid ${organicColors.orange.main}`
+          backgroundColor: organicColors.overdue.tint,
+          color: organicColors.overdue.main,
+          border: `1px solid ${organicColors.overdue.border}`
         }}
       />
       <Chip
         label="Entra dinero"
         size="small"
-        sx={{ backgroundColor: organicColors.sage.tint, color: organicColors.sage.dark }}
+        sx={{
+          backgroundColor: organicColors.income.tint,
+          color: organicColors.income.main,
+          border: `1px solid ${organicColors.income.border}`
+        }}
       />
       <Chip
         label="Ya pagado"
         size="small"
         sx={{
-          backgroundColor: organicColors.neutral.border,
-          color: organicColors.neutral.textSecondary
+          backgroundColor: organicColors.paid.tint,
+          color: organicColors.paid.main,
+          border: `1px solid ${organicColors.paid.border}`
         }}
       />
     </Stack>

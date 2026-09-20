@@ -10,9 +10,13 @@ import type {
   UnlockCredentialsFormValues
 } from './types'
 
+export type PaymentColumnKey =
+  'date' | 'title' | 'status' | 'method' | 'type' | 'account' | 'category' | 'owner' | 'mode'
+
 export type PaymentsTableProps = {
   entries: UnifiedEntry[]
   focusEntryId: string | null
+  hiddenColumns: Set<PaymentColumnKey>
   onEditPayment: (payment: PaymentView) => void
   onDeletePayment: (payment: PaymentView) => void
   onEditMovement: (movement: Movement) => void
@@ -22,6 +26,7 @@ export type PaymentsTableProps = {
 export type PaymentTableRowProps = {
   entry: UnifiedEntry
   isFocused: boolean
+  hiddenColumns: Set<PaymentColumnKey>
   rowRef: (node: HTMLTableRowElement | null) => void
   onEditPayment: (payment: PaymentView) => void
   onDeletePayment: (payment: PaymentView) => void

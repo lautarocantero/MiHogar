@@ -15,5 +15,7 @@ export const accountSchema = z.object({
   closingDay: z.number().int().min(1).max(31).optional(),
   dueDay: z.number().int().min(1).max(31).optional(),
   nextClosingDay: z.number().int().min(1).max(31).optional(),
-  nextDueDay: z.number().int().min(1).max(31).optional()
+  nextDueDay: z.number().int().min(1).max(31).optional(),
+  color: z.string().optional(),
+  sortOrder: z.number().optional()
 })

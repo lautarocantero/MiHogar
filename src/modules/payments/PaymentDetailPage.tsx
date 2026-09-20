@@ -42,7 +42,7 @@ export function PaymentDetailPage(): React.JSX.Element {
   const payment = usePaymentDetailData(paymentId ?? '')
   const { markAsPaid, isSubmitting: isMarkingPaid } = useMarkPaymentAsPaid(payment)
   const { cancel, isSubmitting: isCancelling } = useCancelPayment(payment)
-  const unlockCredentials = useUnlockCredentials()
+  const unlockCredentials = useUnlockCredentials(paymentId ?? '')
   const history = usePaymentHistory(paymentId ?? '')
   const [isEditCredentialsOpen, setIsEditCredentialsOpen] = useState(false)
   const [isEditPaymentOpen, setIsEditPaymentOpen] = useState(false)

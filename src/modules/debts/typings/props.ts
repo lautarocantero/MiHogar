@@ -4,6 +4,7 @@ import type { AddDebtFormValues, DebtsSummary, DebtView } from './types'
 
 export type DebtsSummaryCardsProps = {
   summary: DebtsSummary
+  activeCount: number
 }
 
 export type DebtRowProps = {

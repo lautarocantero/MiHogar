@@ -16,7 +16,8 @@ export const addAccountFormSchema = z
     closingDay: numberField(z.number().int().min(1).max(31).optional()),
     dueDay: numberField(z.number().int().min(1).max(31).optional()),
     nextClosingDay: numberField(z.number().int().min(1).max(31).optional()),
-    nextDueDay: numberField(z.number().int().min(1).max(31).optional())
+    nextDueDay: numberField(z.number().int().min(1).max(31).optional()),
+    color: z.string().optional()
   })
   .refine((data) => data.ownerType !== OwnerType.MEMBER || Boolean(data.ownerId), {
     message: 'Elegí quién es el dueño de la cuenta',

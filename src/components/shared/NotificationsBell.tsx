@@ -1,19 +1,9 @@
 import { useMemo, useState } from 'react'
-import {
-  Badge,
-  Box,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  Tooltip,
-  Typography
-} from '@mui/material'
+import { Badge, Box, IconButton, Popover, Stack, Tooltip, Typography } from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import { Link as RouterLink } from 'react-router-dom'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { selectPendingPayments } from '@/store/payments/paymentsSelectors'
 import { selectActiveDebts } from '@/store/debts/debtsSelectors'
@@ -25,11 +15,12 @@ import { computeMissingVariableDeposits } from '@/utils/domain/computeMissingVar
 import { formatDueLabel } from '@/utils/formatting/formatDate'
 import { buildPaymentDetailPath, ROUTES } from '@/router/routes'
 import { useReminderPreference } from '@/modules/settings/useReminderPreference'
-import { organicColors } from '@/theme/tokens'
+import { organicColors, organicTypography } from '@/theme/tokens'
 import type { RootState } from '@/store'
 
 export function NotificationsBell(): React.JSX.Element {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const pendingPayments = useAppSelector(selectPendingPayments)
   const activeDebts = useAppSelector(selectActiveDebts)
   const { leadDays } = useReminderPreference()
@@ -84,11 +75,23 @@ export function NotificationsBell(): React.JSX.Element {
           <NotificationsIcon />
         </Badge>
       </IconButton>
-      <Menu
+      <Popover
         anchorEl={anchor}
         open={Boolean(anchor)}
         onClose={() => setAnchor(null)}
-        slotProps={{ paper: { sx: { width: 320, maxHeight: 420 } } }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 340,
+              maxHeight: 420,
+              overflowY: 'auto',
+              p: 1.25,
+              backgroundColor: organicColors.background
+            }
+          }
+        }}
       >
         {allItems.length === 0 ? (
           <Box p={2}>
@@ -97,42 +100,69 @@ export function NotificationsBell(): React.JSX.Element {
             </Typography>
           </Box>
         ) : (
-          <List dense>
+          <Stack spacing={1}>
             {allItems.map((item) => {
               const isRead = readIds.includes(item.id)
               return (
-                <ListItemButton
+                <Box
                   key={item.id}
-                  component={RouterLink}
-                  to={item.to}
-                  onClick={() => setAnchor(null)}
-                  sx={{ opacity: isRead ? 0.5 : 1 }}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    p: 1.5,
+                    borderRadius: '14px',
+                    backgroundColor: isRead ? organicColors.surface : organicColors.orange.tint
+                  }}
                 >
-                  <ListItemText primary={item.primary} secondary={item.secondary} />
-                  {!isRead && (
-                    <ListItemIcon sx={{ minWidth: 'auto' }}>
-                      <Tooltip title="Marcar como vista">
-                        <IconButton
-                          size="small"
-                          edge="end"
-                          aria-label={`Marcar ${item.primary} como vista`}
-                          onClick={(event) => {
-                            event.preventDefault()
-                            event.stopPropagation()
-                            dispatch(markNotificationRead(item.id))
-                          }}
-                        >
-                          <CheckCircleOutlineIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemIcon>
-                  )}
-                </ListItemButton>
+                  <Box flexGrow={1} minWidth={0}>
+                    <Typography
+                      component="p"
+                      noWrap
+                      sx={{
+                        fontFamily: organicTypography.titleFontFamily,
+                        fontSize: '0.9375rem',
+                        color: organicColors.orange.dark
+                      }}
+                    >
+                      {item.primary}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" noWrap>
+                      {item.secondary}
+                    </Typography>
+                  </Box>
+                  <Tooltip title="Marcar como vista">
+                    <span>
+                      <IconButton
+                        size="small"
+                        aria-label={`Marcar ${item.primary} como vista`}
+                        disabled={isRead}
+                        onClick={() => dispatch(markNotificationRead(item.id))}
+                        sx={{ color: organicColors.orange.dark }}
+                      >
+                        <VisibilityIcon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                  <Tooltip title="Ir a la notificación">
+                    <IconButton
+                      size="small"
+                      aria-label={`Ir a ${item.primary}`}
+                      onClick={() => {
+                        setAnchor(null)
+                        navigate(item.to)
+                      }}
+                      sx={{ color: organicColors.orange.dark }}
+                    >
+                      <ArrowForwardIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               )
             })}
-          </List>
+          </Stack>
         )}
-      </Menu>
+      </Popover>
     </>
   )
 }

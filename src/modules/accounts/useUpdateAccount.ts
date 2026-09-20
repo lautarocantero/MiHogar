@@ -29,7 +29,8 @@ export function useUpdateAccount(account: Account, onUpdated: () => void): UseUp
             closingDay: isCreditCard ? values.closingDay : undefined,
             dueDay: isCreditCard ? values.dueDay : undefined,
             nextClosingDay: isCreditCard ? values.nextClosingDay : undefined,
-            nextDueDay: isCreditCard ? values.nextDueDay : undefined
+            nextDueDay: isCreditCard ? values.nextDueDay : undefined,
+            color: values.color
           })
         )
         onUpdated()

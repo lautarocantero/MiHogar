@@ -10,7 +10,7 @@ export function DemoModeButton({ onClick, isLoading }: DemoModeButtonProps): Rea
       startIcon={<VisibilityIcon />}
       onClick={onClick}
       disabled={isLoading}
-      sx={{ position: 'fixed', top: 24, right: 24, backgroundColor: 'background.default' }}
+      sx={{ backgroundColor: 'background.paper' }}
     >
       {isLoading ? 'Cargando…' : 'Ver demo'}
     </Button>

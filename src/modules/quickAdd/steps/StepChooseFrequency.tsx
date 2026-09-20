@@ -2,7 +2,7 @@ import { Button, Stack, Typography } from '@mui/material'
 import LooksOneIcon from '@mui/icons-material/LooksOne'
 import RepeatIcon from '@mui/icons-material/Repeat'
 import { MovementType } from '@/typings/domain/enums'
-import { organicColors } from '@/theme/tokens'
+import { organicColors, organicTypography } from '@/theme/tokens'
 import type { StepChooseFrequencyProps } from '../typings/props'
 
 const QUESTION_LABEL: Record<MovementType, string> = {
@@ -18,17 +18,25 @@ export function StepChooseFrequency({
   onBack
 }: StepChooseFrequencyProps): React.JSX.Element {
   return (
-    <Stack spacing={3}>
-      <Typography variant="h6" component="h2">
+    <Stack spacing={2}>
+      <Typography
+        component="h2"
+        sx={{
+          fontFamily: organicTypography.titleFontFamily,
+          fontSize: '1.25rem',
+          fontWeight: 400,
+          color: organicColors.orange.dark
+        }}
+      >
         Paso 2 — {QUESTION_LABEL[type]}
       </Typography>
-      <Stack spacing={2}>
+      <Stack spacing={1.5}>
         <Button
           variant="contained"
           size="large"
           startIcon={<LooksOneIcon />}
           onClick={onChooseOneOff}
-          sx={{ justifyContent: 'flex-start', py: 2, fontSize: '1.125rem' }}
+          sx={{ justifyContent: 'flex-start', py: 2, fontSize: '1.125rem', borderRadius: 0 }}
         >
           Única vez
         </Button>
@@ -41,6 +49,7 @@ export function StepChooseFrequency({
             justifyContent: 'flex-start',
             py: 2,
             fontSize: '1.125rem',
+            borderRadius: 0,
             borderColor: organicColors.sage.main,
             color: organicColors.sage.dark
           }}
