@@ -41,7 +41,7 @@ export function CalendarTimelineCard({
         cursor: 'pointer',
         border: 'none',
         font: 'inherit',
-        backgroundColor: entry.isPast ? organicColors.orange.main : organicColors.surface,
+        backgroundColor: entry.isPast ? organicColors.brown.main : organicColors.surface,
         boxShadow: isHighlighted ? `0 0 0 2px ${organicColors.blue.main}` : 'none',
         transition: 'box-shadow 0.15s ease'
       }}

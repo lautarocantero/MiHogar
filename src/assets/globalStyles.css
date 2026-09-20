@@ -34,3 +34,28 @@ body {
   outline: 3px solid #8c491a;
   outline-offset: 2px;
 }
+
+/* Scrollbars: fondo claro y posición actual (thumb) en marrón claro, en toda la app */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c9a27c #f5ead8;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f5ead8;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #c9a27c;
+  border-radius: 999px;
+  border: 2px solid #f5ead8;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #ab5e2b;
+}

@@ -27,10 +27,37 @@ export const organicColors = {
     dark: '#254a63',
     tint: '#e9f1f6'
   },
+  income: {
+    main: '#2f4022',
+    border: '#d7e7bf',
+    iconBg: '#dcecc4',
+    tint: '#eef6e2'
+  },
+  paid: {
+    main: '#6b4b10',
+    border: '#f0d492',
+    tint: '#fbe7b4'
+  },
+  overdue: {
+    main: '#993225',
+    border: '#d9564a',
+    tint: '#fde3e1'
+  },
   neutral: {
     textSecondary: '#645c50',
     border: '#dcd3c4'
   }
+} as const
+
+export const sidebarColors = {
+  gradient: 'linear-gradient(180deg,#7a4a23 0%,#6b3f1d 45%,#583318 100%)',
+  patternOpacity: 0.12,
+  onDark: '#fffdf9'
+} as const
+
+export const headerColors = {
+  gradient: 'linear-gradient(90deg,#f7e8d6 0%,#fbf3e8 42%,#fdf9f3 100%)',
+  patternOpacity: 0.14
 } as const
 
 export const organicTypography = {
@@ -39,7 +66,7 @@ export const organicTypography = {
 } as const
 
 export const organicShape = {
-  containerRadius: 28,
+  containerRadius: 0,
   pillRadius: 999,
   minTouchTargetHeight: 48
 } as const

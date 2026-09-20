@@ -5,6 +5,8 @@ import { hydrateAccounts } from '@/store/accounts/accountsSlice'
 import { hydrateMovements } from '@/store/movements/movementsSlice'
 import { hydratePayments } from '@/store/payments/paymentsSlice'
 import { hydrateSavings } from '@/store/savings/savingsSlice'
+import { hydrateSavingsGoals } from '@/store/savingsGoals/savingsGoalsSlice'
+import { hydrateSavingsSnapshots } from '@/store/savingsSnapshots/savingsSnapshotsSlice'
 import { hydrateMembers } from '@/store/household/membersSlice'
 import { hydrateCategories } from '@/store/categories/categoriesSlice'
 import { setHouseholdName } from '@/store/household/householdSlice'
@@ -31,6 +33,8 @@ export function useFactoryReset(onReset: () => void): UseFactoryResetResult {
         }
         if (categories.includes(FactoryResetCategory.SAVINGS)) {
           dispatch(hydrateSavings([]))
+          dispatch(hydrateSavingsGoals([]))
+          dispatch(hydrateSavingsSnapshots([]))
         }
         if (categories.includes(FactoryResetCategory.MEMBERS)) {
           dispatch(hydrateMembers([]))

@@ -23,6 +23,8 @@ import { hydrateSavings } from '@/store/savings/savingsSlice'
 import { hydrateCategories } from '@/store/categories/categoriesSlice'
 import { hydrateReadNotifications } from '@/store/notifications/notificationsSlice'
 import { hydrateDebts } from '@/store/debts/debtsSlice'
+import { hydrateSavingsGoals } from '@/store/savingsGoals/savingsGoalsSlice'
+import { hydrateSavingsSnapshots } from '@/store/savingsSnapshots/savingsSnapshotsSlice'
 import { buildDefaultCategories } from '@/utils/domain/buildDefaultCategories'
 import { buildVaultFileFromState } from './buildVaultFileFromState'
 import { buildDemoVaultFile } from './demoVaultData'
@@ -42,6 +44,8 @@ function hydrateDomainSlices(dispatch: AppDispatch, vaultFile: VaultFile): void 
   dispatch(hydrateCategories(vaultFile.categories))
   dispatch(hydrateReadNotifications(vaultFile.notifications))
   dispatch(hydrateDebts(vaultFile.debts))
+  dispatch(hydrateSavingsGoals(vaultFile.savingsGoals))
+  dispatch(hydrateSavingsSnapshots(vaultFile.savingsSnapshots))
 }
 
 export const checkVaultExistsThunk = thunkTypes('vault/checkExists', async () => {

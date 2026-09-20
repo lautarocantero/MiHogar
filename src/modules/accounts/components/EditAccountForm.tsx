@@ -2,6 +2,7 @@ import { Alert, Box, Button, Stack } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addAccountFormSchema } from '@/validation/addAccountFormSchema'
+import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import { AccountFormFields } from './AccountFormFields'
 import type { EditAccountFormProps } from '../typings/props'
 import type { AddAccountFormValues } from '../typings/types'
@@ -34,7 +35,8 @@ export function EditAccountForm({
       closingDay: account.closingDay,
       dueDay: account.dueDay,
       nextClosingDay: account.nextClosingDay,
-      nextDueDay: account.nextDueDay
+      nextDueDay: account.nextDueDay,
+      color: account.color ?? resolveAccountTypeColor(account.type).main
     }
   })
 

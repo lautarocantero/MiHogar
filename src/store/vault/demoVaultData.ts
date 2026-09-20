@@ -1,4 +1,4 @@
-import { addDays, format, startOfDay, subDays } from 'date-fns'
+import { addDays, addMonths, format, startOfDay, startOfMonth, subDays, subMonths } from 'date-fns'
 import type { VaultFile } from '@/typings/domain/types'
 import {
   AccountType,
@@ -34,6 +34,10 @@ const CATEGORY_OTROS_INGRESOS = 'demo-cat-otros-ingresos'
 
 function isoDate(date: Date): string {
   return format(date, 'yyyy-MM-dd')
+}
+
+function monthKey(date: Date): string {
+  return format(startOfMonth(date), 'yyyy-MM')
 }
 
 export function buildDemoVaultFile(): VaultFile {
@@ -431,6 +435,72 @@ export function buildDemoVaultFile(): VaultFile {
         reminderEnabled: true,
         status: DebtStatus.ACTIVE
       }
+    ],
+    savingsGoals: [
+      {
+        id: 'demo-goal-viaje-costa',
+        name: 'Viaje a la costa',
+        icon: 'beach_access',
+        targetAmount: 650000,
+        currentAmount: 450000,
+        targetDate: isoDate(addMonths(today, 5)),
+        ownerType: OwnerType.HOUSEHOLD,
+        colorTag: '#6a7851'
+      },
+      {
+        id: 'demo-goal-amoblar-depto',
+        name: 'Amoblar el departamento',
+        icon: 'chair',
+        targetAmount: 500000,
+        currentAmount: 210000,
+        targetDate: isoDate(addMonths(today, 8)),
+        ownerType: OwnerType.HOUSEHOLD,
+        colorTag: '#b5502a'
+      },
+      {
+        id: 'demo-goal-computadora',
+        name: 'Nueva computadora',
+        icon: 'laptop_mac',
+        targetAmount: 520000,
+        currentAmount: 180000,
+        targetDate: isoDate(addMonths(today, 11)),
+        ownerType: OwnerType.MEMBER,
+        ownerId: MEMBER_SOFIA,
+        colorTag: '#7a5aa8'
+      }
+    ],
+    savingsSnapshots: [
+      {
+        id: monthKey(subMonths(today, 5)),
+        monthKey: monthKey(subMonths(today, 5)),
+        totalSaved: 60000,
+        totalInvested: 120000
+      },
+      {
+        id: monthKey(subMonths(today, 4)),
+        monthKey: monthKey(subMonths(today, 4)),
+        totalSaved: 80000,
+        totalInvested: 160000
+      },
+      {
+        id: monthKey(subMonths(today, 3)),
+        monthKey: monthKey(subMonths(today, 3)),
+        totalSaved: 100000,
+        totalInvested: 200000
+      },
+      {
+        id: monthKey(subMonths(today, 2)),
+        monthKey: monthKey(subMonths(today, 2)),
+        totalSaved: 115000,
+        totalInvested: 230000
+      },
+      {
+        id: monthKey(subMonths(today, 1)),
+        monthKey: monthKey(subMonths(today, 1)),
+        totalSaved: 130000,
+        totalInvested: 260000
+      },
+      { id: monthKey(today), monthKey: monthKey(today), totalSaved: 150000, totalInvested: 300000 }
     ]
   }
 }

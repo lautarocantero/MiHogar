@@ -34,7 +34,8 @@ export function AddAccountForm({
       closingDay: undefined,
       dueDay: undefined,
       nextClosingDay: undefined,
-      nextDueDay: undefined
+      nextDueDay: undefined,
+      color: '#7a4a23'
     }
   })
 

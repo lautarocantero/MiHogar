@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Card, Stack, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { organicColors } from '@/theme/tokens'
+import { organicColors, organicTypography } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDayMonth, formatDaysRemainingLabel } from '@/utils/formatting/formatDate'
 import { buildPaymentDetailPath } from '@/router/routes'
@@ -16,13 +16,21 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
   }
 
   return (
-    <Stack spacing={2} component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
+    <Card component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }} elevation={0}>
       {payments.map(({ payment, accountName, displayDate }, index) => {
         const { day, month } = formatDayMonth(displayDate)
         const isMostUrgent = index === 0
+        const isLast = index === payments.length - 1
 
         return (
-          <Card key={payment.id} component="li" sx={{ p: 2 }} elevation={0}>
+          <Box
+            key={payment.id}
+            component="li"
+            sx={{
+              p: 2,
+              borderBottom: isLast ? 'none' : `1px solid ${organicColors.neutral.border}`
+            }}
+          >
             <Stack direction="row" alignItems="center" spacing={2}>
               <Avatar
                 sx={{
@@ -49,9 +57,19 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
                   {formatDaysRemainingLabel(displayDate)} · Se paga con {accountName}
                 </Typography>
               </Box>
-              <Typography variant="h6" component="p" color={organicColors.orange.dark}>
+              <Box
+                sx={{
+                  backgroundColor: organicColors.orange.tint,
+                  color: organicColors.orange.dark,
+                  fontFamily: organicTypography.titleFontFamily,
+                  fontSize: '1.125rem',
+                  px: 2.25,
+                  py: 1,
+                  whiteSpace: 'nowrap'
+                }}
+              >
                 {formatCurrency(payment.amount)}
-              </Typography>
+              </Box>
               <Button
                 component={RouterLink}
                 to={buildPaymentDetailPath(payment.id)}
@@ -60,9 +78,9 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
                 Ver pago
               </Button>
             </Stack>
-          </Card>
+          </Box>
         )
       })}
-    </Stack>
+    </Card>
   )
 }

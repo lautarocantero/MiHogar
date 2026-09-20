@@ -1,13 +1,15 @@
 import { useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { useAppDispatch } from '@/store/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { addAccount } from '@/store/accounts/accountsSlice'
+import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { AccountType, OwnerType } from '@/typings/domain/enums'
 import type { AddAccountFormValues, UseCreateAccountResult } from './typings/types'
 
 export function useCreateAccount(onCreated: () => void): UseCreateAccountResult {
   const dispatch = useAppDispatch()
+  const accounts = useAppSelector(selectAllAccounts)
   const { isLoading, error, run } = useLoader()
 
   const submit = useCallback(
@@ -29,13 +31,15 @@ export function useCreateAccount(onCreated: () => void): UseCreateAccountResult 
             closingDay: isCreditCard ? values.closingDay : undefined,
             dueDay: isCreditCard ? values.dueDay : undefined,
             nextClosingDay: isCreditCard ? values.nextClosingDay : undefined,
-            nextDueDay: isCreditCard ? values.nextDueDay : undefined
+            nextDueDay: isCreditCard ? values.nextDueDay : undefined,
+            color: values.color,
+            sortOrder: accounts.length
           })
         )
         onCreated()
       }, 'No se pudo agregar la cuenta')
     },
-    [dispatch, run, onCreated]
+    [dispatch, run, onCreated, accounts]
   )
 
   return { submit, isSubmitting: isLoading, errorMessage: error }

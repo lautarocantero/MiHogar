@@ -2,10 +2,17 @@ import { useCallback, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { recordMovementThunk } from '@/store/movements/movementThunks'
+import { showToast } from '@/store/ui/uiSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { MovementType, OwnerType } from '@/typings/domain/enums'
 import { QuickAddStep } from './typings/enums'
 import type { QuickAddFormValues, UseQuickAddFormResult } from './typings/types'
+
+const DONE_MESSAGE: Record<MovementType, string> = {
+  [MovementType.EXPENSE]: 'Compra agregada',
+  [MovementType.INCOME]: 'Dinero agregado',
+  [MovementType.TRANSFER]: 'Dinero movido'
+}
 
 export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
   const dispatch = useAppDispatch()
@@ -44,26 +51,30 @@ export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
   }, [selectedType])
 
   const submit = useCallback(
-    (values: QuickAddFormValues) => {
+    (entries: QuickAddFormValues[]) => {
       run(async () => {
-        const account = accounts.find((candidate) => candidate.id === values.accountId)
-        await dispatch(
-          recordMovementThunk({
-            type: values.type,
-            amount: values.amount,
-            date: values.date,
-            accountId: values.accountId,
-            toAccountId: values.type === MovementType.TRANSFER ? values.toAccountId : undefined,
-            categoryId: values.type === MovementType.TRANSFER ? undefined : values.categoryId,
-            ownerType: account?.ownerType ?? OwnerType.HOUSEHOLD,
-            ownerId: account?.ownerId,
-            note: values.note
-          })
-        ).unwrap()
+        for (const values of entries) {
+          const account = accounts.find((candidate) => candidate.id === values.accountId)
+          await dispatch(
+            recordMovementThunk({
+              type: values.type,
+              amount: values.amount,
+              date: values.date,
+              accountId: values.accountId,
+              toAccountId: values.type === MovementType.TRANSFER ? values.toAccountId : undefined,
+              categoryId: values.type === MovementType.TRANSFER ? undefined : values.categoryId,
+              ownerType: account?.ownerType ?? OwnerType.HOUSEHOLD,
+              ownerId: account?.ownerId,
+              note: values.note
+            })
+          ).unwrap()
+        }
+        const firstType = entries[0]?.type ?? selectedType
+        dispatch(showToast(firstType ? DONE_MESSAGE[firstType] : 'Movimiento guardado'))
         onDone()
       }, 'No se pudo guardar el movimiento')
     },
-    [dispatch, run, onDone, accounts]
+    [dispatch, run, onDone, accounts, selectedType]
   )
 
   return {

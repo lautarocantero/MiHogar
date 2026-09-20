@@ -1,5 +1,6 @@
-import { Chip, DialogContent, Dialog } from '@mui/material'
+import { DialogContent, Dialog, Typography } from '@mui/material'
 import { DialogHeader } from '@/components/shared/DialogHeader'
+import { organicColors, organicTypography } from '@/theme/tokens'
 import { MovementType, PaymentKind } from '@/typings/domain/enums'
 import { AddPaymentForm } from '@/modules/payments/components/AddPaymentForm'
 import { useCreatePayment } from '@/modules/payments/useCreatePayment'
@@ -42,14 +43,22 @@ export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.
       aria-labelledby="quick-add-title"
     >
       <DialogHeader id="quick-add-title" onClose={onClose}>
-        Nuevo movimiento
+        <Typography
+          component="span"
+          sx={{
+            fontFamily: organicTypography.titleFontFamily,
+            fontSize: '1.75rem',
+            fontWeight: 400,
+            color: organicColors.orange.dark
+          }}
+        >
+          Nuevo movimiento
+        </Typography>
       </DialogHeader>
       <DialogContent>
-        <Chip
-          size="small"
-          label="Registrá cualquier pago, cobro o depósito, único o recurrente, desde acá."
-          sx={{ mb: 2, height: 'auto', '& .MuiChip-label': { whiteSpace: 'normal', py: 0.5 } }}
-        />
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
+          Registrá cualquier pago, cobro o depósito, único o recurrente, desde acá.
+        </Typography>
         {step === QuickAddStep.CHOOSE_TYPE && <StepChooseType onChoose={chooseType} />}
         {step === QuickAddStep.CHOOSE_FREQUENCY && selectedType && (
           <StepChooseFrequency

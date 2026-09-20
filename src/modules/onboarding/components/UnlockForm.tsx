@@ -28,10 +28,10 @@ export function UnlockForm({
       aria-labelledby="unlock-title"
     >
       <Stack spacing={3}>
-        <Typography id="unlock-title" variant="h4" component="h1">
+        <Typography id="unlock-title" variant="h6" component="h2">
           Ingresá la clave del hogar
         </Typography>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body2" color="text.secondary">
           Es la misma clave para todo: entrar a la aplicación y ver los datos guardados de cada
           pago.
         </Typography>

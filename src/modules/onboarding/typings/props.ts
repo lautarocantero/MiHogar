@@ -21,3 +21,9 @@ export type DemoModeButtonProps = {
   onClick: () => void
   isLoading: boolean
 }
+
+export type AuthPageLayoutProps = {
+  onDemoClick: () => void
+  isDemoLoading: boolean
+  children: ReactNode
+}

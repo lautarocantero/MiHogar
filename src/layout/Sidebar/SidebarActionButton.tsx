@@ -11,14 +11,17 @@ export function SidebarActionButton({
     <ListItemButton
       onClick={action.onClick}
       sx={{
-        borderRadius: 999,
-        mx: 1,
+        borderRadius: 0,
         minHeight: 48,
         justifyContent: collapsed ? 'center' : 'flex-start',
-        px: collapsed ? 1.5 : 2
+        px: collapsed ? 1.5 : 2,
+        color: 'rgba(255,253,249,0.9)',
+        '&:hover': { backgroundColor: 'rgba(255,253,249,0.10)' }
       }}
     >
-      <ListItemIcon sx={{ minWidth: collapsed ? 0 : 40, justifyContent: 'center' }}>
+      <ListItemIcon
+        sx={{ minWidth: collapsed ? 0 : 40, justifyContent: 'center', color: 'inherit' }}
+      >
         <Icon aria-hidden="true" />
       </ListItemIcon>
       {!collapsed && (

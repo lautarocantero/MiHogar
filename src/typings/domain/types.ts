@@ -11,6 +11,8 @@ import type { savingsInstrumentSchema } from '@/validation/savingsSchema'
 import type { categorySchema } from '@/validation/categorySchema'
 import type { readNotificationSchema } from '@/validation/notificationSchema'
 import type { debtSchema } from '@/validation/debtSchema'
+import type { savingsGoalSchema } from '@/validation/savingsGoalSchema'
+import type { savingsSnapshotSchema } from '@/validation/savingsSnapshotSchema'
 import type { vaultFileSchema } from '@/validation/vaultFileSchema'
 
 export type Household = z.infer<typeof householdSchema>
@@ -24,6 +26,8 @@ export type SavingsInstrument = z.infer<typeof savingsInstrumentSchema>
 export type Category = z.infer<typeof categorySchema>
 export type ReadNotification = z.infer<typeof readNotificationSchema>
 export type Debt = z.infer<typeof debtSchema>
+export type SavingsGoal = z.infer<typeof savingsGoalSchema>
+export type SavingsSnapshot = z.infer<typeof savingsSnapshotSchema>
 export type VaultFile = z.infer<typeof vaultFileSchema>
 
 export type FlowSummary = {

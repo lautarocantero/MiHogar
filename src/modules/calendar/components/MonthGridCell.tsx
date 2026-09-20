@@ -9,19 +9,19 @@ const EVENT_STYLES: Record<
   { background: string; border: string; text: string }
 > = {
   [CalendarEventKind.PENDING]: {
-    background: organicColors.orange.tint,
-    border: organicColors.orange.main,
-    text: organicColors.orange.dark
+    background: organicColors.overdue.tint,
+    border: organicColors.overdue.border,
+    text: organicColors.overdue.main
   },
   [CalendarEventKind.PAID]: {
-    background: organicColors.neutral.border,
-    border: 'transparent',
-    text: organicColors.neutral.textSecondary
+    background: organicColors.paid.tint,
+    border: organicColors.paid.border,
+    text: organicColors.paid.main
   },
   [CalendarEventKind.INCOME]: {
-    background: organicColors.sage.tint,
-    border: 'transparent',
-    text: organicColors.sage.dark
+    background: organicColors.income.tint,
+    border: organicColors.income.border,
+    text: organicColors.income.main
   }
 }
 
@@ -59,7 +59,7 @@ export function MonthGridCell({
       }
       sx={{
         aspectRatio: '1 / 1',
-        borderRadius: '16px',
+        borderRadius: 0,
         p: 1,
         display: 'flex',
         flexDirection: 'column',
@@ -67,7 +67,8 @@ export function MonthGridCell({
         cursor: 'pointer',
         backgroundColor: day.isToday
           ? organicColors.blue.tint
-          : (eventStyle?.background ?? organicColors.surface),
+          : (eventStyle?.background ??
+            (day.isPast && day.isCurrentMonth ? organicColors.brown.tint : organicColors.surface)),
         border: hasFinalInstallment
           ? `3px solid ${organicColors.sage.main}`
           : day.isToday

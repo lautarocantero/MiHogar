@@ -13,14 +13,17 @@ export function useAccountsData(): AccountsData {
   const members = useAppSelector(selectAllMembers)
 
   return useMemo(() => {
-    const accountViews = accounts.map((account) => ({
-      ...account,
-      ownerLabel: resolveOwnerLabel(account.ownerType, account.ownerId, members),
-      typeLabel: resolveAccountTypeLabel(account.type),
-      sourceAccountName: account.sourceAccountId
-        ? accounts.find((candidate) => candidate.id === account.sourceAccountId)?.name
-        : undefined
-    }))
+    const accountViews = accounts
+      .map((account, index) => ({
+        ...account,
+        ownerLabel: resolveOwnerLabel(account.ownerType, account.ownerId, members),
+        typeLabel: resolveAccountTypeLabel(account.type),
+        sourceAccountName: account.sourceAccountId
+          ? accounts.find((candidate) => candidate.id === account.sourceAccountId)?.name
+          : undefined,
+        sortOrder: account.sortOrder ?? index
+      }))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
 
     return {
       totalAvailable,

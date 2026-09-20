@@ -10,22 +10,62 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { organicColors } from '@/theme/tokens'
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote'
+import CallReceivedIcon from '@mui/icons-material/CallReceived'
+import { organicColors, organicTypography } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
-import { DebtStatus } from '@/typings/domain/enums'
+import { DebtDirection, DebtStatus } from '@/typings/domain/enums'
 import { useRegisterInstallmentPayment } from '../useRegisterInstallmentPayment'
 import type { DebtRowProps } from '../typings/props'
 
 export function DebtRow({ debt, onEdit, onDelete }: DebtRowProps): React.JSX.Element {
   const isPaidOff = debt.status === DebtStatus.PAID_OFF
+  const isOwedByHousehold = debt.direction === DebtDirection.OWED_BY_HOUSEHOLD
+  const accent = isOwedByHousehold ? organicColors.overdue : organicColors.income
+  const accentIconBg = isOwedByHousehold
+    ? organicColors.overdue.border
+    : organicColors.income.iconBg
   const { submit: registerInstallmentPayment, isSubmitting } = useRegisterInstallmentPayment(debt)
 
   return (
-    <Card component="li" sx={{ p: 2 }} elevation={0}>
+    <Card
+      component="li"
+      sx={{
+        p: 2,
+        backgroundColor: organicColors.surface,
+        border: `1px solid ${organicColors.neutral.border}`
+      }}
+      elevation={0}
+    >
       <Stack spacing={1.5}>
         <Stack direction="row" alignItems="center" spacing={2}>
-          <Box flexGrow={1}>
-            <Typography variant="h6" component="p">
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 44,
+              height: 44,
+              flexShrink: 0,
+              backgroundColor: accentIconBg,
+              color: accent.main
+            }}
+          >
+            {isOwedByHousehold ? (
+              <RequestQuoteIcon fontSize="small" />
+            ) : (
+              <CallReceivedIcon fontSize="small" />
+            )}
+          </Box>
+          <Box flexGrow={1} minWidth={0}>
+            <Typography
+              component="p"
+              sx={{
+                fontFamily: organicTypography.titleFontFamily,
+                fontSize: '1.0625rem',
+                color: organicColors.orange.dark
+              }}
+            >
               {debt.name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -38,7 +78,15 @@ export function DebtRow({ debt, onEdit, onDelete }: DebtRowProps): React.JSX.Ele
             size="small"
             sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
           />
-          <Typography variant="h6" component="p">
+          <Typography
+            component="p"
+            sx={{
+              fontFamily: organicTypography.titleFontFamily,
+              fontSize: '1.25rem',
+              color: accent.main,
+              whiteSpace: 'nowrap'
+            }}
+          >
             {formatCurrency(debt.outstandingBalance)}
           </Typography>
           <IconButton aria-label={`Editar ${debt.name}`} onClick={() => onEdit(debt)} size="small">
@@ -56,7 +104,11 @@ export function DebtRow({ debt, onEdit, onDelete }: DebtRowProps): React.JSX.Ele
           <LinearProgress
             variant="determinate"
             value={debt.progressPercent}
-            sx={{ borderRadius: 999, height: 8 }}
+            sx={{
+              height: 8,
+              backgroundColor: organicColors.neutral.border,
+              '& .MuiLinearProgress-bar': { backgroundColor: accent.main }
+            }}
           />
         )}
         {!isPaidOff && debt.installmentAmount != null && (

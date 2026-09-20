@@ -8,12 +8,26 @@ import {
   TableHead,
   TableRow
 } from '@mui/material'
+import { organicColors } from '@/theme/tokens'
 import { PaymentTableRow } from './PaymentTableRow'
-import type { PaymentsTableProps } from '../typings/props'
+import type { PaymentColumnKey, PaymentsTableProps } from '../typings/props'
+
+const HEADERS: Array<{ key: PaymentColumnKey; label: string }> = [
+  { key: 'date', label: 'Fecha' },
+  { key: 'title', label: 'Título' },
+  { key: 'status', label: 'Estado' },
+  { key: 'method', label: 'Método de pago' },
+  { key: 'type', label: 'Tipo de pago' },
+  { key: 'account', label: 'Cuenta' },
+  { key: 'category', label: 'Categoría' },
+  { key: 'owner', label: 'De quién es' },
+  { key: 'mode', label: 'Monto fijo/variable' }
+]
 
 export function PaymentsTable({
   entries,
   focusEntryId,
+  hiddenColumns,
   onEditPayment,
   onDeletePayment,
   onEditMovement,
@@ -27,21 +41,50 @@ export function PaymentsTable({
   }, [focusEntryId, entries])
 
   return (
-    <TableContainer component={Card} elevation={0}>
-      <Table size="small">
+    <TableContainer
+      component={Card}
+      elevation={0}
+      sx={{ border: `1px solid ${organicColors.brown.main}` }}
+    >
+      <Table
+        size="small"
+        sx={{
+          borderCollapse: 'collapse',
+          '& .MuiTableCell-root': {
+            border: `1px solid ${organicColors.brown.main}`
+          }
+        }}
+      >
         <TableHead>
           <TableRow>
-            <TableCell>Fecha</TableCell>
-            <TableCell>Título</TableCell>
-            <TableCell>Estado</TableCell>
-            <TableCell>Método de pago</TableCell>
-            <TableCell>Tipo de pago</TableCell>
-            <TableCell>Cuenta</TableCell>
-            <TableCell>Categoría</TableCell>
-            <TableCell>De quién es</TableCell>
-            <TableCell>Monto fijo/variable</TableCell>
-            <TableCell align="right">Monto</TableCell>
-            <TableCell align="right">Acciones</TableCell>
+            {HEADERS.filter((header) => !hiddenColumns.has(header.key)).map((header) => (
+              <TableCell
+                key={header.key}
+                sx={{
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.3px',
+                  textTransform: 'uppercase',
+                  color: '#fffdf9',
+                  backgroundColor: organicColors.brown.main,
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {header.label}
+              </TableCell>
+            ))}
+            <TableCell
+              align="right"
+              sx={{ backgroundColor: organicColors.brown.main, color: '#fffdf9', fontWeight: 600 }}
+            >
+              Monto
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ backgroundColor: organicColors.brown.main, color: '#fffdf9', fontWeight: 600 }}
+            >
+              Acciones
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -50,6 +93,7 @@ export function PaymentsTable({
               key={entry.id}
               entry={entry}
               isFocused={entry.id === focusEntryId}
+              hiddenColumns={hiddenColumns}
               rowRef={(node) => {
                 if (node) {
                   rowRefs.current.set(entry.id, node)

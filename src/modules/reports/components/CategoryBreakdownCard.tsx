@@ -1,7 +1,9 @@
-import { Box, LinearProgress, Stack, Typography } from '@mui/material'
-import { organicColors } from '@/theme/tokens'
+import { Typography } from '@mui/material'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import { DonutChart } from '@/components/shared/DonutChart'
 import type { CategoryBreakdownCardProps } from '../typings/props'
+
+const CATEGORY_COLORS = ['#e2703a', '#e8b93f', '#2f8f8a', '#7a5aa8', '#3f6a8a', '#b7ada0']
 
 export function CategoryBreakdownCard({ entries }: CategoryBreakdownCardProps): React.JSX.Element {
   if (entries.length === 0) {
@@ -12,31 +14,19 @@ export function CategoryBreakdownCard({ entries }: CategoryBreakdownCardProps): 
     )
   }
 
+  const total = entries.reduce((sum, entry) => sum + entry.total, 0)
+  const segments = entries.map((entry, index) => ({
+    label: entry.categoryName,
+    amountLabel: formatCurrency(entry.total),
+    percent: entry.percent,
+    color: CATEGORY_COLORS[index % CATEGORY_COLORS.length]
+  }))
+
   return (
-    <Stack spacing={2}>
-      {entries.map((entry) => (
-        <Box key={entry.categoryId}>
-          <Stack direction="row" justifyContent="space-between" mb={0.5}>
-            <Typography variant="body1">{entry.categoryName}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {formatCurrency(entry.total)} · {entry.percent}%
-            </Typography>
-          </Stack>
-          <LinearProgress
-            variant="determinate"
-            value={entry.percent}
-            sx={{
-              height: 10,
-              borderRadius: 999,
-              backgroundColor: organicColors.neutral.border,
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: organicColors.orange.main,
-                borderRadius: 999
-              }
-            }}
-          />
-        </Box>
-      ))}
-    </Stack>
+    <DonutChart
+      segments={segments}
+      centerValue={formatCurrency(total)}
+      centerLabel="Total de gastos"
+    />
   )
 }

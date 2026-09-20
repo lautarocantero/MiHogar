@@ -18,6 +18,7 @@ import type { PaymentTableRowProps } from '../typings/props'
 export function PaymentTableRow({
   entry,
   isFocused,
+  hiddenColumns,
   rowRef,
   onEditPayment,
   onDeletePayment,
@@ -40,46 +41,58 @@ export function PaymentTableRow({
       hover
       sx={{ backgroundColor: isFocused ? organicColors.blue.tint : 'inherit' }}
     >
-      <TableCell>
-        {day} {month}
-      </TableCell>
-      <TableCell>
-        <Typography variant="body2">{entry.concept}</Typography>
-        {typeof installmentsRemaining === 'number' && payment && (
-          <Typography variant="caption" color="text.secondary">
-            cuota {(payment.installmentsPaid ?? 0) + 1}/{payment.installmentsTotal}
-          </Typography>
-        )}
-      </TableCell>
-      <TableCell>
-        <Chip
-          label={isPaid ? 'Pagado' : 'Pendiente'}
-          size="small"
-          sx={
-            isPaid
-              ? { backgroundColor: organicColors.sage.tint, color: organicColors.sage.dark }
-              : { backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }
-          }
-        />
-      </TableCell>
-      <TableCell>{isCard ? 'Tarjeta' : 'Efectivo'}</TableCell>
-      <TableCell>{entry.recurring ? 'Recurrente' : 'Único'}</TableCell>
-      <TableCell>{entry.accountName}</TableCell>
-      <TableCell>{entry.categoryName}</TableCell>
-      <TableCell>
-        <Chip
-          label={entry.ownerLabel}
-          size="small"
-          sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
-        />
-      </TableCell>
-      <TableCell>
-        {entry.amountMode === AmountMode.VARIABLE
-          ? 'Variable'
-          : entry.amountMode === AmountMode.FIXED
-            ? 'Fijo'
-            : '—'}
-      </TableCell>
+      {!hiddenColumns.has('date') && (
+        <TableCell>
+          {day} {month}
+        </TableCell>
+      )}
+      {!hiddenColumns.has('title') && (
+        <TableCell>
+          <Typography variant="body2">{entry.concept}</Typography>
+          {typeof installmentsRemaining === 'number' && payment && (
+            <Typography variant="caption" color="text.secondary">
+              cuota {(payment.installmentsPaid ?? 0) + 1}/{payment.installmentsTotal}
+            </Typography>
+          )}
+        </TableCell>
+      )}
+      {!hiddenColumns.has('status') && (
+        <TableCell>
+          <Chip
+            label={isPaid ? 'Pagado' : 'Pendiente'}
+            size="small"
+            sx={
+              isPaid
+                ? { backgroundColor: organicColors.paid.tint, color: organicColors.paid.main }
+                : { backgroundColor: organicColors.overdue.tint, color: organicColors.overdue.main }
+            }
+          />
+        </TableCell>
+      )}
+      {!hiddenColumns.has('method') && <TableCell>{isCard ? 'Tarjeta' : 'Efectivo'}</TableCell>}
+      {!hiddenColumns.has('type') && (
+        <TableCell>{entry.recurring ? 'Recurrente' : 'Único'}</TableCell>
+      )}
+      {!hiddenColumns.has('account') && <TableCell>{entry.accountName}</TableCell>}
+      {!hiddenColumns.has('category') && <TableCell>{entry.categoryName}</TableCell>}
+      {!hiddenColumns.has('owner') && (
+        <TableCell>
+          <Chip
+            label={entry.ownerLabel}
+            size="small"
+            sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
+          />
+        </TableCell>
+      )}
+      {!hiddenColumns.has('mode') && (
+        <TableCell>
+          {entry.amountMode === AmountMode.VARIABLE
+            ? 'Variable'
+            : entry.amountMode === AmountMode.FIXED
+              ? 'Fijo'
+              : '—'}
+        </TableCell>
+      )}
       <TableCell align="right">
         <Typography
           variant="body2"
