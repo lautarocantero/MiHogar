@@ -8,6 +8,8 @@ import { QuickAddStep } from './typings/enums'
 import { StepChooseType } from './steps/StepChooseType'
 import { StepChooseFrequency } from './steps/StepChooseFrequency'
 import { StepAmountAndDetails } from './steps/StepAmountAndDetails'
+import { StepCardPaymentDetails } from './steps/StepCardPaymentDetails'
+import { StepIncomeDetails } from './steps/StepIncomeDetails'
 import { useQuickAddForm } from './useQuickAddForm'
 import type { QuickAddModalProps } from './typings/props'
 
@@ -68,15 +70,33 @@ export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.
             onBack={goBack}
           />
         )}
-        {step === QuickAddStep.AMOUNT_AND_DETAILS && selectedType && (
-          <StepAmountAndDetails
-            type={selectedType}
-            onSubmit={submit}
-            onBack={goBack}
-            isSubmitting={isSubmitting}
-            errorMessage={errorMessage}
-          />
-        )}
+        {step === QuickAddStep.AMOUNT_AND_DETAILS &&
+          selectedType &&
+          (selectedType === MovementType.CARD_PAYMENT ? (
+            <StepCardPaymentDetails
+              type={selectedType}
+              onSubmit={submit}
+              onBack={goBack}
+              isSubmitting={isSubmitting}
+              errorMessage={errorMessage}
+            />
+          ) : selectedType === MovementType.INCOME ? (
+            <StepIncomeDetails
+              type={selectedType}
+              onSubmit={submit}
+              onBack={goBack}
+              isSubmitting={isSubmitting}
+              errorMessage={errorMessage}
+            />
+          ) : (
+            <StepAmountAndDetails
+              type={selectedType}
+              onSubmit={submit}
+              onBack={goBack}
+              isSubmitting={isSubmitting}
+              errorMessage={errorMessage}
+            />
+          ))}
         {isRecurringStep && selectedType && (
           <AddPaymentForm
             kind={recurringKind}

@@ -8,7 +8,12 @@ import { MovementFormFields } from './MovementFormFields'
 import type { EditMovementFormProps } from '../typings/props'
 import type { QuickAddFormValues } from '@/modules/quickAdd/typings/types'
 
-const MOVEMENT_TYPES = [MovementType.EXPENSE, MovementType.INCOME, MovementType.TRANSFER]
+const MOVEMENT_TYPES = [
+  MovementType.EXPENSE,
+  MovementType.INCOME,
+  MovementType.TRANSFER,
+  MovementType.CARD_PAYMENT
+]
 
 export function EditMovementForm({
   movement,

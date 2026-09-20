@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag'
-import { AccountType, CategoryKind, MovementType } from '@/typings/domain/enums'
+import { AccountType, CategoryKind, Currency, MovementType } from '@/typings/domain/enums'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { selectAllMembers } from '@/store/household/householdSelectors'
@@ -59,6 +59,7 @@ export function StepAmountAndDetails({
 
   const [itemMode, setItemMode] = useState<ItemMode>('single')
   const [method, setMethod] = useState<PaymentMethod>(isTransfer ? 'transfer' : 'cash')
+  const [currency, setCurrency] = useState<Currency>(Currency.ARS)
   const [amount, setAmount] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [note, setNote] = useState('')
@@ -94,6 +95,7 @@ export function StepAmountAndDetails({
     ({
       type,
       amount: overrideAmount ?? (Number(amount) || 0),
+      currency,
       date,
       categoryId: isTransfer ? undefined : categoryId,
       accountId,
@@ -249,6 +251,32 @@ export function StepAmountAndDetails({
           </Stack>
         </Box>
       )}
+
+      <Box
+        component="fieldset"
+        sx={{ border: `1px solid ${organicColors.neutral.border}`, p: 1.5, m: 0 }}
+      >
+        <Typography component="legend" variant="caption" color="text.secondary" sx={{ px: 0.5 }}>
+          Moneda
+        </Typography>
+        <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
+          {[
+            { id: Currency.ARS, label: 'Pesos' },
+            { id: Currency.USD, label: 'Dólares' }
+          ].map((option) => (
+            <Box key={option.id} component="label" sx={pillStyle(currency === option.id)}>
+              <input
+                type="radio"
+                name="currency"
+                checked={currency === option.id}
+                onChange={() => setCurrency(option.id)}
+                style={{ accentColor: organicColors.orange.dark, width: 15, height: 15 }}
+              />
+              <span>{option.label}</span>
+            </Box>
+          ))}
+        </Stack>
+      </Box>
 
       {!isTransfer && (
         <CategoryField

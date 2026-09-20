@@ -34,7 +34,13 @@ export enum AmountMode {
 export enum MovementType {
   EXPENSE = 'EXPENSE',
   INCOME = 'INCOME',
-  TRANSFER = 'TRANSFER'
+  TRANSFER = 'TRANSFER',
+  CARD_PAYMENT = 'CARD_PAYMENT'
+}
+
+export enum Currency {
+  ARS = 'ARS',
+  USD = 'USD'
 }
 
 export enum CategoryKind {

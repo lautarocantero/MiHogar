@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { organicColors, organicTypography } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDayMonth, formatDaysRemainingLabel } from '@/utils/formatting/formatDate'
-import { buildPaymentDetailPath } from '@/router/routes'
+import { buildPaymentDetailPath, ROUTES } from '@/router/routes'
 import type { UpcomingPaymentsListProps } from '../typings/props'
 
 export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): React.JSX.Element {
@@ -17,14 +17,25 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
 
   return (
     <Card component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }} elevation={0}>
-      {payments.map(({ payment, accountName, displayDate }, index) => {
-        const { day, month } = formatDayMonth(displayDate)
+      {payments.map((entry, index) => {
+        const { day, month } = formatDayMonth(entry.displayDate)
         const isMostUrgent = index === 0
         const isLast = index === payments.length - 1
+        const key = entry.kind === 'payment' ? entry.payment.id : `card-${entry.accountId}`
+        const title =
+          entry.kind === 'payment' ? entry.payment.concept : `Cierre tarjeta ${entry.accountName}`
+        const subtitle =
+          entry.kind === 'payment'
+            ? `${formatDaysRemainingLabel(entry.displayDate)} · Se paga con ${entry.accountName}`
+            : `${formatDaysRemainingLabel(entry.displayDate)} · ${entry.paymentCount} ${entry.paymentCount === 1 ? 'movimiento' : 'movimientos'}`
+        const amount = entry.kind === 'payment' ? entry.payment.amount : entry.amount
+        const detailPath =
+          entry.kind === 'payment' ? buildPaymentDetailPath(entry.payment.id) : ROUTES.ACCOUNTS
+        const detailLabel = entry.kind === 'payment' ? 'Ver pago' : 'Ver tarjeta'
 
         return (
           <Box
-            key={payment.id}
+            key={key}
             component="li"
             sx={{
               p: 2,
@@ -51,10 +62,10 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
               </Avatar>
               <Box flexGrow={1}>
                 <Typography variant="h6" component="p">
-                  {payment.concept}
+                  {title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {formatDaysRemainingLabel(displayDate)} · Se paga con {accountName}
+                  {subtitle}
                 </Typography>
               </Box>
               <Box
@@ -68,14 +79,10 @@ export function UpcomingPaymentsList({ payments }: UpcomingPaymentsListProps): R
                   whiteSpace: 'nowrap'
                 }}
               >
-                {formatCurrency(payment.amount)}
+                {formatCurrency(amount)}
               </Box>
-              <Button
-                component={RouterLink}
-                to={buildPaymentDetailPath(payment.id)}
-                variant="outlined"
-              >
-                Ver pago
+              <Button component={RouterLink} to={detailPath} variant="outlined">
+                {detailLabel}
               </Button>
             </Stack>
           </Box>

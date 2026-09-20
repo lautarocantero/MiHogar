@@ -18,10 +18,14 @@ export function CalendarTimelineCard({
   onSelect
 }: CalendarTimelineCardProps): React.JSX.Element {
   const isIncome = isIncomeEntry(entry)
-  const accent = isIncome ? organicColors.sage : organicColors.orange
   const relativeLabel = formatRelativeDaysLabel(entry.displayDate)
-  const textColor = entry.isPast ? '#ffffff' : 'text.primary'
-  const mutedTextColor = entry.isPast ? 'rgba(255,255,255,0.85)' : 'text.secondary'
+  const textColor = entry.isPast ? organicColors.weakYellow : '#1a1208'
+  const mutedTextColor = entry.isPast ? organicColors.weakYellowMuted : 'rgba(26,18,8,0.7)'
+  const amountColor = entry.isPast
+    ? organicColors.weakYellow
+    : isIncome
+      ? organicColors.sage.tint
+      : organicColors.orange.tint
 
   return (
     <Card
@@ -39,9 +43,11 @@ export function CalendarTimelineCard({
         textAlign: 'left',
         p: 2,
         cursor: 'pointer',
-        border: 'none',
+        border: `1px solid ${entry.isPast ? 'rgba(255,253,249,0.12)' : 'rgba(255,253,249,0.28)'}`,
         font: 'inherit',
-        backgroundColor: entry.isPast ? organicColors.brown.main : organicColors.surface,
+        backgroundColor: entry.isPast ? 'rgba(255,253,249,0.05)' : 'rgba(255,253,249,0.55)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         boxShadow: isHighlighted ? `0 0 0 2px ${organicColors.blue.main}` : 'none',
         transition: 'box-shadow 0.15s ease'
       }}
@@ -59,11 +65,7 @@ export function CalendarTimelineCard({
               {entry.accountName}
             </Typography>
           </Stack>
-          <Typography
-            variant="h6"
-            component="p"
-            sx={{ color: entry.isPast ? '#ffffff' : accent.dark, flexShrink: 0 }}
-          >
+          <Typography variant="h6" component="p" sx={{ color: amountColor, flexShrink: 0 }}>
             {formatCurrency(entry.amount)}
           </Typography>
         </Stack>

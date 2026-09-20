@@ -8,7 +8,8 @@ import type { StepChooseFrequencyProps } from '../typings/props'
 const QUESTION_LABEL: Record<MovementType, string> = {
   [MovementType.EXPENSE]: '¿Es un pago único o recurrente?',
   [MovementType.INCOME]: '¿Es un ingreso único o recurrente?',
-  [MovementType.TRANSFER]: '¿Es único o recurrente?'
+  [MovementType.TRANSFER]: '¿Es único o recurrente?',
+  [MovementType.CARD_PAYMENT]: '¿Es único o recurrente?'
 }
 
 export function StepChooseFrequency({

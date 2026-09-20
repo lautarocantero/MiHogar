@@ -1,10 +1,19 @@
-import type { CalendarEventKind } from './enums'
+import type { CalendarBadgeKind, CalendarEventKind } from './enums'
 
 export type CalendarDayEvent = {
   kind: CalendarEventKind
   amount: number
   label: string
   isFinalInstallment?: boolean
+}
+
+export type CalendarDayBadge = {
+  kind: CalendarBadgeKind
+  label: string
+  amount?: number
+  accountId?: string
+  accountName?: string
+  dueDate?: string
 }
 
 export type CalendarDay = {
@@ -14,6 +23,8 @@ export type CalendarDay = {
   isCurrentMonth: boolean
   isPast: boolean
   events: CalendarDayEvent[]
+  badges: CalendarDayBadge[]
+  isCardPaymentPeriod: boolean
 }
 
 export type MonthlyProgress = {

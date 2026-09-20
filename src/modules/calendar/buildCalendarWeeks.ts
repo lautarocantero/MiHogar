@@ -10,14 +10,16 @@ import {
   startOfWeek
 } from 'date-fns'
 import { es } from 'date-fns/locale'
-import type { CalendarDay, CalendarDayEvent } from './typings/types'
+import type { CalendarDay, CalendarDayBadge, CalendarDayEvent } from './typings/types'
 
 const DAYS_PER_WEEK = 7
 
 export function buildCalendarWeeks(
   referenceDate: Date,
   today: Date,
-  eventsByIsoDate: Map<string, CalendarDayEvent[]>
+  eventsByIsoDate: Map<string, CalendarDayEvent[]>,
+  badgesByIsoDate: Map<string, CalendarDayBadge[]> = new Map(),
+  cardPaymentPeriodIsoDates: Set<string> = new Set()
 ): CalendarDay[][] {
   const monthStart = startOfMonth(referenceDate)
   const monthEnd = endOfMonth(referenceDate)
@@ -32,7 +34,9 @@ export function buildCalendarWeeks(
       isToday: isSameDay(date, today),
       isCurrentMonth: isSameMonth(date, referenceDate),
       isPast: isBefore(date, today) && !isSameDay(date, today),
-      events: eventsByIsoDate.get(isoDate) ?? []
+      events: eventsByIsoDate.get(isoDate) ?? [],
+      badges: badgesByIsoDate.get(isoDate) ?? [],
+      isCardPaymentPeriod: cardPaymentPeriodIsoDates.has(isoDate)
     }
     return day
   })

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, IconButton, Stack, TextField, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid2'
+import { format, parseISO } from 'date-fns'
+import { es } from 'date-fns/locale'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import TuneIcon from '@mui/icons-material/Tune'
@@ -8,10 +10,18 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 import BalanceIcon from '@mui/icons-material/Balance'
 import EventNoteIcon from '@mui/icons-material/EventNote'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import CreditCardIcon from '@mui/icons-material/CreditCard'
+import EventAvailableIcon from '@mui/icons-material/EventAvailable'
+import PriceCheckIcon from '@mui/icons-material/PriceCheck'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
-import { organicColors, organicTypography } from '@/theme/tokens'
+import { organicColors, organicTypography, sidebarColors } from '@/theme/tokens'
+import twigPattern from '@/assets/images/twig-pattern.png'
 import type { TimelineRange } from '@/modules/timeline/typings/types'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
+import { updateAccount } from '@/store/accounts/accountsSlice'
 import { MonthGrid } from './components/MonthGrid'
 import { WeekdayHeader } from './components/WeekdayHeader'
 import { CalendarLegend } from './components/CalendarLegend'
@@ -20,6 +30,7 @@ import { useCalendarData } from './useCalendarData'
 import { useCalendarMonthOffset } from './useCalendarMonthOffset'
 import { useCalendarTimelinePanel } from './useCalendarTimelinePanel'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import { CalendarBadgeKind } from './typings/enums'
 
 const DEFAULT_RANGE: TimelineRange = { from: null, to: null }
 
@@ -94,8 +105,94 @@ function StatTile({
   )
 }
 
+type MinPaymentTileProps = {
+  accountId: string
+  currentValue: number | undefined
+  dueDate: string
+}
+
+function MinPaymentTile({
+  accountId,
+  currentValue,
+  dueDate
+}: MinPaymentTileProps): React.JSX.Element {
+  const dispatch = useAppDispatch()
+  const accounts = useAppSelector(selectAllAccounts)
+  const [draft, setDraft] = useState(currentValue != null ? String(currentValue) : '')
+
+  useEffect(() => {
+    setDraft(currentValue != null ? String(currentValue) : '')
+  }, [currentValue, accountId])
+
+  const commit = (): void => {
+    const account = accounts.find((candidate) => candidate.id === accountId)
+    if (!account) return
+    const parsed = draft === '' ? undefined : Number(draft)
+    if (parsed !== undefined && (Number.isNaN(parsed) || parsed < 0)) return
+    dispatch(
+      updateAccount({
+        ...account,
+        minPayment: parsed,
+        minPaymentDueDate: parsed !== undefined ? dueDate : undefined
+      })
+    )
+  }
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: 2,
+        backgroundColor: organicColors.surface,
+        border: `1px solid ${organicColors.neutral.border}`,
+        p: 2.25,
+        height: '100%',
+        boxSizing: 'border-box'
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 46,
+          height: 46,
+          flexShrink: 0,
+          backgroundColor: organicColors.violet.tint,
+          color: organicColors.violet.dark
+        }}
+      >
+        <PriceCheckIcon />
+      </Box>
+      <Box flexGrow={1} minWidth={0}>
+        <Typography variant="body2" color="text.secondary">
+          Pago mínimo
+        </Typography>
+        <TextField
+          variant="standard"
+          type="number"
+          placeholder="(aún no ingresado)"
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={commit}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault()
+              ;(event.target as HTMLInputElement).blur()
+            }
+          }}
+          slotProps={{ input: { sx: { fontFamily: organicTypography.titleFontFamily } } }}
+          sx={{ mt: 0.25, width: '100%' }}
+        />
+      </Box>
+    </Box>
+  )
+}
+
 export function CalendarPage(): React.JSX.Element {
   const navigate = useNavigate()
+  const accounts = useAppSelector(selectAllAccounts)
   const { offset, goToPreviousMonth, goToNextMonth, canGoPrev, canGoNext } =
     useCalendarMonthOffset()
   const { weeks, monthLabel, progress, finalInstallmentPayments } = useCalendarData(offset)
@@ -116,6 +213,11 @@ export function CalendarPage(): React.JSX.Element {
     return (upcoming ?? entries[entries.length - 1])?.id ?? null
   }, [entries])
 
+  const displayedEntries = useMemo(
+    () => (selectedDate ? entries.filter((entry) => entry.displayDate === selectedDate) : entries),
+    [entries, selectedDate]
+  )
+
   useEffect(() => {
     if (selectedDate) {
       const targetId = entries.find((entry) => entry.displayDate === selectedDate)?.id
@@ -130,98 +232,192 @@ export function CalendarPage(): React.JSX.Element {
 
   const isDifferencePositive = summary.difference >= 0
 
+  const selectedDay = useMemo(() => {
+    if (!selectedDate) return null
+    for (const week of weeks) {
+      const found = week.find((day) => day.isoDate === selectedDate)
+      if (found) return found
+    }
+    return null
+  }, [weeks, selectedDate])
+
+  const selectedDayTotal = useMemo(
+    () => selectedDay?.events.reduce((sum, event) => sum + event.amount, 0) ?? 0,
+    [selectedDay]
+  )
+
+  const selectedDayClosingBadge = useMemo(
+    () =>
+      selectedDay?.badges.find((badge) => badge.kind === CalendarBadgeKind.CARD_CLOSING) ?? null,
+    [selectedDay]
+  )
+
+  const closingAccount = useMemo(
+    () =>
+      selectedDayClosingBadge?.accountId
+        ? (accounts.find((account) => account.id === selectedDayClosingBadge.accountId) ?? null)
+        : null,
+    [accounts, selectedDayClosingBadge]
+  )
+
+  const effectiveMinPayment =
+    closingAccount && closingAccount.minPaymentDueDate === selectedDayClosingBadge?.dueDate
+      ? closingAccount.minPayment
+      : undefined
+
   return (
-    <Grid
-      container
-      spacing={4}
-      component="section"
-      aria-label="Calendario de pagos"
-      sx={{ height: '100%', overflow: 'hidden' }}
-    >
-      <Grid size={{ xs: 12, md: 8 }} sx={{ minHeight: 0, overflow: 'hidden' }}>
-        <Stack spacing={3} height="100%" minHeight={0} sx={{ overflow: 'hidden' }}>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gridTemplateRows: 'auto auto',
-              gap: 2
-            }}
-          >
-            <StatTile
-              icon={<AddCircleOutlineIcon />}
-              label="Entró"
-              value={`+ ${formatCurrency(summary.totalIn)}`}
-              valueColor={organicColors.income.main}
-              background={organicColors.income.tint}
-              border={organicColors.income.border}
-              iconBg={organicColors.income.iconBg}
-              iconColor={organicColors.income.main}
-            />
-            <StatTile
-              icon={<BalanceIcon />}
-              label="Diferencia"
-              value={`${isDifferencePositive ? '+' : '−'} ${formatCurrency(Math.abs(summary.difference))}`}
-              valueColor={
-                isDifferencePositive ? organicColors.income.main : organicColors.overdue.main
-              }
-              background={organicColors.surface}
-              border={organicColors.neutral.border}
-              iconBg={organicColors.orange.tint}
-              iconColor={organicColors.orange.dark}
-            />
-            <StatTile
-              icon={<RemoveCircleOutlineIcon />}
-              label="Salió"
-              value={`− ${formatCurrency(summary.totalOut)}`}
-              valueColor={organicColors.orange.dark}
-              background={organicColors.orange.tint}
-              border="#f2d9c8"
-              iconBg="#f8dcca"
-              iconColor={organicColors.orange.dark}
-            />
-            <StatTile
-              icon={<EventNoteIcon />}
-              label={`Total a pagar en ${monthLabel}`}
-              value={formatCurrency(progress.totalDue)}
-              valueColor={organicColors.orange.dark}
-              background={organicColors.surface}
-              border={organicColors.neutral.border}
-              iconBg={organicColors.orange.tint}
-              iconColor={organicColors.orange.dark}
-              sub={
+    <Grid container spacing={4} component="section" aria-label="Calendario de pagos">
+      <Grid size={{ xs: 12, md: 8 }}>
+        <Stack spacing={3}>
+          {selectedDate ? (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: selectedDayClosingBadge ? '1fr 1fr' : '1fr',
+                gridTemplateRows: 'auto auto',
+                gap: 2
+              }}
+            >
+              {selectedDayClosingBadge ? (
                 <>
-                  <Box sx={{ height: 9, backgroundColor: organicColors.neutral.border, mt: 1 }}>
-                    <Box
-                      sx={{
-                        height: 9,
-                        width: `${Math.min(progress.progressPercent, 100)}%`,
-                        backgroundColor: organicColors.sage.main
-                      }}
+                  <StatTile
+                    icon={<CreditCardIcon />}
+                    label={selectedDayClosingBadge.accountName ?? 'Cierre de tarjeta'}
+                    value={formatCurrency(selectedDayClosingBadge.amount ?? 0)}
+                    valueColor={organicColors.orange.dark}
+                    background={organicColors.orange.tint}
+                    border="#f2d9c8"
+                    iconBg="#f8dcca"
+                    iconColor={organicColors.orange.dark}
+                  />
+                  <StatTile
+                    icon={<EventNoteIcon />}
+                    label="Cierra el"
+                    value={format(parseISO(selectedDate), "d 'de' MMMM", { locale: es })}
+                    valueColor={organicColors.orange.dark}
+                    background={organicColors.surface}
+                    border={organicColors.neutral.border}
+                    iconBg={organicColors.orange.tint}
+                    iconColor={organicColors.orange.dark}
+                  />
+                  <StatTile
+                    icon={<EventAvailableIcon />}
+                    label="Vence el"
+                    value={
+                      selectedDayClosingBadge.dueDate
+                        ? format(parseISO(selectedDayClosingBadge.dueDate), "d 'de' MMMM", {
+                            locale: es
+                          })
+                        : '—'
+                    }
+                    valueColor={organicColors.violet.dark}
+                    background={organicColors.violet.tint}
+                    border={organicColors.violet.border}
+                    iconBg={organicColors.violet.tint}
+                    iconColor={organicColors.violet.dark}
+                  />
+                  {closingAccount && (
+                    <MinPaymentTile
+                      accountId={closingAccount.id}
+                      currentValue={effectiveMinPayment}
+                      dueDate={selectedDayClosingBadge.dueDate ?? selectedDate}
                     />
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ display: 'block', mt: 0.5 }}
-                  >
-                    Ya pagaste {formatCurrency(progress.paidSoFar)} de los{' '}
-                    {formatCurrency(progress.totalDue)}
-                  </Typography>
+                  )}
                 </>
-              }
-            />
-          </Box>
+              ) : (
+                <StatTile
+                  icon={<EventNoteIcon />}
+                  label={`Total del ${format(parseISO(selectedDate), "d 'de' MMMM", { locale: es })}`}
+                  value={formatCurrency(selectedDayTotal)}
+                  valueColor={organicColors.orange.dark}
+                  background={organicColors.surface}
+                  border={organicColors.neutral.border}
+                  iconBg={organicColors.orange.tint}
+                  iconColor={organicColors.orange.dark}
+                />
+              )}
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gridTemplateRows: 'auto auto',
+                gap: 2
+              }}
+            >
+              <StatTile
+                icon={<AddCircleOutlineIcon />}
+                label="Entró"
+                value={`+ ${formatCurrency(summary.totalIn)}`}
+                valueColor={organicColors.income.main}
+                background={organicColors.income.tint}
+                border={organicColors.income.border}
+                iconBg={organicColors.income.iconBg}
+                iconColor={organicColors.income.main}
+              />
+              <StatTile
+                icon={<BalanceIcon />}
+                label="Diferencia"
+                value={`${isDifferencePositive ? '+' : '−'} ${formatCurrency(Math.abs(summary.difference))}`}
+                valueColor={
+                  isDifferencePositive ? organicColors.income.main : organicColors.overdue.main
+                }
+                background={organicColors.surface}
+                border={organicColors.neutral.border}
+                iconBg={organicColors.orange.tint}
+                iconColor={organicColors.orange.dark}
+              />
+              <StatTile
+                icon={<RemoveCircleOutlineIcon />}
+                label="Salió"
+                value={`− ${formatCurrency(summary.totalOut)}`}
+                valueColor={organicColors.orange.dark}
+                background={organicColors.orange.tint}
+                border="#f2d9c8"
+                iconBg="#f8dcca"
+                iconColor={organicColors.orange.dark}
+              />
+              <StatTile
+                icon={<EventNoteIcon />}
+                label={`Total a pagar en ${monthLabel}`}
+                value={formatCurrency(progress.totalDue)}
+                valueColor={organicColors.orange.dark}
+                background={organicColors.surface}
+                border={organicColors.neutral.border}
+                iconBg={organicColors.orange.tint}
+                iconColor={organicColors.orange.dark}
+                sub={
+                  <>
+                    <Box sx={{ height: 9, backgroundColor: organicColors.neutral.border, mt: 1 }}>
+                      <Box
+                        sx={{
+                          height: 9,
+                          width: `${Math.min(progress.progressPercent, 100)}%`,
+                          backgroundColor: organicColors.sage.main
+                        }}
+                      />
+                    </Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: 'block', mt: 0.5 }}
+                    >
+                      Ya pagaste {formatCurrency(progress.paidSoFar)} de los{' '}
+                      {formatCurrency(progress.totalDue)}
+                    </Typography>
+                  </>
+                }
+              />
+            </Box>
+          )}
 
           <Stack
             spacing={2}
             sx={{
               border: `1px solid ${organicColors.neutral.border}`,
               backgroundColor: organicColors.surface,
-              p: 2.5,
-              flexGrow: 1,
-              minHeight: 0,
-              overflowY: 'auto'
+              p: 2.5
             }}
           >
             <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -270,31 +466,87 @@ export function CalendarPage(): React.JSX.Element {
         </Stack>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }} sx={{ minHeight: 0, overflow: 'hidden' }}>
-        <Stack spacing={2} height="100%" minHeight={0} sx={{ overflow: 'hidden' }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography
-              component="h2"
-              sx={{
-                fontFamily: organicTypography.titleFontFamily,
-                fontSize: '1.375rem',
-                fontWeight: 400,
-                color: organicColors.orange.dark
-              }}
-            >
-              Línea de tiempo
-            </Typography>
+      <Grid size={{ xs: 12, md: 4 }} sx={{ alignSelf: 'flex-start', position: 'sticky', top: 0 }}>
+        <Box
+          sx={{
+            position: 'relative',
+            height: 'calc(100vh - 128px)',
+            maxHeight: 'calc(100vh - 128px)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            background: sidebarColors.gradient,
+            p: 2
+          }}
+        >
+          <Box
+            aria-hidden="true"
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url(${twigPattern})`,
+              backgroundSize: 560,
+              backgroundRepeat: 'repeat',
+              filter: 'invert(1) grayscale(1) contrast(0.9)',
+              mixBlendMode: 'screen',
+              opacity: sidebarColors.patternOpacity,
+              pointerEvents: 'none'
+            }}
+          />
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ position: 'relative', zIndex: 1 }}
+          >
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography
+                component="h2"
+                sx={{
+                  fontFamily: organicTypography.titleFontFamily,
+                  fontSize: '1.375rem',
+                  fontWeight: 400,
+                  color: sidebarColors.onDark
+                }}
+              >
+                Línea de tiempo
+              </Typography>
+              {selectedDate && (
+                <Button
+                  size="small"
+                  startIcon={<DeleteOutlineIcon />}
+                  onClick={() => setSelectedDate(null)}
+                  sx={{
+                    color: organicColors.weakYellow,
+                    '&:hover': { backgroundColor: 'rgba(255,253,249,0.10)' }
+                  }}
+                >
+                  Eliminar filtros
+                </Button>
+              )}
+            </Stack>
             <Button
               size="small"
               startIcon={<TuneIcon />}
               onClick={() => setFiltersOpen((prev) => !prev)}
-              sx={{ color: hasCustomRange ? 'primary.main' : 'text.secondary' }}
+              sx={{
+                color: hasCustomRange ? organicColors.weakYellow : 'rgba(255,253,249,0.85)',
+                '&:hover': { backgroundColor: 'rgba(255,253,249,0.10)' }
+              }}
             >
               Filtros{hasCustomRange ? ' · 1' : ''}
             </Button>
           </Stack>
           {filtersOpen && (
-            <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+            <Stack
+              direction="row"
+              spacing={2}
+              alignItems="center"
+              flexWrap="wrap"
+              useFlexGap
+              sx={{ position: 'relative', zIndex: 1 }}
+            >
               <TextField
                 label="Desde"
                 type="date"
@@ -304,6 +556,7 @@ export function CalendarPage(): React.JSX.Element {
                 onChange={(event) =>
                   setRange((prev) => ({ ...prev, from: event.target.value || null }))
                 }
+                sx={{ backgroundColor: organicColors.surface }}
               />
               <TextField
                 label="Hasta"
@@ -314,23 +567,37 @@ export function CalendarPage(): React.JSX.Element {
                 onChange={(event) =>
                   setRange((prev) => ({ ...prev, to: event.target.value || null }))
                 }
+                sx={{ backgroundColor: organicColors.surface }}
               />
               {hasCustomRange && (
-                <Button size="small" onClick={() => setRange(DEFAULT_RANGE)}>
+                <Button
+                  size="small"
+                  onClick={() => setRange(DEFAULT_RANGE)}
+                  sx={{ color: 'rgba(255,253,249,0.85)' }}
+                >
                   Limpiar filtro
                 </Button>
               )}
             </Stack>
           )}
 
-          {entries.length === 0 ? (
-            <Typography variant="body2" color="text.secondary">
+          {displayedEntries.length === 0 ? (
+            <Typography
+              variant="body2"
+              sx={{ position: 'relative', zIndex: 1, color: 'rgba(255,253,249,0.75)' }}
+            >
               Todavía no hay movimientos para mostrar acá.
             </Typography>
           ) : (
-            <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', pr: 1 }}>
-              <Stack spacing={2} component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
-                {entries.map((entry) => (
+            <Box
+              sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', position: 'relative', zIndex: 1 }}
+            >
+              <Stack
+                spacing={2}
+                component="ul"
+                sx={{ listStyle: 'none', p: 0, m: 0, position: 'relative', zIndex: 1 }}
+              >
+                {displayedEntries.map((entry) => (
                   <Box
                     key={entry.id}
                     component="li"
@@ -356,10 +623,26 @@ export function CalendarPage(): React.JSX.Element {
               </Stack>
             </Box>
           )}
-          <Button component={RouterLink} to={ROUTES.PAYMENTS} variant="outlined" size="large">
+          <Button
+            component={RouterLink}
+            to={ROUTES.PAYMENTS}
+            variant="outlined"
+            size="large"
+            sx={{
+              position: 'relative',
+              zIndex: 1,
+              borderRadius: 0,
+              borderColor: 'rgba(255,253,249,0.45)',
+              color: 'rgba(255,253,249,0.95)',
+              '&:hover': {
+                backgroundColor: 'rgba(255,253,249,0.12)',
+                borderColor: 'rgba(255,253,249,0.45)'
+              }
+            }}
+          >
             Ver pagos y servicios
           </Button>
-        </Stack>
+        </Box>
       </Grid>
     </Grid>
   )

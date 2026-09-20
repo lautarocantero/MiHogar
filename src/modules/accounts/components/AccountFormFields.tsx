@@ -1,7 +1,7 @@
 import { Box, MenuItem, TextField, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { Controller } from 'react-hook-form'
-import { AccountType, OwnerType } from '@/typings/domain/enums'
+import { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 import { resolveAccountTypeLabel } from '@/utils/domain/resolveAccountTypeLabel'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { NumberField } from '@/components/shared/NumberField'
@@ -17,7 +17,8 @@ export function AccountFormFields({
   control,
   errors,
   selectedType,
-  selectedOwnerType
+  selectedOwnerType,
+  selectedCurrency
 }: AccountFormFieldsProps): React.JSX.Element {
   const allAccounts = useAppSelector(selectAllAccounts)
   const sourceAccountOptions = allAccounts.filter((account) =>
@@ -49,6 +50,40 @@ export function AccountFormFields({
             </MenuItem>
           ))}
         </TextField>
+      </Grid>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+          Moneda
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 1.5 }}>
+          {[
+            { id: Currency.ARS, label: 'Pesos' },
+            { id: Currency.USD, label: 'Dólares' }
+          ].map((option) => (
+            <Box
+              key={option.id}
+              component="label"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.75,
+                px: 1.5,
+                py: 0.75,
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                border: '1px solid #e4d8c9'
+              }}
+            >
+              <input
+                type="radio"
+                value={option.id}
+                {...register('currency')}
+                defaultChecked={selectedCurrency === option.id}
+              />
+              <span>{option.label}</span>
+            </Box>
+          ))}
+        </Box>
       </Grid>
       <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
         <TextField

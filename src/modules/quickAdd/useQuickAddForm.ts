@@ -11,7 +11,8 @@ import type { QuickAddFormValues, UseQuickAddFormResult } from './typings/types'
 const DONE_MESSAGE: Record<MovementType, string> = {
   [MovementType.EXPENSE]: 'Compra agregada',
   [MovementType.INCOME]: 'Dinero agregado',
-  [MovementType.TRANSFER]: 'Dinero movido'
+  [MovementType.TRANSFER]: 'Dinero movido',
+  [MovementType.CARD_PAYMENT]: 'Pago de tarjeta registrado'
 }
 
 export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
@@ -24,7 +25,7 @@ export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
   const chooseType = useCallback((type: MovementType) => {
     setSelectedType(type)
     setStep(
-      type === MovementType.TRANSFER
+      type === MovementType.TRANSFER || type === MovementType.CARD_PAYMENT
         ? QuickAddStep.AMOUNT_AND_DETAILS
         : QuickAddStep.CHOOSE_FREQUENCY
     )
@@ -43,7 +44,7 @@ export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
       if (currentStep === QuickAddStep.CHOOSE_FREQUENCY) {
         return QuickAddStep.CHOOSE_TYPE
       }
-      if (selectedType === MovementType.TRANSFER) {
+      if (selectedType === MovementType.TRANSFER || selectedType === MovementType.CARD_PAYMENT) {
         return QuickAddStep.CHOOSE_TYPE
       }
       return QuickAddStep.CHOOSE_FREQUENCY
@@ -55,14 +56,17 @@ export function useQuickAddForm(onDone: () => void): UseQuickAddFormResult {
       run(async () => {
         for (const values of entries) {
           const account = accounts.find((candidate) => candidate.id === values.accountId)
+          const hasSecondaryAccount =
+            values.type === MovementType.TRANSFER || values.type === MovementType.CARD_PAYMENT
           await dispatch(
             recordMovementThunk({
               type: values.type,
               amount: values.amount,
+              currency: values.currency,
               date: values.date,
               accountId: values.accountId,
-              toAccountId: values.type === MovementType.TRANSFER ? values.toAccountId : undefined,
-              categoryId: values.type === MovementType.TRANSFER ? undefined : values.categoryId,
+              toAccountId: hasSecondaryAccount ? values.toAccountId : undefined,
+              categoryId: hasSecondaryAccount ? undefined : values.categoryId,
               ownerType: account?.ownerType ?? OwnerType.HOUSEHOLD,
               ownerId: account?.ownerId,
               note: values.note

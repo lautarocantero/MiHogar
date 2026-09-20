@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form'
 import { InputAdornment, MenuItem, TextField } from '@mui/material'
-import { CategoryKind, MovementType } from '@/typings/domain/enums'
+import { AccountType, CategoryKind, MovementType } from '@/typings/domain/enums'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { selectAllMembers } from '@/store/household/householdSelectors'
@@ -19,7 +19,15 @@ export function MovementFormFields({
   const accounts = useAppSelector(selectAllAccounts)
   const members = useAppSelector(selectAllMembers)
   const isTransfer = type === MovementType.TRANSFER
+  const isCardPayment = type === MovementType.CARD_PAYMENT
+  const isSecondaryAccountField = isTransfer || isCardPayment
   const categoryKind = type === MovementType.INCOME ? CategoryKind.INCOME : CategoryKind.EXPENSE
+  const primaryAccountOptions = isCardPayment
+    ? accounts.filter((account) => account.type === AccountType.CREDIT_CARD)
+    : accounts
+  const secondaryAccountOptions = isCardPayment
+    ? accounts.filter((account) => account.type !== AccountType.CREDIT_CARD)
+    : accounts
 
   return (
     <>
@@ -41,7 +49,7 @@ export function MovementFormFields({
         }}
       />
 
-      {!isTransfer && (
+      {!isSecondaryAccountField && (
         <Controller
           name="categoryId"
           control={control}
@@ -69,28 +77,30 @@ export function MovementFormFields({
       />
 
       <TextField
-        label={isTransfer ? '¿De qué cuenta sale?' : '¿Con qué cuenta?'}
+        label={
+          isTransfer ? '¿De qué cuenta sale?' : isCardPayment ? '¿Qué tarjeta?' : '¿Con qué cuenta?'
+        }
         select
         {...register('accountId')}
         error={Boolean(errors.accountId)}
         helperText={errors.accountId?.message}
       >
-        {accounts.map((account) => (
+        {primaryAccountOptions.map((account) => (
           <MenuItem key={account.id} value={account.id}>
             {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
           </MenuItem>
         ))}
       </TextField>
 
-      {isTransfer && (
+      {isSecondaryAccountField && (
         <TextField
-          label="¿A qué cuenta entra?"
+          label={isCardPayment ? '¿Con qué cuenta pagás?' : '¿A qué cuenta entra?'}
           select
           {...register('toAccountId')}
           error={Boolean(errors.toAccountId)}
           helperText={errors.toAccountId?.message}
         >
-          {accounts.map((account) => (
+          {secondaryAccountOptions.map((account) => (
             <MenuItem key={account.id} value={account.id}>
               {account.name} · {resolveOwnerLabel(account.ownerType, account.ownerId, members)}
             </MenuItem>

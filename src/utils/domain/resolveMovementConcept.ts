@@ -4,7 +4,8 @@ import { MovementType } from '@/typings/domain/enums'
 const DEFAULT_LABELS: Record<MovementType, string> = {
   [MovementType.INCOME]: 'Ingreso',
   [MovementType.EXPENSE]: 'Gasto',
-  [MovementType.TRANSFER]: 'Transferencia'
+  [MovementType.TRANSFER]: 'Transferencia',
+  [MovementType.CARD_PAYMENT]: 'Pago de tarjeta'
 }
 
 export function resolveMovementConcept(

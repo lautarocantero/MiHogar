@@ -46,7 +46,15 @@ export const organicColors = {
   neutral: {
     textSecondary: '#645c50',
     border: '#dcd3c4'
-  }
+  },
+  violet: {
+    main: '#6a4a8a',
+    dark: '#4a2f66',
+    tint: '#f2e9f7',
+    border: '#d9c4e8'
+  },
+  weakYellow: 'rgba(240, 212, 146, 0.85)',
+  weakYellowMuted: 'rgba(240, 212, 146, 0.55)'
 } as const
 
 export const sidebarColors = {

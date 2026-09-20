@@ -1,18 +1,34 @@
 import { useMemo } from 'react'
-import { addMonths, differenceInCalendarDays, format, parseISO, startOfDay } from 'date-fns'
+import {
+  addDays,
+  addMonths,
+  differenceInCalendarDays,
+  eachDayOfInterval,
+  format,
+  parseISO,
+  startOfDay,
+  subDays
+} from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllPayments } from '@/store/payments/paymentsSelectors'
 import { selectAllMovements } from '@/store/movements/movementsSelectors'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { selectAllCategories } from '@/store/categories/categoriesSelectors'
-import { PaymentKind, PaymentStatus, MovementType } from '@/typings/domain/enums'
+import { AccountType, PaymentKind, PaymentStatus, MovementType } from '@/typings/domain/enums'
 import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
 import { resolveMovementConcept } from '@/utils/domain/resolveMovementConcept'
 import { isFinalInstallmentPayment } from '@/utils/domain/isFinalInstallmentPayment'
+import { computeNextClosingDate } from '@/utils/domain/computeNextClosingDate'
+import { computeNextDueDate } from '@/utils/domain/computeNextDueDate'
 import { buildCalendarWeeks } from './buildCalendarWeeks'
-import { CalendarEventKind } from './typings/enums'
-import type { CalendarData, CalendarDayEvent, FinalInstallmentSummary } from './typings/types'
+import { CalendarBadgeKind, CalendarEventKind } from './typings/enums'
+import type {
+  CalendarData,
+  CalendarDayBadge,
+  CalendarDayEvent,
+  FinalInstallmentSummary
+} from './typings/types'
 
 export function useCalendarData(monthOffset = 0): CalendarData {
   const payments = useAppSelector(selectAllPayments)
@@ -83,7 +99,75 @@ export function useCalendarData(monthOffset = 0): CalendarData {
       })
     })
 
-    const weeks = buildCalendarWeeks(referenceDate, today, eventsByIsoDate)
+    const badgesByIsoDate = new Map<string, CalendarDayBadge[]>()
+    const pushBadge = (isoDate: string, badge: CalendarDayBadge): void => {
+      const existing = badgesByIsoDate.get(isoDate)
+      if (existing) {
+        existing.push(badge)
+      } else {
+        badgesByIsoDate.set(isoDate, [badge])
+      }
+    }
+
+    const cardPaymentPeriodIsoDates = new Set<string>()
+
+    accounts
+      .filter(
+        (account) =>
+          account.type === AccountType.CREDIT_CARD && account.closingDay && account.dueDay
+      )
+      .forEach((account) => {
+        const closingIso = computeNextClosingDate(account.closingDay as number, today)
+        const dueIso = computeNextDueDate(closingIso, account.dueDay as number)
+
+        if (closingIso.startsWith(currentMonth)) {
+          const total = paymentsWithDisplayDate
+            .filter(
+              (payment) =>
+                payment.accountId === account.id &&
+                payment.displayDate === closingIso &&
+                payment.kind !== PaymentKind.DEPOSIT
+            )
+            .reduce((sum, payment) => sum + payment.amount, 0)
+          pushBadge(closingIso, {
+            kind: CalendarBadgeKind.CARD_CLOSING,
+            label: `Cierre de tarjeta · ${account.name}`,
+            amount: total,
+            accountId: account.id,
+            accountName: account.name,
+            dueDate: dueIso
+          })
+        }
+
+        if (dueIso.startsWith(currentMonth)) {
+          pushBadge(dueIso, {
+            kind: CalendarBadgeKind.CARD_DUE,
+            label: `Vencimiento de tarjeta · ${account.name}`
+          })
+        }
+
+        eachDayOfInterval({
+          start: addDays(parseISO(closingIso), 1),
+          end: subDays(parseISO(dueIso), 1)
+        })
+          .map((date) => format(date, 'yyyy-MM-dd'))
+          .filter((isoDate) => isoDate.startsWith(currentMonth))
+          .forEach((isoDate) => cardPaymentPeriodIsoDates.add(isoDate))
+      })
+
+    eventsByIsoDate.forEach((events, isoDate) => {
+      if (events.some((event) => event.kind === CalendarEventKind.INCOME)) {
+        pushBadge(isoDate, { kind: CalendarBadgeKind.INCOME, label: 'Ingreso' })
+      }
+    })
+
+    const weeks = buildCalendarWeeks(
+      referenceDate,
+      today,
+      eventsByIsoDate,
+      badgesByIsoDate,
+      cardPaymentPeriodIsoDates
+    )
 
     const expensesThisMonth = paymentsThisMonth.filter(
       (payment) => payment.kind !== PaymentKind.DEPOSIT
@@ -104,7 +188,7 @@ export function useCalendarData(monthOffset = 0): CalendarData {
 
     return {
       weeks,
-      monthLabel: format(referenceDate, 'MMMM', { locale: es }),
+      monthLabel: format(referenceDate, "MMMM 'de' yyyy", { locale: es }),
       progress: {
         totalDue,
         paidSoFar,

@@ -1,11 +1,12 @@
 import { z } from 'zod'
-import { AccountType, OwnerType } from '@/typings/domain/enums'
+import { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 import { numberField } from './zodNumberField'
 
 export const addAccountFormSchema = z
   .object({
     name: z.string().min(1, 'Ingresá un nombre para la cuenta'),
     type: z.nativeEnum(AccountType, { message: 'Elegí un tipo de cuenta' }),
+    currency: z.nativeEnum(Currency).default(Currency.ARS),
     ownerType: z.nativeEnum(OwnerType),
     ownerId: z.string().optional(),
     balance: numberField(z.number().optional()),

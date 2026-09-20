@@ -1,10 +1,11 @@
 import { z } from 'zod'
-import { MovementType, OwnerType } from '@/typings/domain/enums'
+import { Currency, MovementType, OwnerType } from '@/typings/domain/enums'
 
 export const movementSchema = z.object({
   id: z.string().min(1),
   type: z.nativeEnum(MovementType),
   amount: z.number(),
+  currency: z.nativeEnum(Currency).optional(),
   date: z.string(),
   accountId: z.string().min(1),
   toAccountId: z.string().optional(),

@@ -1,7 +1,7 @@
 import { Box, Stack, Tooltip, Typography } from '@mui/material'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
-import { CalendarEventKind } from '../typings/enums'
+import { CalendarBadgeKind, CalendarEventKind } from '../typings/enums'
 import type { MonthGridCellProps } from '../typings/props'
 
 const EVENT_STYLES: Record<
@@ -25,7 +25,23 @@ const EVENT_STYLES: Record<
   }
 }
 
+const BADGE_STYLES: Record<CalendarBadgeKind, { background: string; text: string }> = {
+  [CalendarBadgeKind.CARD_CLOSING]: {
+    background: organicColors.orange.tint,
+    text: organicColors.orange.dark
+  },
+  [CalendarBadgeKind.CARD_DUE]: {
+    background: organicColors.violet.tint,
+    text: organicColors.violet.dark
+  },
+  [CalendarBadgeKind.INCOME]: {
+    background: organicColors.income.tint,
+    text: organicColors.income.main
+  }
+}
+
 const MAX_VISIBLE_EVENTS = 2
+const MAX_VISIBLE_BADGES = 2
 
 export function MonthGridCell({
   day,
@@ -38,6 +54,7 @@ export function MonthGridCell({
   const eventStyle = primaryEvent ? EVENT_STYLES[primaryEvent.kind] : null
   const visibleEvents = day.events.slice(0, MAX_VISIBLE_EVENTS)
   const hiddenCount = day.events.length - visibleEvents.length
+  const visibleBadges = day.badges.slice(0, MAX_VISIBLE_BADGES)
 
   const cell = (
     <Box
@@ -58,7 +75,9 @@ export function MonthGridCell({
           : `Día ${day.dayOfMonth}`
       }
       sx={{
-        aspectRatio: '1 / 1',
+        minHeight: 96,
+        maxHeight: 96,
+        overflow: 'hidden',
         borderRadius: 0,
         p: 1,
         display: 'flex',
@@ -68,12 +87,16 @@ export function MonthGridCell({
         backgroundColor: day.isToday
           ? organicColors.blue.tint
           : (eventStyle?.background ??
-            (day.isPast && day.isCurrentMonth ? organicColors.brown.tint : organicColors.surface)),
+            (day.isCardPaymentPeriod
+              ? organicColors.violet.tint
+              : day.isPast && day.isCurrentMonth
+                ? organicColors.brown.tint
+                : organicColors.surface)),
         border: hasFinalInstallment
           ? `3px solid ${organicColors.sage.main}`
           : day.isToday
             ? `3px solid ${organicColors.blue.main}`
-            : `1px solid ${eventStyle?.border ?? organicColors.neutral.border}`,
+            : `1px solid ${eventStyle?.border ?? (day.isCardPaymentPeriod ? organicColors.violet.border : organicColors.neutral.border)}`,
         boxShadow: isHighlighted
           ? `0 0 0 3px ${organicColors.brown.main}`
           : isSelected
@@ -92,6 +115,29 @@ export function MonthGridCell({
       >
         {day.dayOfMonth}
       </Typography>
+      {visibleBadges.map((badge, index) => (
+        <Box
+          key={index}
+          sx={{
+            display: 'inline-block',
+            alignSelf: 'flex-start',
+            maxWidth: '100%',
+            px: 0.75,
+            py: 0.125,
+            borderRadius: 0,
+            backgroundColor: BADGE_STYLES[badge.kind].background,
+            color: BADGE_STYLES[badge.kind].text
+          }}
+        >
+          <Typography variant="caption" noWrap sx={{ fontSize: '0.625rem', fontWeight: 600 }}>
+            {badge.kind === CalendarBadgeKind.INCOME
+              ? badge.label
+              : badge.kind === CalendarBadgeKind.CARD_CLOSING
+                ? `Cierre de tarjeta${badge.amount ? ` · ${formatCurrency(badge.amount)}` : ''}`
+                : 'Vencimiento de tarjeta'}
+          </Typography>
+        </Box>
+      ))}
       {visibleEvents.map((event, index) => (
         <Typography
           key={index}

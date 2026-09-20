@@ -2,6 +2,7 @@ import { Alert, Box, Button, Stack } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addAccountFormSchema } from '@/validation/addAccountFormSchema'
+import { Currency } from '@/typings/domain/enums'
 import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import { AccountFormFields } from './AccountFormFields'
 import type { EditAccountFormProps } from '../typings/props'
@@ -25,6 +26,7 @@ export function EditAccountForm({
     defaultValues: {
       name: account.name,
       type: account.type,
+      currency: account.currency ?? Currency.ARS,
       ownerType: account.ownerType,
       ownerId: account.ownerId ?? '',
       balance: account.balance,
@@ -42,6 +44,7 @@ export function EditAccountForm({
 
   const selectedType = watch('type')
   const selectedOwnerType = watch('ownerType')
+  const selectedCurrency = watch('currency')
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -52,6 +55,7 @@ export function EditAccountForm({
           errors={errors}
           selectedType={selectedType}
           selectedOwnerType={selectedOwnerType}
+          selectedCurrency={selectedCurrency}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Stack direction="row" spacing={2} justifyContent="flex-end">

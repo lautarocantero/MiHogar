@@ -37,6 +37,15 @@ export function CalendarLegend(): React.JSX.Element {
           border: `1px solid ${organicColors.paid.border}`
         }}
       />
+      <Chip
+        label="Periodo de pago de tarjeta"
+        size="small"
+        sx={{
+          backgroundColor: organicColors.violet.tint,
+          color: organicColors.violet.dark,
+          border: `1px solid ${organicColors.violet.border}`
+        }}
+      />
     </Stack>
   )
 }

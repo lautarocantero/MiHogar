@@ -2,6 +2,7 @@ import { Box, ButtonBase, Stack, Typography } from '@mui/material'
 import PaymentsIcon from '@mui/icons-material/Payments'
 import SavingsIcon from '@mui/icons-material/Savings'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import CreditCardIcon from '@mui/icons-material/CreditCard'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { MovementType } from '@/typings/domain/enums'
 import { organicColors, organicTypography } from '@/theme/tokens'
@@ -28,6 +29,13 @@ const OPTIONS = [
     title: 'Pasé plata de una cuenta a otra',
     subtitle: 'Una transferencia entre tus cuentas',
     accent: organicColors.brown
+  },
+  {
+    type: MovementType.CARD_PAYMENT,
+    icon: CreditCardIcon,
+    title: 'Pagué la tarjeta',
+    subtitle: 'Pago total o parcial de un resumen',
+    accent: organicColors.blue
   }
 ] as const
 

@@ -3,3 +3,9 @@ export enum CalendarEventKind {
   PAID = 'PAID',
   INCOME = 'INCOME'
 }
+
+export enum CalendarBadgeKind {
+  CARD_CLOSING = 'CARD_CLOSING',
+  CARD_DUE = 'CARD_DUE',
+  INCOME = 'INCOME'
+}

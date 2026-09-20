@@ -51,7 +51,9 @@ export function PaymentTableRow({
           <Typography variant="body2">{entry.concept}</Typography>
           {typeof installmentsRemaining === 'number' && payment && (
             <Typography variant="caption" color="text.secondary">
-              cuota {(payment.installmentsPaid ?? 0) + 1}/{payment.installmentsTotal}
+              {installmentsRemaining > 0
+                ? `cuota ${(payment.installmentsPaid ?? 0) + 1}/${payment.installmentsTotal}`
+                : `terminás de pagar ${payment.concept}`}
             </Typography>
           )}
         </TableCell>

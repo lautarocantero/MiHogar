@@ -21,6 +21,7 @@ export function useCreateAccount(onCreated: () => void): UseCreateAccountResult 
             id: uuidv4(),
             name: values.name,
             type: values.type,
+            currency: values.currency,
             ownerType: values.ownerType,
             ownerId: values.ownerType === OwnerType.MEMBER ? values.ownerId : undefined,
             balance: isCreditCard ? 0 : (values.balance ?? 0),

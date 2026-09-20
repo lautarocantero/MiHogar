@@ -1,6 +1,6 @@
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
 import type { Account } from '@/typings/domain/types'
-import type { AccountType, OwnerType } from '@/typings/domain/enums'
+import type { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 import type { AccountView, AddAccountFormValues } from './types'
 
 export type AccountCardProps = {
@@ -20,6 +20,7 @@ export type AccountFormFieldsProps = {
   errors: FieldErrors<AddAccountFormValues>
   selectedType: AccountType
   selectedOwnerType: OwnerType
+  selectedCurrency: Currency
 }
 
 export type AddAccountFormProps = {

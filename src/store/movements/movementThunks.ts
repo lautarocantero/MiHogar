@@ -24,15 +24,33 @@ function applyMovementBalanceEffect(
 ): void {
   const state = getState()
   const linkedAccount = accountsSelectors.selectById(state.accounts, movement.accountId)
-  const debitedAccount =
-    linkedAccount?.type === AccountType.CREDIT_CARD && linkedAccount.sourceAccountId
-      ? accountsSelectors.selectById(state.accounts, linkedAccount.sourceAccountId)
-      : linkedAccount
-  if (debitedAccount) {
+
+  if (movement.type === MovementType.CARD_PAYMENT) {
+    if (linkedAccount) {
+      const nextUsedAmount = Math.max((linkedAccount.usedAmount ?? 0) - movement.amount * sign, 0)
+      dispatch(updateAccount({ ...linkedAccount, usedAmount: nextUsedAmount }))
+    }
+    if (movement.toAccountId) {
+      const sourceAccount = accountsSelectors.selectById(state.accounts, movement.toAccountId)
+      if (sourceAccount) {
+        dispatch(
+          updateAccount({
+            ...sourceAccount,
+            balance: sourceAccount.balance - movement.amount * sign
+          })
+        )
+      }
+    }
+    return
+  }
+
+  if (linkedAccount?.type === AccountType.CREDIT_CARD) {
+    const usedDelta = movement.type === MovementType.INCOME ? -movement.amount : movement.amount
+    const nextUsedAmount = Math.max((linkedAccount.usedAmount ?? 0) + usedDelta * sign, 0)
+    dispatch(updateAccount({ ...linkedAccount, usedAmount: nextUsedAmount }))
+  } else if (linkedAccount) {
     const baseDelta = movement.type === MovementType.INCOME ? movement.amount : -movement.amount
-    dispatch(
-      updateAccount({ ...debitedAccount, balance: debitedAccount.balance + baseDelta * sign })
-    )
+    dispatch(updateAccount({ ...linkedAccount, balance: linkedAccount.balance + baseDelta * sign }))
   }
 
   if (movement.type === MovementType.TRANSFER && movement.toAccountId) {

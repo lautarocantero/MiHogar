@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { AccountType, OwnerType } from '@/typings/domain/enums'
+import { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 
 export const accountSchema = z.object({
   id: z.string().min(1),
@@ -8,6 +8,7 @@ export const accountSchema = z.object({
   ownerType: z.nativeEnum(OwnerType),
   ownerId: z.string().optional(),
   balance: z.number(),
+  currency: z.nativeEnum(Currency).default(Currency.ARS),
   contextPhrase: z.string().optional(),
   sourceAccountId: z.string().optional(),
   creditLimit: z.number().optional(),
@@ -16,6 +17,8 @@ export const accountSchema = z.object({
   dueDay: z.number().int().min(1).max(31).optional(),
   nextClosingDay: z.number().int().min(1).max(31).optional(),
   nextDueDay: z.number().int().min(1).max(31).optional(),
+  minPayment: z.number().nonnegative().optional(),
+  minPaymentDueDate: z.string().optional(),
   color: z.string().optional(),
   sortOrder: z.number().optional()
 })

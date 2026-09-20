@@ -7,6 +7,8 @@ import { NavLink } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
 import { sidebarColors, organicTypography } from '@/theme/tokens'
 import { DemoModeExitButton } from '@/components/shared/DemoModeExitButton'
+import { LogoutButton } from '@/components/shared/LogoutButton'
+import { ReloadAppButton } from './ReloadAppButton'
 import twigPattern from '@/assets/images/twig-pattern.png'
 import logo from '@/assets/images/mi-hogar-logo.png'
 import { SidebarItem } from './SidebarItem'
@@ -179,11 +181,13 @@ export function Sidebar(): React.JSX.Element {
         <Box sx={{ height: '1px', backgroundColor: 'rgba(255,253,249,0.22)', mb: 1.75, mx: 0.5 }} />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <DemoModeExitButton collapsed={collapsed} />
+          <ReloadAppButton collapsed={collapsed} />
           <SidebarItem
             item={SETTINGS_ITEM}
             collapsed={collapsed}
             onNavigate={collapsed ? expandOnNavigate : undefined}
           />
+          <LogoutButton collapsed={collapsed} />
         </Box>
       </Box>
     </Drawer>
