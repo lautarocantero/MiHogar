@@ -15,6 +15,7 @@ import { addSavingsFormSchema } from '@/validation/addSavingsFormSchema'
 import { OwnerType } from '@/typings/domain/enums'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { NumberField } from '@/components/shared/NumberField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { AddSavingsFormProps } from '../typings/props'
 import type { AddSavingsFormValues } from '../typings/types'
 
@@ -65,7 +66,7 @@ export function AddSavingsForm({
             <NumberField
               fullWidth
               label="Monto guardado"
-              {...register('principal', { valueAsNumber: true })}
+              {...register('principal', { setValueAs: parseAmountInput })}
               error={Boolean(errors.principal)}
               helperText={errors.principal?.message}
             />
@@ -74,7 +75,7 @@ export function AddSavingsForm({
             <NumberField
               fullWidth
               label="Interés estimado por mes (opcional)"
-              {...register('monthlyInterestEstimate', { valueAsNumber: true })}
+              {...register('monthlyInterestEstimate', { setValueAs: parseAmountInput })}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
@@ -126,7 +127,7 @@ export function AddSavingsForm({
                 <NumberField
                   fullWidth
                   label="Tasa anual (%)"
-                  {...register('rateAnnual', { valueAsNumber: true })}
+                  {...register('rateAnnual', { setValueAs: parseAmountInput })}
                 />
               </Grid>
             </>

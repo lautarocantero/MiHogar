@@ -7,6 +7,7 @@ import { selectAllMembers } from '@/store/household/householdSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import { CategoryField } from '@/components/shared/CategoryField'
 import type { MovementFormFieldsProps } from '../typings/props'
 
@@ -34,7 +35,7 @@ export function MovementFormFields({
       <NumberField
         label="¿Cuánto fue?"
         autoFocus
-        {...register('amount', { valueAsNumber: true })}
+        {...register('amount', { setValueAs: parseAmountInput })}
         error={Boolean(errors.amount)}
         helperText={errors.amount?.message}
         slotProps={{

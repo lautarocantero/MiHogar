@@ -4,7 +4,7 @@ import { updateDebt } from '@/store/debts/debtsSlice'
 import { showToast } from '@/store/ui/uiSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { computeNextInstallmentDate } from '@/utils/domain/computeNextInstallmentDate'
-import { DebtStatus } from '@/typings/domain/enums'
+import { DebtStatus, PaymentFrequency } from '@/typings/domain/enums'
 import type { Debt } from '@/typings/domain/types'
 import type { UseRegisterInstallmentPaymentResult } from './typings/types'
 
@@ -15,8 +15,15 @@ export function useRegisterInstallmentPayment(debt: Debt): UseRegisterInstallmen
   const submit = useCallback(() => {
     run(async () => {
       const installmentsPaid = (debt.installmentsPaid ?? 0) + 1
+      const periodsPerYear =
+        debt.frequency === PaymentFrequency.DAILY
+          ? 365
+          : debt.frequency === PaymentFrequency.YEARLY
+            ? 1
+            : 12
+      const interest = (debt.outstandingBalance * (debt.rateAnnual ?? 0)) / 100 / periodsPerYear
       const outstandingBalance = Math.max(
-        debt.outstandingBalance - (debt.installmentAmount ?? 0),
+        debt.outstandingBalance + interest - (debt.installmentAmount ?? 0),
         0
       )
       const isPaidOff =

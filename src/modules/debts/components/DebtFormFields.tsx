@@ -5,6 +5,7 @@ import { DebtDirection, OwnerType, PaymentFrequency } from '@/typings/domain/enu
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { NumberField } from '@/components/shared/NumberField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { DebtFormFieldsProps } from '../typings/props'
 
 export function DebtFormFields({
@@ -53,7 +54,7 @@ export function DebtFormFields({
         <NumberField
           fullWidth
           label="Monto original"
-          {...register('principal', { valueAsNumber: true })}
+          {...register('principal', { setValueAs: parseAmountInput })}
           error={Boolean(errors.principal)}
           helperText={errors.principal?.message}
         />
@@ -62,7 +63,7 @@ export function DebtFormFields({
         <NumberField
           fullWidth
           label="Saldo pendiente"
-          {...register('outstandingBalance', { valueAsNumber: true })}
+          {...register('outstandingBalance', { setValueAs: parseAmountInput })}
           error={Boolean(errors.outstandingBalance)}
           helperText={errors.outstandingBalance?.message}
         />
@@ -71,7 +72,7 @@ export function DebtFormFields({
         <NumberField
           fullWidth
           label="Tasa anual % (opcional)"
-          {...register('rateAnnual', { valueAsNumber: true })}
+          {...register('rateAnnual', { setValueAs: parseAmountInput })}
         />
       </Grid>
       <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
@@ -125,21 +126,21 @@ export function DebtFormFields({
             <NumberField
               fullWidth
               label="Monto de la cuota"
-              {...register('installmentAmount', { valueAsNumber: true })}
+              {...register('installmentAmount', { setValueAs: parseAmountInput })}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <NumberField
               fullWidth
               label="Cantidad total de cuotas"
-              {...register('installmentsTotal', { valueAsNumber: true })}
+              {...register('installmentsTotal', { setValueAs: parseAmountInput })}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
             <NumberField
               fullWidth
               label="Cuotas ya pagadas"
-              {...register('installmentsPaid', { valueAsNumber: true })}
+              {...register('installmentsPaid', { setValueAs: parseAmountInput })}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>

@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/layout/AppLayout'
 import { PageSkeleton } from './PageSkeleton'
 import { ROUTES } from './routes'
@@ -56,6 +56,7 @@ export function AppRouter(): React.JSX.Element {
             <Route path={ROUTES.DEBTS} element={<DebtsPage />} />
             <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
             <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+            <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
           </Route>
         </Routes>
       </Suspense>

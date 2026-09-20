@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid2'
 import { OwnerType } from '@/typings/domain/enums'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { NumberField } from '@/components/shared/NumberField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import { GOAL_ICON_OPTIONS } from '../goalIcons'
 import type { SavingsGoalFormFieldsProps } from '../typings/props'
 
@@ -47,7 +48,7 @@ export function SavingsGoalFormFields({
         <NumberField
           fullWidth
           label="Monto objetivo"
-          {...register('targetAmount', { valueAsNumber: true })}
+          {...register('targetAmount', { setValueAs: parseAmountInput })}
           error={Boolean(errors.targetAmount)}
           helperText={errors.targetAmount?.message}
         />
@@ -56,7 +57,7 @@ export function SavingsGoalFormFields({
         <NumberField
           fullWidth
           label="Ya ahorrado para esta meta"
-          {...register('currentAmount', { valueAsNumber: true })}
+          {...register('currentAmount', { setValueAs: parseAmountInput })}
           error={Boolean(errors.currentAmount)}
           helperText={errors.currentAmount?.message}
         />

@@ -17,6 +17,7 @@ import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
 import { CategoryField } from '@/components/shared/CategoryField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import { CategoryKind } from '@/typings/domain/enums'
 import type { StepAmountAndDetailsProps } from '../typings/props'
 import type { QuickAddFormValues } from '../typings/types'
@@ -64,8 +65,8 @@ export function StepIncomeDetails({
   const [formError, setFormError] = useState<string | null>(null)
 
   const handleSave = (): void => {
-    const value = Number(amount)
-    if (!value) {
+    const value = parseAmountInput(amount)
+    if (!value || value <= 0) {
       setFormError('Ingresá un monto')
       return
     }

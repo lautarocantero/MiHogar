@@ -1,5 +1,13 @@
 import { useMemo } from 'react'
-import { addDays, endOfMonth, format, isWithinInterval, parseISO, startOfMonth } from 'date-fns'
+import {
+  addDays,
+  endOfMonth,
+  format,
+  isWithinInterval,
+  parseISO,
+  startOfDay,
+  startOfMonth
+} from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useAppSelector } from '@/store/hooks'
 import { selectTotalAvailableBalance } from '@/store/accounts/accountsSelectors'
@@ -20,11 +28,13 @@ export function useProjectionData(
 
   return useMemo(() => {
     const today = new Date()
+    const todayStart = startOfDay(today)
     const monthEnd = endOfMonth(today)
-    const rangeStart = periodMode === ProjectionPeriodMode.FULL_MONTH ? startOfMonth(today) : today
+    const rangeStart =
+      periodMode === ProjectionPeriodMode.FULL_MONTH ? startOfMonth(todayStart) : todayStart
     const pendingRangeInterval = { start: rangeStart, end: monthEnd }
     const futureIncomeRangeInterval = {
-      start: periodMode === ProjectionPeriodMode.FULL_MONTH ? rangeStart : addDays(today, 1),
+      start: addDays(todayStart, 1),
       end: monthEnd
     }
 

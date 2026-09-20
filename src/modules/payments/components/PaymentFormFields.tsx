@@ -16,6 +16,7 @@ import { computeNextClosingDate } from '@/utils/domain/computeNextClosingDate'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { CategoryField } from '@/components/shared/CategoryField'
 import { NumberField } from '@/components/shared/NumberField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { PaymentFormFieldsProps } from '../typings/props'
 
 const TODAY_ISO = new Date().toISOString().slice(0, 10)
@@ -235,7 +236,7 @@ export function PaymentFormFields({
           <NumberField
             fullWidth
             label="Monto"
-            {...register('amount', { valueAsNumber: true })}
+            {...register('amount', { setValueAs: parseAmountInput })}
             error={Boolean(errors.amount)}
             helperText={errors.amount?.message}
           />
@@ -258,7 +259,7 @@ export function PaymentFormFields({
             <NumberField
               fullWidth
               label="Cantidad total de cuotas"
-              {...register('installmentsTotal', { valueAsNumber: true })}
+              {...register('installmentsTotal', { setValueAs: parseAmountInput })}
               error={Boolean(errors.installmentsTotal)}
               helperText={errors.installmentsTotal?.message}
             />
@@ -267,7 +268,7 @@ export function PaymentFormFields({
             <NumberField
               fullWidth
               label="Cuotas ya pagadas"
-              {...register('installmentsPaid', { valueAsNumber: true })}
+              {...register('installmentsPaid', { setValueAs: parseAmountInput })}
               error={Boolean(errors.installmentsPaid)}
               helperText={errors.installmentsPaid?.message}
             />

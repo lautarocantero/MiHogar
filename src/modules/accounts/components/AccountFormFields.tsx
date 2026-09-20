@@ -5,6 +5,7 @@ import { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 import { resolveAccountTypeLabel } from '@/utils/domain/resolveAccountTypeLabel'
 import { MemberOwnerField } from '@/components/shared/MemberOwnerField'
 import { NumberField } from '@/components/shared/NumberField'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import type { AccountFormFieldsProps } from '../typings/props'
@@ -146,7 +147,7 @@ export function AccountFormFields({
             <NumberField
               fullWidth
               label="Límite de la tarjeta"
-              {...register('creditLimit', { valueAsNumber: true })}
+              {...register('creditLimit', { setValueAs: parseAmountInput })}
               error={Boolean(errors.creditLimit)}
               helperText={errors.creditLimit?.message}
             />
@@ -155,7 +156,7 @@ export function AccountFormFields({
             <NumberField
               fullWidth
               label="Monto usado (opcional)"
-              {...register('usedAmount', { valueAsNumber: true })}
+              {...register('usedAmount', { setValueAs: parseAmountInput })}
               error={Boolean(errors.usedAmount)}
               helperText={errors.usedAmount?.message ?? 'Cuánto llevás gastado en el ciclo actual'}
             />
@@ -164,7 +165,7 @@ export function AccountFormFields({
             <NumberField
               fullWidth
               label="Día de cierre"
-              {...register('closingDay', { valueAsNumber: true })}
+              {...register('closingDay', { setValueAs: parseAmountInput })}
               error={Boolean(errors.closingDay)}
               helperText={errors.closingDay?.message}
             />
@@ -173,7 +174,7 @@ export function AccountFormFields({
             <NumberField
               fullWidth
               label="Día de vencimiento"
-              {...register('dueDay', { valueAsNumber: true })}
+              {...register('dueDay', { setValueAs: parseAmountInput })}
               error={Boolean(errors.dueDay)}
               helperText={errors.dueDay?.message}
             />
@@ -182,7 +183,7 @@ export function AccountFormFields({
             <NumberField
               fullWidth
               label="Próximo día de cierre (opcional)"
-              {...register('nextClosingDay', { valueAsNumber: true })}
+              {...register('nextClosingDay', { setValueAs: parseAmountInput })}
               error={Boolean(errors.nextClosingDay)}
               helperText={
                 errors.nextClosingDay?.message ??
@@ -194,7 +195,7 @@ export function AccountFormFields({
             <NumberField
               fullWidth
               label="Próximo día de vencimiento (opcional)"
-              {...register('nextDueDay', { valueAsNumber: true })}
+              {...register('nextDueDay', { setValueAs: parseAmountInput })}
               error={Boolean(errors.nextDueDay)}
               helperText={
                 errors.nextDueDay?.message ??
@@ -208,7 +209,7 @@ export function AccountFormFields({
           <NumberField
             fullWidth
             label="Saldo actual"
-            {...register('balance', { valueAsNumber: true })}
+            {...register('balance', { setValueAs: parseAmountInput })}
             error={Boolean(errors.balance)}
             helperText={errors.balance?.message}
           />

@@ -22,7 +22,11 @@ export function useCancelPayment(payment: PaymentView | null): UseCancelPaymentR
       for (const movement of relatedMovements) {
         await dispatch(removeMovementThunk(movement.id)).unwrap()
       }
-      dispatch(updatePayment({ ...payment, status: PaymentStatus.PENDING }))
+      const installmentsPaid =
+        payment.status === PaymentStatus.PAID
+          ? Math.max((payment.installmentsPaid ?? 0) - 1, 0)
+          : payment.installmentsPaid
+      dispatch(updatePayment({ ...payment, status: PaymentStatus.PENDING, installmentsPaid }))
     }, 'No se pudo cancelar el pago')
   }, [dispatch, run, payment, relatedMovements])
 

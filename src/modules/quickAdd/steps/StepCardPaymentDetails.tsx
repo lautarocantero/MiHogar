@@ -8,6 +8,7 @@ import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { organicColors } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { StepAmountAndDetailsProps } from '../typings/props'
 import type { QuickAddFormValues } from '../typings/types'
 
@@ -74,9 +75,13 @@ export function StepCardPaymentDetails({
       return
     }
 
-    const amount = payMode === 'total' ? cardDebt : Number(partialAmount)
+    const amount = payMode === 'total' ? cardDebt : parseAmountInput(partialAmount)
     if (!amount || amount <= 0) {
       setFormError('Ingresá un monto válido')
+      return
+    }
+    if (payMode === 'partial' && amount > cardDebt) {
+      setFormError('El pago no puede superar la deuda de la tarjeta')
       return
     }
 

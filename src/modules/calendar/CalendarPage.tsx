@@ -230,6 +230,11 @@ export function CalendarPage(): React.JSX.Element {
     didInitialScroll.current = true
   }, [selectedDate, entries, nextUpcomingEntryId])
 
+  useEffect(() => {
+    setSelectedDate(null)
+    didInitialScroll.current = false
+  }, [offset])
+
   const isDifferencePositive = summary.difference >= 0
 
   const selectedDay = useMemo(() => {

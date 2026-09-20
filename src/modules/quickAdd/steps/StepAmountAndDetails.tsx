@@ -20,6 +20,7 @@ import { organicColors, organicTypography } from '@/theme/tokens'
 import { NumberField } from '@/components/shared/NumberField'
 import { CategoryField } from '@/components/shared/CategoryField'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { StepAmountAndDetailsProps } from '../typings/props'
 import type { QuickAddFormValues } from '../typings/types'
 
@@ -94,7 +95,7 @@ export function StepAmountAndDetails({
   const buildValues = (overrideAmount?: number, overrideNote?: string): QuickAddFormValues =>
     ({
       type,
-      amount: overrideAmount ?? (Number(amount) || 0),
+      amount: overrideAmount ?? parseAmountInput(amount),
       currency,
       date,
       categoryId: isTransfer ? undefined : categoryId,
@@ -113,8 +114,8 @@ export function StepAmountAndDetails({
   }
 
   const handleAddItem = (): void => {
-    const value = Number(amount)
-    if (!value) {
+    const value = parseAmountInput(amount)
+    if (!value || value <= 0) {
       setFormError('Ingresá un monto para el ítem')
       return
     }
@@ -140,8 +141,8 @@ export function StepAmountAndDetails({
       return
     }
 
-    const value = Number(amount)
-    if (!value) {
+    const value = parseAmountInput(amount)
+    if (!value || value <= 0) {
       setFormError('Ingresá un monto')
       return
     }
