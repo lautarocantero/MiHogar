@@ -10,3 +10,4 @@ build/icon.*
 .env.local
 *.tsbuildinfo
 docs/inspiration
+.claude/settings.local.json

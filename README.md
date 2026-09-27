@@ -41,6 +41,8 @@ src/
   utils/, validation/, typings/, hooks/
 shared/           # Tipos y canales de IPC compartidos entre main y renderer
 resources/        # Ícono de la app
+specs/            # Specs de features (Spec-Driven Development, ver más abajo)
+.specify/         # Constitución, templates y scripts de Spec Kit
 ```
 
 ## Requisitos
@@ -95,6 +97,25 @@ git push origin v1.0.0
 ```
 
 También se puede disparar manualmente desde la pestaña Actions (`workflow_dispatch`).
+
+## Metodología: Spec-Driven Development
+
+Las features nuevas se desarrollan con [Spec Kit](https://github.com/github/spec-kit): en vez de
+saltar directo al código, cada feature pasa por spec → plan → tasks → implementación, usando
+comandos de Claude Code (`.claude/skills/speckit-*`):
+
+```
+/speckit-specify      # Define qué se quiere construir y por qué (specs/<NNN>-<slug>/spec.md)
+/speckit-clarify      # (opcional) resolver ambigüedades antes de planificar
+/speckit-plan         # Enfoque técnico, respetando la constitución del proyecto
+/speckit-tasks        # Desglose en tareas accionables
+/speckit-implement    # Implementación guiada por las tareas generadas
+/speckit-converge     # Verifica qué falta y agrega tareas pendientes
+```
+
+Los principios no negociables del proyecto (local-first, validación en los bordes, arquitectura
+por módulo, etc.) están en `.specify/memory/constitution.md`. Bugs y pendientes sueltos que todavía
+no ameritan un spec propio siguen viviendo en `docs/pending.md`.
 
 ## Seguridad y datos
 
