@@ -14,6 +14,10 @@ import type { debtSchema } from '@/validation/debtSchema'
 import type { savingsGoalSchema } from '@/validation/savingsGoalSchema'
 import type { savingsSnapshotSchema } from '@/validation/savingsSnapshotSchema'
 import type { vaultFileSchema } from '@/validation/vaultFileSchema'
+import type { taskSchema } from '@/validation/taskSchema'
+import type { taskLinkSchema } from '@/validation/taskLinkSchema'
+import type { taskCategorySchema } from '@/validation/taskCategorySchema'
+import type { tasksFileSchema } from '@/validation/tasksFileSchema'
 
 export type Household = z.infer<typeof householdSchema>
 export type HouseholdMember = z.infer<typeof householdMemberSchema>
@@ -29,6 +33,20 @@ export type Debt = z.infer<typeof debtSchema>
 export type SavingsGoal = z.infer<typeof savingsGoalSchema>
 export type SavingsSnapshot = z.infer<typeof savingsSnapshotSchema>
 export type VaultFile = z.infer<typeof vaultFileSchema>
+export type Task = z.infer<typeof taskSchema>
+export type TaskLink = z.infer<typeof taskLinkSchema>
+export type TaskCategory = z.infer<typeof taskCategorySchema>
+export type TasksFile = z.infer<typeof tasksFileSchema>
+
+export type TaskGates = {
+  merged: boolean
+  approved: boolean
+}
+
+export type TaskView = Task & {
+  key: string
+  gates: TaskGates
+}
 
 export type FlowSummary = {
   totalIn: number

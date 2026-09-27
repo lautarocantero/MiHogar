@@ -32,11 +32,17 @@ export type RemindersApi = {
   check: (reminders: ReminderNotification[]) => Promise<void>
 }
 
+export type TasksStorageApi = {
+  load: () => Promise<unknown>
+  save: (tasksJson: unknown) => Promise<void>
+}
+
 declare global {
   interface Window {
     vaultApi: VaultApi
     attachmentsApi: AttachmentsApi
     preferencesApi: PreferencesApi
     remindersApi: RemindersApi
+    tasksStorageApi: TasksStorageApi
   }
 }

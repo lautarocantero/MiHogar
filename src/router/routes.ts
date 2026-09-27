@@ -8,7 +8,8 @@ export const ROUTES = {
   SAVINGS: '/ahorros',
   DEBTS: '/deudas-y-prestamos',
   REPORTS: '/informes',
-  SETTINGS: '/ajustes'
+  SETTINGS: '/ajustes',
+  TASKS: '/tareas'
 } as const
 
 export function buildPaymentDetailPath(paymentId: string): string {

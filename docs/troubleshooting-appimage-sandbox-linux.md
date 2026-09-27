@@ -50,7 +50,7 @@ El problema real, encontrado en Mi Hogar, tiene dos capas:
 
 Adicionalmente, esto se vuelve más probable (o directamente consistente) en
 distros con Ubuntu 24.04+ / kernels recientes, que restringen la creación
-de *user namespaces* sin privilegios vía AppArmor — Chromium depende de esa
+de _user namespaces_ sin privilegios vía AppArmor — Chromium depende de esa
 capacidad como alternativa al sandbox SUID, y si el kernel la deniega,
 termina cayendo en el chequeo SUID que falla igual.
 

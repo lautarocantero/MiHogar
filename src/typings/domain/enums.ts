@@ -57,3 +57,19 @@ export enum DebtStatus {
   ACTIVE = 'ACTIVE',
   PAID_OFF = 'PAID_OFF'
 }
+
+export enum TaskStatusId {
+  BACKLOG = 'backlog',
+  TODO = 'todo',
+  IN_PROGRESS = 'in_progress',
+  IN_REVIEW = 'in_review',
+  BLOCKED = 'blocked',
+  DONE = 'done'
+}
+
+export enum TaskSeverity {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical'
+}

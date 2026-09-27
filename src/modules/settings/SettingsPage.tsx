@@ -5,10 +5,12 @@ import { HouseholdKeyForm } from './components/HouseholdKeyForm'
 import { MembersList } from './components/MembersList'
 import { ExportImportButtons } from './components/ExportImportButtons'
 import { ReminderSettings } from './components/ReminderSettings'
+import { GithubTokenField } from './components/GithubTokenField'
 import { FactoryResetDialog } from './components/FactoryResetDialog'
 import { useChangeHouseholdKey } from './useChangeHouseholdKey'
 import { useAppSelector } from '@/store/hooks'
 import { selectIsDemoMode } from '@/store/vault/vaultSelectors'
+import { IS_TASKS_ENABLED } from '@/utils/featureFlags'
 
 export function SettingsPage(): React.JSX.Element {
   const { submit, isSubmitting, errorMessage, successMessage } = useChangeHouseholdKey()
@@ -22,6 +24,8 @@ export function SettingsPage(): React.JSX.Element {
       <ReminderSettings />
 
       <MembersList />
+
+      {IS_TASKS_ENABLED && <GithubTokenField />}
 
       {isDemoMode ? (
         <Alert severity="info">
