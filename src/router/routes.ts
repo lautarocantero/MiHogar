@@ -3,6 +3,7 @@ export const ROUTES = {
   CALENDAR: '/calendario',
   PAYMENTS: '/pagos',
   PAYMENT_DETAIL: '/pagos/:paymentId',
+  IMPORT_STATEMENTS: '/pagos/importar',
   ACCOUNTS: '/cuentas',
   PROJECTION: '/proyeccion',
   SAVINGS: '/ahorros',

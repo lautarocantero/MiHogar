@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   Box,
   Button,
@@ -13,12 +13,15 @@ import {
 } from '@mui/material'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import TuneIcon from '@mui/icons-material/Tune'
+import UploadFileIcon from '@mui/icons-material/UploadFile'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import { organicColors, organicTypography } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import type { Movement } from '@/typings/domain/types'
 import { EditMovementDialog } from '@/modules/timeline/components/EditMovementDialog'
 import { DeleteMovementDialog } from '@/modules/timeline/components/DeleteMovementDialog'
+import { LeafButton } from '@/components/shared/LeafButton'
+import { ROUTES } from '@/router/routes'
 import { PaymentsTable } from './components/PaymentsTable'
 import { EditPaymentDialog } from './components/EditPaymentDialog'
 import { DeletePaymentDialog } from './components/DeletePaymentDialog'
@@ -50,6 +53,7 @@ type PaymentsListLocationState = { focusEntryId?: string } | null
 
 export function PaymentsListPage(): React.JSX.Element {
   const location = useLocation()
+  const navigate = useNavigate()
   const focusEntryId = (location.state as PaymentsListLocationState)?.focusEntryId ?? null
   const {
     activeFilter,
@@ -227,7 +231,16 @@ export function PaymentsListPage(): React.JSX.Element {
           ))}
         </TextField>
 
-        <Box sx={{ position: 'relative', ml: 'auto' }}>
+        <LeafButton
+          size="small"
+          startIcon={<UploadFileIcon />}
+          onClick={() => navigate(ROUTES.IMPORT_STATEMENTS)}
+          sx={{ ml: 'auto' }}
+        >
+          Importar boleta
+        </LeafButton>
+
+        <Box sx={{ position: 'relative' }}>
           <Button
             size="small"
             startIcon={<TuneIcon />}

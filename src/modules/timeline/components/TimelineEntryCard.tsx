@@ -5,6 +5,7 @@ import { MovementType } from '@/typings/domain/enums'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatShortDate } from '@/utils/formatting/formatDate'
+import { useDateFormat } from '@/theme/DateFormat/useDateFormat'
 import type { TimelineEntryCardProps } from '../typings/props'
 
 function getDotColor(type: MovementType): string {
@@ -33,7 +34,8 @@ export function TimelineEntryCard({
   onDelete
 }: TimelineEntryCardProps): React.JSX.Element {
   const { movement, concept, detail, isEstimated, isPast } = entry
-  const shortDate = formatShortDate(movement.date)
+  const { format: dateFormat } = useDateFormat()
+  const shortDate = formatShortDate(movement.date, dateFormat)
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
   const comesFromPayment = Boolean(movement.paymentId)
 

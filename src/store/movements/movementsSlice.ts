@@ -12,6 +12,7 @@ const movementsSlice = createSlice({
   reducers: {
     hydrateMovements: movementsAdapter.setAll,
     addMovement: movementsAdapter.addOne,
+    addManyMovements: movementsAdapter.addMany,
     updateMovement: (state, action: PayloadAction<Movement>) => {
       movementsAdapter.upsertOne(state, action.payload)
     },
@@ -19,7 +20,7 @@ const movementsSlice = createSlice({
   }
 })
 
-export const { hydrateMovements, addMovement, updateMovement, removeMovement } =
+export const { hydrateMovements, addMovement, addManyMovements, updateMovement, removeMovement } =
   movementsSlice.actions
 export const movementsReducer = movementsSlice.reducer
 export const movementsSelectors = movementsAdapter.getSelectors()

@@ -88,14 +88,20 @@ export const updateMovementThunk = thunkTypes(
       throw new Error('No se encontró el movimiento a editar')
     }
 
-    if (isTodayOrPast(oldMovement.date)) {
+    if (!oldMovement.isImported && isTodayOrPast(oldMovement.date)) {
       applyMovementBalanceEffect(dispatch, getState, oldMovement, -1)
     }
 
-    const newMovement: Movement = { ...input.changes, id: input.id }
+    // isImported se fuerza desde oldMovement, no desde input.changes: los hooks que llaman a
+    // este thunk arman `changes` campo por campo y pueden no reenviarlo (spec Supuesto 12).
+    const newMovement: Movement = {
+      ...input.changes,
+      id: input.id,
+      isImported: oldMovement.isImported
+    }
     dispatch(updateMovement(newMovement))
 
-    if (isTodayOrPast(newMovement.date)) {
+    if (!newMovement.isImported && isTodayOrPast(newMovement.date)) {
       applyMovementBalanceEffect(dispatch, getState, newMovement, 1)
     }
 
@@ -107,7 +113,7 @@ export const removeMovementThunk = thunkTypes(
   'movements/remove',
   (movementId: string, { dispatch, getState }) => {
     const movement = movementsSelectors.selectById(getState().movements, movementId)
-    if (movement && isTodayOrPast(movement.date)) {
+    if (movement && !movement.isImported && isTodayOrPast(movement.date)) {
       applyMovementBalanceEffect(dispatch, getState, movement, -1)
     }
     dispatch(removeMovement(movementId))

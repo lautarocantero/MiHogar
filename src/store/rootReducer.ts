@@ -7,6 +7,7 @@ import { paymentsReducer } from './payments/paymentsSlice'
 import { movementsReducer } from './movements/movementsSlice'
 import { savingsReducer } from './savings/savingsSlice'
 import { categoriesReducer } from './categories/categoriesSlice'
+import { categoryRulesReducer } from './categoryRules/categoryRulesSlice'
 import { notificationsReducer } from './notifications/notificationsSlice'
 import { debtsReducer } from './debts/debtsSlice'
 import { savingsGoalsReducer } from './savingsGoals/savingsGoalsSlice'
@@ -22,6 +23,7 @@ export const rootReducer = combineReducers({
   movements: movementsReducer,
   savings: savingsReducer,
   categories: categoriesReducer,
+  categoryRules: categoryRulesReducer,
   notifications: notificationsReducer,
   debts: debtsReducer,
   savingsGoals: savingsGoalsReducer,

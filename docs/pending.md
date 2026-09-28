@@ -25,7 +25,11 @@ Bugs y cosas por agregar a la aplicación.
 - Agregar dólares.
 - Agregar consejos.
 - Opción de cuánto te ahorrarías sin un ítem.
-- Carga de boletas.
+- Carga de boletas en Excel/CSV (Mercado Pago y Banco Galicia) y resumen de cuenta común de
+  Banco Galicia en PDF: implementadas con el mejor mapeo de columnas disponible pero sin
+  archivo de ejemplo real todavía — ver `specs/001-import-statements/spec.md` §5 Supuesto 1,
+  §6 y `tasks.md` Fase 6 (US4). El caso confirmado (MP y Galicia tarjeta, ambos en PDF) ya está
+  implementado y validado contra un archivo real.
 - En tarjeta: mostrar cantidad a disposición y cantidad a ahorrar.
 - Separar cuentas de tarjetas.
 - Mejorar tabla.

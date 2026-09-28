@@ -13,7 +13,9 @@ export const IPC_CHANNELS = {
   ATTACHMENT_REMOVE: 'attachment:remove',
   PREFS_GET: 'prefs:get',
   PREFS_SET: 'prefs:set',
-  REMINDERS_CHECK: 'reminders:check'
+  REMINDERS_CHECK: 'reminders:check',
+  IMPORT_STATEMENTS_PICK_FILE: 'importStatements:pickFile',
+  IMPORT_STATEMENTS_PARSE: 'importStatements:parse'
 } as const
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS]

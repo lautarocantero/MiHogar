@@ -9,8 +9,8 @@ export function formatDayMonth(isoDate: string): { day: string; month: string } 
   }
 }
 
-export function formatShortDate(isoDate: string): string {
-  return format(parseISO(isoDate), 'dd/MM/yy')
+export function formatShortDate(isoDate: string, dateFormat: 'DMY' | 'MDY' = 'DMY'): string {
+  return format(parseISO(isoDate), dateFormat === 'MDY' ? 'MM/dd/yy' : 'dd/MM/yy')
 }
 
 export function formatDueLabel(isoDate: string, verb: string = 'Vence'): string {

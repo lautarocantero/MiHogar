@@ -1,6 +1,9 @@
 import type {
   AttachmentSavePayload,
   AttachmentSaveResult,
+  ParseStatementPayload,
+  ParseStatementResult,
+  PickStatementFileResult,
   PreferencesFile,
   ReminderNotification
 } from '@shared/vaultEnvelope.types'
@@ -32,11 +35,17 @@ export type RemindersApi = {
   check: (reminders: ReminderNotification[]) => Promise<void>
 }
 
+export type ImportStatementsApi = {
+  pickFile: () => Promise<PickStatementFileResult>
+  parse: (payload: ParseStatementPayload) => Promise<ParseStatementResult>
+}
+
 declare global {
   interface Window {
     vaultApi: VaultApi
     attachmentsApi: AttachmentsApi
     preferencesApi: PreferencesApi
     remindersApi: RemindersApi
+    importStatementsApi: ImportStatementsApi
   }
 }
