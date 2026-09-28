@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Alert, Button, Card, Stack, Typography } from '@mui/material'
 import { FontSizeSwitcher } from './components/FontSizeSwitcher'
+import { DateFormatSwitcher } from './components/DateFormatSwitcher'
 import { HouseholdKeyForm } from './components/HouseholdKeyForm'
 import { MembersList } from './components/MembersList'
 import { ExportImportButtons } from './components/ExportImportButtons'
@@ -20,6 +21,8 @@ export function SettingsPage(): React.JSX.Element {
   return (
     <Stack spacing={4} component="section" aria-label="Configuración" maxWidth={640}>
       <FontSizeSwitcher />
+
+      <DateFormatSwitcher />
 
       <ReminderSettings />
 

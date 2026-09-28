@@ -15,7 +15,9 @@ export const IPC_CHANNELS = {
   PREFS_SET: 'prefs:set',
   REMINDERS_CHECK: 'reminders:check',
   TASKS_LOAD: 'tasks:load',
-  TASKS_SAVE: 'tasks:save'
+  TASKS_SAVE: 'tasks:save',
+  IMPORT_STATEMENTS_PICK_FILE: 'importStatements:pickFile',
+  IMPORT_STATEMENTS_PARSE: 'importStatements:parse'
 } as const
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS]

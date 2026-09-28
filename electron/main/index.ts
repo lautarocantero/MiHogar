@@ -5,6 +5,7 @@ import { registerVaultHandlers } from './ipc/vaultHandlers'
 import { registerAttachmentHandlers } from './ipc/attachmentHandlers'
 import { registerPreferencesHandlers } from './ipc/preferencesHandlers'
 import { registerTasksHandlers } from './ipc/tasksHandlers'
+import { registerImportStatementsHandlers } from './ipc/importStatementsHandlers'
 
 if (process.platform === 'linux') {
   // El AppImage no queda instalado con el chrome-sandbox setuid root que
@@ -40,6 +41,7 @@ app.whenReady().then(() => {
   registerAttachmentHandlers()
   registerPreferencesHandlers()
   registerTasksHandlers()
+  registerImportStatementsHandlers()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

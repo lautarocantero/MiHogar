@@ -13,5 +13,6 @@ export const movementSchema = z.object({
   ownerType: z.nativeEnum(OwnerType),
   ownerId: z.string().optional(),
   paymentId: z.string().optional(),
-  note: z.string().optional()
+  note: z.string().optional(),
+  isImported: z.boolean().optional()
 })

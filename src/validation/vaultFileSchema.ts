@@ -9,6 +9,7 @@ import { readNotificationSchema } from './notificationSchema'
 import { debtSchema } from './debtSchema'
 import { savingsGoalSchema } from './savingsGoalSchema'
 import { savingsSnapshotSchema } from './savingsSnapshotSchema'
+import { categoryRuleSchema } from './categoryRuleSchema'
 
 export const vaultFileSchema = z.object({
   version: z.literal(1),
@@ -22,5 +23,6 @@ export const vaultFileSchema = z.object({
   notifications: z.array(readNotificationSchema).default([]),
   debts: z.array(debtSchema).default([]),
   savingsGoals: z.array(savingsGoalSchema).default([]),
-  savingsSnapshots: z.array(savingsSnapshotSchema).default([])
+  savingsSnapshots: z.array(savingsSnapshotSchema).default([]),
+  categoryRules: z.array(categoryRuleSchema).default([])
 })

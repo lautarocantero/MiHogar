@@ -10,3 +10,6 @@ build/icon.*
 .env.local
 *.tsbuildinfo
 docs/inspiration
+.claude/settings.local.json
+.e2e-scratch
+tmp-preview

@@ -21,6 +21,7 @@ import { hydratePayments } from '@/store/payments/paymentsSlice'
 import { hydrateMovements } from '@/store/movements/movementsSlice'
 import { hydrateSavings } from '@/store/savings/savingsSlice'
 import { hydrateCategories } from '@/store/categories/categoriesSlice'
+import { hydrateCategoryRules } from '@/store/categoryRules/categoryRulesSlice'
 import { hydrateReadNotifications } from '@/store/notifications/notificationsSlice'
 import { hydrateDebts } from '@/store/debts/debtsSlice'
 import { hydrateSavingsGoals } from '@/store/savingsGoals/savingsGoalsSlice'
@@ -42,6 +43,7 @@ function hydrateDomainSlices(dispatch: AppDispatch, vaultFile: VaultFile): void 
   dispatch(hydrateMovements(vaultFile.movements))
   dispatch(hydrateSavings(vaultFile.savingsInstruments))
   dispatch(hydrateCategories(vaultFile.categories))
+  dispatch(hydrateCategoryRules(vaultFile.categoryRules))
   dispatch(hydrateReadNotifications(vaultFile.notifications))
   dispatch(hydrateDebts(vaultFile.debts))
   dispatch(hydrateSavingsGoals(vaultFile.savingsGoals))

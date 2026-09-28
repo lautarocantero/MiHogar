@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import { store } from '@/store'
 import { organicTheme } from '@/theme/organicTheme'
 import { FontScaleProvider } from '@/theme/FontScale/FontScaleProvider'
+import { DateFormatProvider } from '@/theme/DateFormat/DateFormatProvider'
 import { App } from './App'
 import './assets/globalStyles.css'
 
@@ -19,7 +20,9 @@ createRoot(rootElement).render(
       <ThemeProvider theme={organicTheme}>
         <CssBaseline />
         <FontScaleProvider>
-          <App />
+          <DateFormatProvider>
+            <App />
+          </DateFormatProvider>
         </FontScaleProvider>
       </ThemeProvider>
     </Provider>

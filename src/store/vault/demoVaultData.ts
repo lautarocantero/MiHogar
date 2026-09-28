@@ -506,6 +506,7 @@ export function buildDemoVaultFile(): VaultFile {
         totalInvested: 260000
       },
       { id: monthKey(today), monthKey: monthKey(today), totalSaved: 150000, totalInvested: 300000 }
-    ]
+    ],
+    categoryRules: []
   }
 }
