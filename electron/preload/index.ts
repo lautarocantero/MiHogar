@@ -47,6 +47,12 @@ const remindersApi = {
     ipcRenderer.invoke(IPC_CHANNELS.REMINDERS_CHECK, reminders)
 }
 
+const tasksStorageApi = {
+  load: (): Promise<unknown> => ipcRenderer.invoke(IPC_CHANNELS.TASKS_LOAD),
+  save: (tasksJson: unknown): Promise<void> =>
+    ipcRenderer.invoke(IPC_CHANNELS.TASKS_SAVE, tasksJson)
+}
+
 const importStatementsApi = {
   pickFile: (): Promise<PickStatementFileResult> =>
     ipcRenderer.invoke(IPC_CHANNELS.IMPORT_STATEMENTS_PICK_FILE),
@@ -58,10 +64,12 @@ contextBridge.exposeInMainWorld('vaultApi', vaultApi)
 contextBridge.exposeInMainWorld('attachmentsApi', attachmentsApi)
 contextBridge.exposeInMainWorld('preferencesApi', preferencesApi)
 contextBridge.exposeInMainWorld('remindersApi', remindersApi)
+contextBridge.exposeInMainWorld('tasksStorageApi', tasksStorageApi)
 contextBridge.exposeInMainWorld('importStatementsApi', importStatementsApi)
 
 export type VaultApi = typeof vaultApi
 export type AttachmentsApi = typeof attachmentsApi
 export type PreferencesApi = typeof preferencesApi
 export type RemindersApi = typeof remindersApi
+export type TasksStorageApi = typeof tasksStorageApi
 export type ImportStatementsApi = typeof importStatementsApi

@@ -20,3 +20,7 @@ export function getPreferencesFilePath(): string {
 export function getAttachmentsDir(): string {
   return join(app.getPath('userData'), 'attachments')
 }
+
+export function getTasksFilePath(): string {
+  return join(app.getPath('userData'), 'tasks.json')
+}

@@ -35,6 +35,11 @@ export type RemindersApi = {
   check: (reminders: ReminderNotification[]) => Promise<void>
 }
 
+export type TasksStorageApi = {
+  load: () => Promise<unknown>
+  save: (tasksJson: unknown) => Promise<void>
+}
+
 export type ImportStatementsApi = {
   pickFile: () => Promise<PickStatementFileResult>
   parse: (payload: ParseStatementPayload) => Promise<ParseStatementResult>
@@ -46,6 +51,7 @@ declare global {
     attachmentsApi: AttachmentsApi
     preferencesApi: PreferencesApi
     remindersApi: RemindersApi
+    tasksStorageApi: TasksStorageApi
     importStatementsApi: ImportStatementsApi
   }
 }

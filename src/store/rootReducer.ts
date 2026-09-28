@@ -13,6 +13,8 @@ import { debtsReducer } from './debts/debtsSlice'
 import { savingsGoalsReducer } from './savingsGoals/savingsGoalsSlice'
 import { savingsSnapshotsReducer } from './savingsSnapshots/savingsSnapshotsSlice'
 import { uiReducer } from './ui/uiSlice'
+import { tasksReducer } from './tasks/tasksSlice'
+import { taskCategoriesReducer } from './taskCategories/taskCategoriesSlice'
 
 export const rootReducer = combineReducers({
   vault: vaultReducer,
@@ -28,7 +30,9 @@ export const rootReducer = combineReducers({
   debts: debtsReducer,
   savingsGoals: savingsGoalsReducer,
   savingsSnapshots: savingsSnapshotsReducer,
-  ui: uiReducer
+  ui: uiReducer,
+  tasks: tasksReducer,
+  taskCategories: taskCategoriesReducer
 })
 
 export type RootState = ReturnType<typeof rootReducer>

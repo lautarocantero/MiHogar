@@ -11,6 +11,7 @@
     "build": "electron-vite build",
     "build:unpack": "electron-vite build && electron-builder --dir",
     "build:linux": "electron-vite build && electron-builder --linux",
+    "build:linux:personal": "VITE_ENABLE_TASKS=true electron-vite build && electron-builder --linux",
     "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "lint": "eslint . --ext .ts,.tsx",

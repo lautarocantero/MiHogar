@@ -4,6 +4,7 @@ import { createMainWindow } from './windowManager'
 import { registerVaultHandlers } from './ipc/vaultHandlers'
 import { registerAttachmentHandlers } from './ipc/attachmentHandlers'
 import { registerPreferencesHandlers } from './ipc/preferencesHandlers'
+import { registerTasksHandlers } from './ipc/tasksHandlers'
 import { registerImportStatementsHandlers } from './ipc/importStatementsHandlers'
 
 if (process.platform === 'linux') {
@@ -39,6 +40,7 @@ app.whenReady().then(() => {
   registerVaultHandlers(mainWindow)
   registerAttachmentHandlers()
   registerPreferencesHandlers()
+  registerTasksHandlers()
   registerImportStatementsHandlers()
 
   app.on('activate', () => {

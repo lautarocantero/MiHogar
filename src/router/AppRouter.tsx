@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppLayout } from '@/layout/AppLayout'
+import { IS_TASKS_ENABLED } from '@/utils/featureFlags'
 import { PageSkeleton } from './PageSkeleton'
 import { ROUTES } from './routes'
 
@@ -45,6 +46,9 @@ const ReportsPage = lazy(() =>
 const SettingsPage = lazy(() =>
   import('@/modules/settings/SettingsPage').then((module) => ({ default: module.SettingsPage }))
 )
+const TasksPage = lazy(() =>
+  import('@/modules/tasks/TasksPage').then((module) => ({ default: module.TasksPage }))
+)
 export function AppRouter(): React.JSX.Element {
   return (
     <HashRouter>
@@ -62,6 +66,7 @@ export function AppRouter(): React.JSX.Element {
             <Route path={ROUTES.DEBTS} element={<DebtsPage />} />
             <Route path={ROUTES.REPORTS} element={<ReportsPage />} />
             <Route path={ROUTES.SETTINGS} element={<SettingsPage />} />
+            {IS_TASKS_ENABLED && <Route path={ROUTES.TASKS} element={<TasksPage />} />}
             <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
           </Route>
         </Routes>
