@@ -10,6 +10,7 @@ import {
 } from '@/store/categoryRules/categoryRulesSlice'
 import { showToast } from '@/store/ui/uiSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
+import { useT } from '@/i18n'
 import { MovementType } from '@/typings/domain/enums'
 import type { Movement } from '@/typings/domain/types'
 import {
@@ -17,8 +18,9 @@ import {
   parsedStatementRowSchema
 } from '@/validation/importedRowSchema'
 import { checkDuplicateRow } from './checkDuplicateRow'
+import { parseStatementFile } from './parseStatementFile'
+import { StatementImportError } from './statementImportError'
 import type {
-  ParseStatementResult,
   PreviewRow,
   StatementFileFormat,
   StatementSource
@@ -46,7 +48,8 @@ type UseImportMovementsResult = {
   rows: PreviewRow[]
   hasRows: boolean
   canConfirm: boolean
-  pickAndParseFile: (
+  parseFile: (
+    file: File,
     source: StatementSource,
     format: StatementFileFormat,
     accountId: string
@@ -60,6 +63,7 @@ type UseImportMovementsResult = {
 
 export function useImportMovements(): UseImportMovementsResult {
   const dispatch = useAppDispatch()
+  const t = useT()
   const { isLoading, error, run } = useLoader()
   const [rows, setRows] = useState<PreviewRow[]>([])
   const existingMovements = useAppSelector(selectAllMovements)
@@ -68,18 +72,12 @@ export function useImportMovements(): UseImportMovementsResult {
     categoryRulesSelectors.selectAll(state.categoryRules)
   )
 
-  const pickAndParseFile = useCallback(
-    async (source: StatementSource, format: StatementFileFormat, accountId: string) => {
+  const parseFile = useCallback(
+    async (file: File, source: StatementSource, format: StatementFileFormat, accountId: string) => {
       await run(async () => {
-        const picked = await window.importStatementsApi.pickFile()
-        if (!picked) return
-
-        const parseResult: ParseStatementResult = await window.importStatementsApi.parse({
-          source,
-          format,
-          fileData: picked.fileData,
-          fileName: picked.fileName
-        })
+        // Un archivo nuevo reemplaza la previsualización anterior, también si falla.
+        setRows([])
+        const parseResult = await parseStatementFile(file, source, format)
 
         const nextRows: PreviewRow[] = parseResult.rows.map((dto) => {
           const validation = parsedStatementRowSchema.safeParse(dto)
@@ -110,9 +108,9 @@ export function useImportMovements(): UseImportMovementsResult {
         })
 
         setRows(nextRows)
-      }, 'No se pudo leer el archivo')
+      }, t('importStatements.error.readFailed'))
     },
-    [categoryRules, existingMovements, run]
+    [categoryRules, existingMovements, run, t]
   )
 
   const toggleIncluded = useCallback((rowId: string) => {
@@ -164,7 +162,7 @@ export function useImportMovements(): UseImportMovementsResult {
     (accountId: string, onDone: () => void) => {
       run(async () => {
         const account = accounts.find((candidate) => candidate.id === accountId)
-        if (!account) throw new Error('Cuenta destino no encontrada')
+        if (!account) throw new StatementImportError('accountNotFound')
 
         const includedRows = rows.filter((row) => row.included)
 
@@ -196,12 +194,12 @@ export function useImportMovements(): UseImportMovementsResult {
         })
 
         dispatch(addManyMovements(movements))
-        dispatch(showToast(`Se importaron ${movements.length} movimientos`))
+        dispatch(showToast(t('importStatements.toast.imported', { count: movements.length })))
         setRows([])
         onDone()
-      }, 'No se pudo confirmar la importación')
+      }, t('importStatements.error.confirmFailed'))
     },
-    [accounts, dispatch, rows, run]
+    [accounts, dispatch, rows, run, t]
   )
 
   return {
@@ -210,7 +208,7 @@ export function useImportMovements(): UseImportMovementsResult {
     rows,
     hasRows: rows.length > 0,
     canConfirm,
-    pickAndParseFile,
+    parseFile,
     toggleIncluded,
     setCategory,
     rememberCategory,

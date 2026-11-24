@@ -1,21 +1,24 @@
 import { Button, Tooltip } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
-import { useAppDispatch } from '@/store/hooks'
-import { lockVaultThunk } from '@/store/vault/vaultThunks'
+import { useSignOut } from '@/hooks/shared/useSignOut'
+import { useT } from '@/i18n'
 
 type LogoutButtonProps = {
   collapsed?: boolean
 }
 
 export function LogoutButton({ collapsed = false }: LogoutButtonProps): React.JSX.Element {
-  const dispatch = useAppDispatch()
-  const label = 'Cerrar sesión'
+  const { signOut, isSigningOut } = useSignOut()
+  const t = useT()
+  const label = isSigningOut ? t('auth.signingOut') : t('auth.signOut')
 
   const button = (
     <Button
       variant="outlined"
       startIcon={collapsed ? undefined : <LogoutIcon />}
-      onClick={() => dispatch(lockVaultThunk())}
+      onClick={signOut}
+      disabled={isSigningOut}
+      aria-label={collapsed ? label : undefined}
       sx={{
         width: '100%',
         minHeight: 48,
@@ -27,6 +30,10 @@ export function LogoutButton({ collapsed = false }: LogoutButtonProps): React.JS
         '&:hover': {
           backgroundColor: 'rgba(255,253,249,0.12)',
           borderColor: 'rgba(255,253,249,0.45)'
+        },
+        '&.Mui-disabled': {
+          color: 'rgba(255,253,249,0.6)',
+          borderColor: 'rgba(255,253,249,0.3)'
         }
       }}
     >

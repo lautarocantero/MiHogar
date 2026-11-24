@@ -1,4 +1,5 @@
 import { differenceInCalendarMonths, parseISO } from 'date-fns'
+import { t } from '@/i18n'
 
 export function resolveGoalRemainingLabel(
   targetDate: string | undefined,
@@ -9,7 +10,9 @@ export function resolveGoalRemainingLabel(
   }
   const monthsRemaining = differenceInCalendarMonths(parseISO(targetDate), referenceDate)
   if (monthsRemaining <= 0) {
-    return 'Vence este mes'
+    return t('format.goal.dueThisMonth')
   }
-  return `${monthsRemaining} ${monthsRemaining === 1 ? 'mes restante' : 'meses restantes'}`
+  return monthsRemaining === 1
+    ? t('format.goal.oneMonthLeft')
+    : t('format.goal.monthsLeft', { count: monthsRemaining })
 }

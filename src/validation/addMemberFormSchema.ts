@@ -1,5 +1,5 @@
 import * as yup from 'yup'
 
 export const addMemberFormSchema = yup.object({
-  name: yup.string().required('Ingresá un nombre')
+  name: yup.string().required('validation.nameRequired')
 })

@@ -1,17 +1,16 @@
 import { MenuItem, Stack, TextField } from '@mui/material'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
+import { useT } from '@/i18n'
 import type { StatementFileFormat, StatementSource } from '../typings/importStatements.types'
 
+/** Nombres propios de cada entidad: no se traducen. */
 const SOURCE_LABELS: Record<StatementSource, string> = {
   MERCADO_PAGO: 'Mercado Pago',
   GALICIA: 'Banco Galicia'
 }
 
-const FORMAT_LABELS: Record<StatementFileFormat, string> = {
-  PDF: 'PDF',
-  EXCEL_CSV: 'Excel / CSV'
-}
+const FORMATS: StatementFileFormat[] = ['PDF', 'EXCEL_CSV']
 
 type SourceAndAccountStepProps = {
   source: StatementSource
@@ -30,12 +29,13 @@ export function SourceAndAccountStep({
   accountId,
   onAccountChange
 }: SourceAndAccountStepProps): React.JSX.Element {
+  const t = useT()
   const accounts = useAppSelector(selectAllAccounts)
 
   return (
     <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
       <TextField
-        label="Fuente"
+        label={t('importStatements.field.source')}
         select
         value={source}
         onChange={(event) => onSourceChange(event.target.value as StatementSource)}
@@ -48,20 +48,20 @@ export function SourceAndAccountStep({
         ))}
       </TextField>
       <TextField
-        label="Formato del archivo"
+        label={t('importStatements.field.format')}
         select
         value={format}
         onChange={(event) => onFormatChange(event.target.value as StatementFileFormat)}
         sx={{ minWidth: 180 }}
       >
-        {Object.entries(FORMAT_LABELS).map(([value, label]) => (
+        {FORMATS.map((value) => (
           <MenuItem key={value} value={value}>
-            {label}
+            {t(`importStatements.format.${value}`)}
           </MenuItem>
         ))}
       </TextField>
       <TextField
-        label="Cuenta destino"
+        label={t('importStatements.field.account')}
         select
         value={accountId}
         onChange={(event) => onAccountChange(event.target.value)}

@@ -14,6 +14,7 @@ import { computeInstallmentsRemaining } from '@/utils/domain/computeInstallments
 import { useMarkPaymentAsPaid } from '../hooks/useMarkPaymentAsPaid'
 import { useCancelPayment } from '../hooks/useCancelPayment'
 import type { PaymentTableRowProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 export function PaymentTableRow({
   entry,
@@ -25,6 +26,7 @@ export function PaymentTableRow({
   onEditMovement,
   onDeleteMovement
 }: PaymentTableRowProps): React.JSX.Element {
+  const t = useT()
   const payment = entry.origin === 'payment' ? entry : null
   const { day, month } = formatDayMonth(entry.displayDate)
   const isPaid = entry.status === PaymentStatus.PAID
@@ -42,7 +44,7 @@ export function PaymentTableRow({
       sx={{ backgroundColor: isFocused ? organicColors.blue.tint : 'inherit' }}
     >
       {!hiddenColumns.has('date') && (
-        <TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
           {day} {month}
         </TableCell>
       )}
@@ -52,8 +54,11 @@ export function PaymentTableRow({
           {typeof installmentsRemaining === 'number' && payment && (
             <Typography variant="caption" color="text.secondary">
               {installmentsRemaining > 0
-                ? `cuota ${(payment.installmentsPaid ?? 0) + 1}/${payment.installmentsTotal}`
-                : `terminás de pagar ${payment.concept}`}
+                ? t('payments.row.installment', {
+                    current: (payment.installmentsPaid ?? 0) + 1,
+                    total: payment.installmentsTotal ?? 0
+                  })
+                : t('payments.row.finishPaying', { concept: payment.concept })}
             </Typography>
           )}
         </TableCell>
@@ -61,7 +66,7 @@ export function PaymentTableRow({
       {!hiddenColumns.has('status') && (
         <TableCell>
           <Chip
-            label={isPaid ? 'Pagado' : 'Pendiente'}
+            label={isPaid ? t('payments.status.paid') : t('payments.status.pending')}
             size="small"
             sx={
               isPaid
@@ -71,9 +76,9 @@ export function PaymentTableRow({
           />
         </TableCell>
       )}
-      {!hiddenColumns.has('method') && <TableCell>{isCard ? 'Tarjeta' : 'Efectivo'}</TableCell>}
+      {!hiddenColumns.has('method') && <TableCell>{isCard ? t('payments.method.card') : t('payments.method.cash')}</TableCell>}
       {!hiddenColumns.has('type') && (
-        <TableCell>{entry.recurring ? 'Recurrente' : 'Único'}</TableCell>
+        <TableCell>{entry.recurring ? t('payments.type.recurring') : t('payments.type.oneOff')}</TableCell>
       )}
       {!hiddenColumns.has('account') && <TableCell>{entry.accountName}</TableCell>}
       {!hiddenColumns.has('category') && <TableCell>{entry.categoryName}</TableCell>}
@@ -89,28 +94,28 @@ export function PaymentTableRow({
       {!hiddenColumns.has('mode') && (
         <TableCell>
           {entry.amountMode === AmountMode.VARIABLE
-            ? 'Variable'
+            ? t('payments.mode.variable')
             : entry.amountMode === AmountMode.FIXED
-              ? 'Fijo'
+              ? t('payments.mode.fixed')
               : '—'}
         </TableCell>
       )}
-      <TableCell align="right">
+      <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
         <Typography
           variant="body2"
           fontWeight={600}
           color={isDeposit ? organicColors.sage.dark : organicColors.orange.dark}
         >
-          {isVariableUnset ? 'A confirmar' : formatCurrency(entry.amount)}
+          {isVariableUnset ? t('payments.toConfirm') : formatCurrency(entry.amount)}
         </Typography>
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
         {payment && (
-          <Tooltip title="Ver">
+          <Tooltip title={t('payments.action.view')}>
             <IconButton
               component={RouterLink}
               to={buildPaymentDetailPath(payment.id)}
-              aria-label={`Ver ${payment.concept}`}
+              aria-label={t('payments.action.viewItem', { name: payment.concept })}
               size="small"
             >
               <VisibilityIcon fontSize="small" />
@@ -119,10 +124,12 @@ export function PaymentTableRow({
         )}
         {payment &&
           (isPaid ? (
-            <Tooltip title={isDeposit ? 'Cancelar cobro' : 'Cancelar pago'}>
+            <Tooltip
+              title={isDeposit ? t('payments.action.cancelDeposit') : t('payments.action.cancelPayment')}
+            >
               <span>
                 <IconButton
-                  aria-label={`Cancelar ${payment.concept}`}
+                  aria-label={t('payments.action.cancelItem', { name: payment.concept })}
                   onClick={cancel}
                   disabled={isCancelling}
                   size="small"
@@ -132,10 +139,15 @@ export function PaymentTableRow({
               </span>
             </Tooltip>
           ) : (
-            <Tooltip title={isDeposit ? 'Marcar como cobrado' : 'Marcar como pagado'}>
+            <Tooltip
+              title={isDeposit ? t('payments.action.markCollected') : t('payments.action.markPaid')}
+            >
               <span>
                 <IconButton
-                  aria-label={`Marcar ${payment.concept} como ${isDeposit ? 'cobrado' : 'pagado'}`}
+                  aria-label={t(
+                    isDeposit ? 'payments.action.markCollectedItem' : 'payments.action.markPaidItem',
+                    { name: payment.concept }
+                  )}
                   onClick={markAsPaid}
                   disabled={isMarkingPaid || isVariableUnset}
                   size="small"
@@ -145,9 +157,9 @@ export function PaymentTableRow({
               </span>
             </Tooltip>
           ))}
-        <Tooltip title="Editar">
+        <Tooltip title={t('common.edit')}>
           <IconButton
-            aria-label={`Editar ${entry.concept}`}
+            aria-label={t('payments.action.editItem', { name: entry.concept })}
             onClick={() =>
               entry.origin === 'payment' ? onEditPayment(entry) : onEditMovement(entry.movement)
             }
@@ -156,9 +168,9 @@ export function PaymentTableRow({
             <EditIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Eliminar">
+        <Tooltip title={t('common.delete')}>
           <IconButton
-            aria-label={`Eliminar ${entry.concept}`}
+            aria-label={t('payments.action.deleteItem', { name: entry.concept })}
             onClick={() =>
               entry.origin === 'payment' ? onDeletePayment(entry) : onDeleteMovement(entry.movement)
             }

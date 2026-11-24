@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, IconButton, Stack, TextField, Typography } from '@mui/material'
 import Grid from '@mui/material/Grid2'
 import { format, parseISO } from 'date-fns'
@@ -214,6 +214,23 @@ export function CalendarPage(): React.JSX.Element {
 
   const entryRefs = useRef(new Map<string, HTMLLIElement>())
   const didInitialScroll = useRef(false)
+  const listScrollRef = useRef<HTMLDivElement | null>(null)
+
+  // Scrollea solo la lista de la línea de tiempo. `scrollIntoView` también movía la página
+  // entera, y en mobile (panel debajo del calendario) saltaba al final al entrar.
+  const scrollEntryIntoList = useCallback((entryId: string, align: 'start' | 'nearest'): void => {
+    const node = entryRefs.current.get(entryId)
+    const container = listScrollRef.current
+    if (!node || !container) return
+    const nodeRect = node.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    const offsetTop = nodeRect.top - containerRect.top + container.scrollTop
+    if (align === 'nearest') {
+      const isVisible = nodeRect.top >= containerRect.top && nodeRect.bottom <= containerRect.bottom
+      if (isVisible) return
+    }
+    container.scrollTo({ top: offsetTop })
+  }, [])
 
   const nextUpcomingEntryId = useMemo(() => {
     const upcoming = entries.find((entry) => !entry.isPast)
@@ -228,14 +245,14 @@ export function CalendarPage(): React.JSX.Element {
   useEffect(() => {
     if (selectedDate) {
       const targetId = entries.find((entry) => entry.displayDate === selectedDate)?.id
-      if (targetId) entryRefs.current.get(targetId)?.scrollIntoView({ block: 'nearest' })
+      if (targetId) scrollEntryIntoList(targetId, 'nearest')
       return
     }
 
     if (didInitialScroll.current || !nextUpcomingEntryId) return
-    entryRefs.current.get(nextUpcomingEntryId)?.scrollIntoView({ block: 'start' })
+    scrollEntryIntoList(nextUpcomingEntryId, 'start')
     didInitialScroll.current = true
-  }, [selectedDate, entries, nextUpcomingEntryId])
+  }, [selectedDate, entries, nextUpcomingEntryId, scrollEntryIntoList])
 
   useEffect(() => {
     setSelectedDate(null)
@@ -278,14 +295,14 @@ export function CalendarPage(): React.JSX.Element {
       : undefined
 
   return (
-    <Grid container spacing={4} component="section" aria-label="Calendario de pagos">
+    <Grid container spacing={{ xs: 3, md: 4 }} component="section" aria-label="Calendario de pagos">
       <Grid size={{ xs: 12, md: 8 }}>
         <Stack spacing={3}>
           {selectedDate ? (
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: selectedDayClosingBadge ? '1fr 1fr' : '1fr',
+                gridTemplateColumns: selectedDayClosingBadge ? { xs: '1fr', sm: '1fr 1fr' } : '1fr',
                 gridTemplateRows: 'auto auto',
                 gap: 2
               }}
@@ -353,7 +370,7 @@ export function CalendarPage(): React.JSX.Element {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
+                gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
                 gridTemplateRows: 'auto auto',
                 gap: 2
               }}
@@ -429,7 +446,7 @@ export function CalendarPage(): React.JSX.Element {
             sx={{
               border: `1px solid ${organicColors.neutral.border}`,
               backgroundColor: organicColors.surface,
-              p: 2.5
+              p: { xs: 1.5, sm: 2.5 }
             }}
           >
             <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -478,12 +495,17 @@ export function CalendarPage(): React.JSX.Element {
         </Stack>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }} sx={{ alignSelf: 'flex-start', position: 'sticky', top: 0 }}>
+      <Grid
+        size={{ xs: 12, md: 4 }}
+        // Solo en escritorio el panel queda fijo al lado del calendario; apilado en mobile
+        // sería sticky encima del calendario.
+        sx={{ alignSelf: 'flex-start', position: { md: 'sticky' }, top: { md: 0 } }}
+      >
         <Box
           sx={{
             position: 'relative',
-            height: 'calc(100vh - 128px)',
-            maxHeight: 'calc(100vh - 128px)',
+            height: { xs: 'auto', md: 'calc(100dvh - 128px)' },
+            maxHeight: { xs: '75dvh', md: 'calc(100dvh - 128px)' },
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
@@ -602,6 +624,7 @@ export function CalendarPage(): React.JSX.Element {
             </Typography>
           ) : (
             <Box
+              ref={listScrollRef}
               sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', position: 'relative', zIndex: 1 }}
             >
               <Stack

@@ -17,8 +17,10 @@ import { buildPaymentDetailPath, ROUTES } from '@/router/routes'
 import { useReminderPreference } from '@/modules/settings/useReminderPreference'
 import { organicColors, organicTypography } from '@/theme/tokens'
 import type { RootState } from '@/store'
+import { useT } from '@/i18n'
 
 export function NotificationsBell(): React.JSX.Element {
+  const t = useT()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const pendingPayments = useAppSelector(selectPendingPayments)
@@ -55,7 +57,7 @@ export function NotificationsBell(): React.JSX.Element {
     id: `${payment.id}:missingDeposit`,
     to: buildPaymentDetailPath(payment.id),
     primary: payment.concept,
-    secondary: 'Todavía no cargaste este depósito variable'
+    secondary: t('notifications.missingDeposit')
   }))
   const allItems = [...dueSoonItems, ...dueSoonDebtItems, ...missingDepositItems]
 
@@ -67,7 +69,7 @@ export function NotificationsBell(): React.JSX.Element {
   return (
     <>
       <IconButton
-        aria-label="Notificaciones"
+        aria-label={t('notifications.title')}
         onClick={(event) => setAnchor(event.currentTarget)}
         sx={{ color: organicColors.orange.dark }}
       >
@@ -85,6 +87,7 @@ export function NotificationsBell(): React.JSX.Element {
           paper: {
             sx: {
               width: 340,
+              maxWidth: 'calc(100vw - 32px)',
               maxHeight: 420,
               overflowY: 'auto',
               p: 1.25,
@@ -96,7 +99,7 @@ export function NotificationsBell(): React.JSX.Element {
         {allItems.length === 0 ? (
           <Box p={2}>
             <Typography variant="body2" color="text.secondary">
-              No tenés notificaciones pendientes.
+              {t('notifications.empty')}
             </Typography>
           </Box>
         ) : (
@@ -131,11 +134,11 @@ export function NotificationsBell(): React.JSX.Element {
                       {item.secondary}
                     </Typography>
                   </Box>
-                  <Tooltip title="Marcar como vista">
+                  <Tooltip title={t('notifications.markRead')}>
                     <span>
                       <IconButton
                         size="small"
-                        aria-label={`Marcar ${item.primary} como vista`}
+                        aria-label={t('notifications.markReadItem', { name: item.primary })}
                         disabled={isRead}
                         onClick={() => dispatch(markNotificationRead(item.id))}
                         sx={{ color: organicColors.orange.dark }}
@@ -144,10 +147,10 @@ export function NotificationsBell(): React.JSX.Element {
                       </IconButton>
                     </span>
                   </Tooltip>
-                  <Tooltip title="Ir a la notificación">
+                  <Tooltip title={t('notifications.goTo')}>
                     <IconButton
                       size="small"
-                      aria-label={`Ir a ${item.primary}`}
+                      aria-label={t('notifications.goToItem', { name: item.primary })}
                       onClick={() => {
                         setAnchor(null)
                         navigate(item.to)

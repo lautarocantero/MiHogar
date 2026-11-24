@@ -1,18 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { VaultStatus } from './typings/enums'
+import { VaultLockReason, VaultStatus } from './typings/enums'
 import type { VaultState } from './typings/types'
 import {
   checkVaultExistsThunk,
   createVaultThunk,
   unlockVaultThunk,
+  restoreVaultThunk,
   lockVaultThunk,
-  importVaultBackupThunk,
-  enterDemoModeThunk
+  resetVaultThunk,
+  reloadRemoteVaultThunk,
+  closeAfterRemoteKeyChangeThunk,
+  enterDemoModeThunk,
+  exitDemoModeThunk
 } from './vaultThunks'
 
 const initialState: VaultState = {
   status: VaultStatus.CHECKING,
-  error: null
+  error: null,
+  lockReason: null
 }
 
 const vaultSlice = createSlice({
@@ -22,32 +27,62 @@ const vaultSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(checkVaultExistsThunk.fulfilled, (state, action) => {
+        // Si mientras tanto entró a la demo, no se lo saca.
+        if (state.status === VaultStatus.DEMO) return
+        state.error = null
         state.status = action.payload ? VaultStatus.LOCKED : VaultStatus.NOT_CREATED
+      })
+      .addCase(checkVaultExistsThunk.rejected, (state, action) => {
+        if (state.status === VaultStatus.DEMO) return
+        state.error = action.error.message ?? null
       })
       .addCase(createVaultThunk.fulfilled, (state) => {
         state.status = VaultStatus.UNLOCKED
         state.error = null
+        state.lockReason = null
       })
       .addCase(unlockVaultThunk.fulfilled, (state) => {
         state.status = VaultStatus.UNLOCKED
         state.error = null
+        state.lockReason = null
+      })
+      .addCase(restoreVaultThunk.fulfilled, (state) => {
+        state.status = VaultStatus.UNLOCKED
+        state.error = null
+        state.lockReason = null
       })
       .addCase(enterDemoModeThunk.fulfilled, (state) => {
         state.status = VaultStatus.DEMO
         state.error = null
       })
-      .addCase(unlockVaultThunk.rejected, (state, action) => {
-        state.error = action.error.message ?? 'La clave del hogar no es correcta'
+      .addCase(exitDemoModeThunk.fulfilled, (state, action) => {
+        state.error = null
+        if (action.payload === null) {
+          state.status = VaultStatus.CHECKING
+        } else {
+          state.status = action.payload ? VaultStatus.LOCKED : VaultStatus.NOT_CREATED
+        }
       })
-      .addCase(createVaultThunk.rejected, (state, action) => {
-        state.error = action.error.message ?? 'No se pudo crear el archivo de datos'
-      })
-      .addCase(lockVaultThunk.fulfilled, (state) => {
+      .addCase(lockVaultThunk.fulfilled, (state, action) => {
+        // `blocked`: había cambios sin guardar y se abrió el diálogo; sigue desbloqueado.
+        if (action.payload !== 'locked') return
         state.status = VaultStatus.LOCKED
+        state.lockReason = null
       })
-      .addCase(importVaultBackupThunk.fulfilled, (state, action) => {
-        if (action.payload) {
+      .addCase(closeAfterRemoteKeyChangeThunk.fulfilled, (state) => {
+        state.status = VaultStatus.LOCKED
+        state.lockReason = VaultLockReason.KEY_CHANGED
+      })
+      .addCase(resetVaultThunk.fulfilled, (state) => {
+        if (state.status === VaultStatus.DEMO) return
+        state.status = VaultStatus.CHECKING
+        state.error = null
+        state.lockReason = null
+      })
+      .addCase(reloadRemoteVaultThunk.fulfilled, (state, action) => {
+        if (action.payload === 'locked') {
           state.status = VaultStatus.LOCKED
+          state.lockReason = VaultLockReason.KEY_CHANGED
         }
       })
   }

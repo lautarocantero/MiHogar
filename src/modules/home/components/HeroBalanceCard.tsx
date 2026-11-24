@@ -26,7 +26,7 @@ export function HeroBalanceCard({
           sx={{
             background: `linear-gradient(135deg, ${organicColors.orange.main} 0%, ${organicColors.orange.main} 55%, ${organicColors.orange.dark} 100%)`,
             color: '#fffdf9',
-            p: 4,
+            p: { xs: 2.5, sm: 4 },
             height: '100%'
           }}
           elevation={0}
@@ -40,7 +40,8 @@ export function HeroBalanceCard({
               fontFamily: organicTypography.titleFontFamily,
               fontWeight: 400,
               lineHeight: 1.05,
-              fontSize: { xs: '2.75rem', md: '3.5rem' }
+              fontSize: { xs: '2.25rem', sm: '2.75rem', md: '3.5rem' },
+              overflowWrap: 'anywhere'
             }}
           >
             {formatCurrency(totalAvailable)}
@@ -75,9 +76,9 @@ export function HeroBalanceCard({
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2.25,
+              gap: { xs: 1.5, sm: 2.25 },
               backgroundColor: organicColors.orange.tint,
-              p: 3,
+              p: { xs: 2, sm: 3 },
               flex: 1,
               textDecoration: 'none',
               color: 'inherit',
@@ -90,8 +91,8 @@ export function HeroBalanceCard({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 56,
-                height: 56,
+                width: { xs: 44, sm: 56 },
+                height: { xs: 44, sm: 56 },
                 flexShrink: 0,
                 backgroundColor: '#fadfc9',
                 color: organicColors.orange.dark
@@ -107,7 +108,8 @@ export function HeroBalanceCard({
                 component="p"
                 sx={{
                   fontFamily: organicTypography.titleFontFamily,
-                  fontSize: '1.875rem',
+                  fontSize: { xs: '1.5rem', sm: '1.875rem' },
+                  overflowWrap: 'anywhere',
                   color: organicColors.orange.dark
                 }}
               >
@@ -125,9 +127,9 @@ export function HeroBalanceCard({
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2.25,
+              gap: { xs: 1.5, sm: 2.25 },
               backgroundColor: organicColors.sage.tint,
-              p: 3,
+              p: { xs: 2, sm: 3 },
               flex: 1,
               textDecoration: 'none',
               color: 'inherit',
@@ -140,8 +142,8 @@ export function HeroBalanceCard({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 56,
-                height: 56,
+                width: { xs: 44, sm: 56 },
+                height: { xs: 44, sm: 56 },
                 flexShrink: 0,
                 backgroundColor: '#dff0c8',
                 color: organicColors.sage.dark
@@ -157,7 +159,8 @@ export function HeroBalanceCard({
                 component="p"
                 sx={{
                   fontFamily: organicTypography.titleFontFamily,
-                  fontSize: '1.875rem',
+                  fontSize: { xs: '1.5rem', sm: '1.875rem' },
+                  overflowWrap: 'anywhere',
                   color: organicColors.sage.dark
                 }}
               >

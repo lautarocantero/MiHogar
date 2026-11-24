@@ -1,15 +1,9 @@
-import { PaymentFrequency } from '@/typings/domain/enums'
-
-const FREQUENCY_LABELS: Record<PaymentFrequency, string> = {
-  [PaymentFrequency.DAILY]: 'Día a día',
-  [PaymentFrequency.MONTHLY]: 'Todos los meses',
-  [PaymentFrequency.YEARLY]: 'Una vez al año',
-  [PaymentFrequency.ONCE]: 'Una sola vez'
-}
+import { t } from '@/i18n'
+import type { PaymentFrequency } from '@/typings/domain/enums'
 
 export function resolveFrequencyLabel(frequency?: PaymentFrequency): string | null {
   if (!frequency) {
     return null
   }
-  return FREQUENCY_LABELS[frequency]
+  return t(`format.frequency.${frequency}`)
 }

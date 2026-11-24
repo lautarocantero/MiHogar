@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { getDateFnsLocale, t } from '@/i18n'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import type { Movement } from '@/typings/domain/types'
 
@@ -10,12 +10,14 @@ export function computeHistoryComparativePhrase(sortedMovements: Movement[]): st
 
   const [latest, previous] = sortedMovements
   const difference = latest.amount - previous.amount
-  const previousMonthLabel = format(parseISO(previous.date), 'MMMM', { locale: es })
+  const month = format(parseISO(previous.date), 'MMMM', { locale: getDateFnsLocale() })
 
   if (difference === 0) {
-    return `Este mes pagás lo mismo que en ${previousMonthLabel}.`
+    return t('format.history.same', { month })
   }
 
-  const verb = difference > 0 ? 'más' : 'menos'
-  return `Este mes pagás ${formatCurrency(Math.abs(difference))} ${verb} que en ${previousMonthLabel}.`
+  return t(difference > 0 ? 'format.history.more' : 'format.history.less', {
+    amount: formatCurrency(Math.abs(difference)),
+    month
+  })
 }

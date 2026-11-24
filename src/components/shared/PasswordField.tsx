@@ -3,12 +3,14 @@ import { IconButton, InputAdornment, TextField } from '@mui/material'
 import type { TextFieldProps } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { useT } from '@/i18n'
 
 export const PasswordField = forwardRef<HTMLDivElement, TextFieldProps>(function PasswordField(
   { slotProps, ...props },
   ref
 ) {
   const [isVisible, setIsVisible] = useState(false)
+  const t = useT()
 
   return (
     <TextField
@@ -22,7 +24,7 @@ export const PasswordField = forwardRef<HTMLDivElement, TextFieldProps>(function
           endAdornment: (
             <InputAdornment position="end">
               <IconButton
-                aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-label={isVisible ? t('auth.hidePassword') : t('auth.showPassword')}
                 onClick={() => setIsVisible((prev) => !prev)}
                 edge="end"
                 tabIndex={-1}

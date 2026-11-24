@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles'
-import { organicColors, organicShape, organicTypography } from './tokens'
+import { organicColors, organicLayout, organicShape, organicTypography } from './tokens'
 
 export const organicTheme = createTheme({
   palette: {
@@ -72,6 +72,15 @@ export const organicTheme = createTheme({
         }
       }
     },
+    // Área táctil mínima de 40px para los toggles (p. ej. tipo de gráfico en Informes).
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          minWidth: 40,
+          minHeight: 40
+        }
+      }
+    },
     MuiChip: {
       styleOverrides: {
         root: {
@@ -90,6 +99,80 @@ export const organicTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: organicShape.containerRadius
+        }
+      }
+    },
+    // En teléfonos los diálogos que no son fullScreen (confirmaciones) usan márgenes de
+    // 16px en vez de 32px, así no quedan angostos en 360px. Los de formulario se abren en
+    // pantalla completa con `useFullScreenDialog` (src/hooks/shared/useResponsive.ts).
+    MuiDialog: {
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          [theme.breakpoints.down('sm')]: {
+            '&:not(.MuiDialog-paperFullScreen)': {
+              margin: theme.spacing(2),
+              maxWidth: `calc(100% - ${theme.spacing(4)})`,
+              maxHeight: `calc(100% - ${theme.spacing(4)})`
+            },
+            '&.MuiDialog-paperFullWidth:not(.MuiDialog-paperFullScreen)': {
+              width: `calc(100% - ${theme.spacing(4)})`
+            },
+            '&.MuiDialog-paperFullScreen': {
+              paddingTop: organicLayout.safeArea.top,
+              paddingBottom: organicLayout.safeArea.bottom
+            }
+          }
+        })
+      }
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(2),
+            fontSize: '1.125rem'
+          }
+        })
+      }
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2)
+          }
+        })
+      }
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          [theme.breakpoints.down('sm')]: {
+            flexWrap: 'wrap',
+            gap: theme.spacing(1),
+            '& > :not(style) ~ :not(style)': { marginLeft: 0 }
+          }
+        })
+      }
+    },
+    // Tablas: en pantallas chicas se reduce el padding de las celdas para que entren más
+    // columnas antes de necesitar scroll horizontal (que lo da el TableContainer).
+    MuiTableCell: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          [theme.breakpoints.down('sm')]: {
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1)
+          }
+        })
+      }
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch'
         }
       }
     }

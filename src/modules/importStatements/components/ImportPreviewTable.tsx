@@ -17,6 +17,7 @@ import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatShortDate } from '@/utils/formatting/formatDate'
 import { CategoryField } from '@/components/shared/CategoryField'
 import { CategoryKind, MovementType } from '@/typings/domain/enums'
+import { useT } from '@/i18n'
 import type { PreviewRow } from '../typings/importStatements.types'
 
 type ImportPreviewTableProps = {
@@ -34,16 +35,17 @@ export function ImportPreviewTable({
   onRememberCategory,
   isCategoryRemembered
 }: ImportPreviewTableProps): React.JSX.Element {
+  const t = useT()
   return (
     <Table size="small">
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">Incluir</TableCell>
-          <TableCell>Fecha</TableCell>
-          <TableCell>Descripción</TableCell>
-          <TableCell align="right">Monto</TableCell>
-          <TableCell>Categoría</TableCell>
-          <TableCell>Aviso</TableCell>
+          <TableCell padding="checkbox">{t('importStatements.preview.col.include')}</TableCell>
+          <TableCell>{t('importStatements.preview.col.date')}</TableCell>
+          <TableCell>{t('importStatements.preview.col.description')}</TableCell>
+          <TableCell align="right">{t('importStatements.preview.col.amount')}</TableCell>
+          <TableCell>{t('importStatements.preview.col.category')}</TableCell>
+          <TableCell>{t('importStatements.preview.col.notice')}</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -54,6 +56,11 @@ export function ImportPreviewTable({
                 checked={row.included}
                 disabled={row.invalid}
                 onChange={() => onToggleIncluded(row.rowId)}
+                inputProps={{
+                  'aria-label': t('importStatements.preview.includeRow', {
+                    description: row.description
+                  })
+                }}
               />
             </TableCell>
             <TableCell>{formatShortDate(row.date)}</TableCell>
@@ -72,8 +79,8 @@ export function ImportPreviewTable({
                 <Tooltip
                   title={
                     isCategoryRemembered(row.rowId)
-                      ? 'Concepto establecido para esta descripción'
-                      : 'Establecer concepto para futuras boletas con esta descripción'
+                      ? t('importStatements.preview.rememberCategory.done')
+                      : t('importStatements.preview.rememberCategory.hint')
                   }
                 >
                   <span>
@@ -81,7 +88,7 @@ export function ImportPreviewTable({
                       size="small"
                       disabled={!row.categoryId}
                       onClick={() => onRememberCategory(row.rowId)}
-                      aria-label="Establecer concepto"
+                      aria-label={t('importStatements.preview.rememberCategory')}
                     >
                       {isCategoryRemembered(row.rowId) ? (
                         <BookmarkAddedIcon fontSize="small" color="primary" />
@@ -94,9 +101,15 @@ export function ImportPreviewTable({
               </Stack>
             </TableCell>
             <TableCell>
-              {row.invalid && <Chip size="small" color="error" label="Fila inválida" />}
+              {row.invalid && (
+                <Chip size="small" color="error" label={t('importStatements.preview.invalidRow')} />
+              )}
               {!row.invalid && row.likelyDuplicate && (
-                <Chip size="small" color="warning" label="Probable duplicado" />
+                <Chip
+                  size="small"
+                  color="warning"
+                  label={t('importStatements.preview.likelyDuplicate')}
+                />
               )}
             </TableCell>
           </TableRow>
@@ -105,7 +118,7 @@ export function ImportPreviewTable({
           <TableRow>
             <TableCell colSpan={6}>
               <Typography variant="body2" color="text.secondary">
-                No se detectaron filas en el archivo.
+                {t('importStatements.preview.empty')}
               </Typography>
             </TableCell>
           </TableRow>

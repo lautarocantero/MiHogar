@@ -1,5 +1,5 @@
 import type { RootState } from '@/store'
-import type { SaveStatus } from './typings/enums'
+import type { PendingExitReason, SaveStatus } from './typings/enums'
 import type { ToastState } from './typings/types'
 
 export const selectSaveStatus = (state: RootState): SaveStatus => state.ui.saveStatus
@@ -7,3 +7,6 @@ export const selectSaveStatus = (state: RootState): SaveStatus => state.ui.saveS
 export const selectErrorMessage = (state: RootState): string | null => state.ui.errorMessage
 
 export const selectToast = (state: RootState): ToastState | null => state.ui.toast
+
+export const selectPendingExit = (state: RootState): PendingExitReason | null =>
+  state.ui.pendingExit

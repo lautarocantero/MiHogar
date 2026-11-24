@@ -4,6 +4,7 @@ import { CategoryKind } from '@/typings/domain/enums'
 import { AddCategoryForm } from './AddCategoryForm'
 import { useAddCategory } from '../useAddCategory'
 import type { AddCategoryDialogProps } from '../typings/props'
+import { useFullScreenDialog } from '@/hooks/shared/useResponsive'
 
 export function AddCategoryDialog({
   kind,
@@ -11,6 +12,7 @@ export function AddCategoryDialog({
   onClose,
   onCreated
 }: AddCategoryDialogProps): React.JSX.Element {
+  const fullScreen = useFullScreenDialog()
   const { submit, isSubmitting, errorMessage } = useAddCategory(kind, (categoryId) => {
     onCreated?.(categoryId)
     onClose()
@@ -18,6 +20,7 @@ export function AddCategoryDialog({
 
   return (
     <Dialog
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       fullWidth

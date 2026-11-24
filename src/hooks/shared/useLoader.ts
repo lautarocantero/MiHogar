@@ -23,5 +23,7 @@ export function useLoader(): UseLoaderResult {
     [handleError]
   )
 
-  return { isLoading, error, run }
+  const reset = useCallback(() => setError(null), [])
+
+  return { isLoading, error, run, reset }
 }

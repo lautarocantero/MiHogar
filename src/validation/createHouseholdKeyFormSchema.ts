@@ -2,10 +2,10 @@ import { z } from 'zod'
 
 export const createHouseholdKeyFormSchema = z
   .object({
-    householdKey: z.string().min(8, 'La clave debe tener al menos 8 caracteres'),
+    householdKey: z.string().min(8, 'validation.keyTooShort'),
     confirmHouseholdKey: z.string()
   })
   .refine((data) => data.householdKey === data.confirmHouseholdKey, {
-    message: 'Las claves no coinciden',
+    message: 'validation.keysDontMatch',
     path: ['confirmHouseholdKey']
   })

@@ -3,12 +3,15 @@ import { DialogHeader } from '@/components/shared/DialogHeader'
 import { AddSavingsForm } from './AddSavingsForm'
 import { useCreateSavings } from '../useCreateSavings'
 import type { AddSavingsDialogProps } from '../typings/props'
+import { useFullScreenDialog } from '@/hooks/shared/useResponsive'
 
 export function AddSavingsDialog({ open, onClose }: AddSavingsDialogProps): React.JSX.Element {
+  const fullScreen = useFullScreenDialog()
   const { submit, isSubmitting, errorMessage } = useCreateSavings(onClose)
 
   return (
     <Dialog
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       fullWidth

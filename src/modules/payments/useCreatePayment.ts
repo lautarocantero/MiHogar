@@ -6,6 +6,7 @@ import { showToast } from '@/store/ui/uiSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { OwnerType, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import type { AddPaymentFormValues, UseCreatePaymentResult } from './typings/types'
+import { t } from '@/i18n'
 
 export function useCreatePayment(kind: PaymentKind, onCreated: () => void): UseCreatePaymentResult {
   const dispatch = useAppDispatch()
@@ -36,12 +37,16 @@ export function useCreatePayment(kind: PaymentKind, onCreated: () => void): UseC
               amountMode: values.amountMode
             })
           )
-          dispatch(showToast(kind === PaymentKind.DEPOSIT ? 'Depósito agregado' : 'Pago agregado'))
+          dispatch(showToast(
+              kind === PaymentKind.DEPOSIT
+                ? t('payments.toast.depositAdded')
+                : t('payments.toast.paymentAdded')
+            ))
           onCreated()
         },
         kind === PaymentKind.DEPOSIT
-          ? 'No se pudo agregar el depósito'
-          : 'No se pudo agregar el pago'
+          ? t('payments.error.createDeposit')
+          : t('payments.error.createPayment')
       )
     },
     [dispatch, run, onCreated, kind]

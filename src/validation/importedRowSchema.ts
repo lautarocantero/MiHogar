@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { isValid, parseISO } from 'date-fns'
 import { MovementType, OwnerType } from '@/typings/domain/enums'
+import { MAX_ABS_AMOUNT } from '@/utils/domain/amountLimits'
 
 function isValidCalendarDate(value: string): boolean {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) && isValid(parseISO(value))
@@ -11,6 +12,8 @@ export const parsedStatementRowSchema = z.object({
   amount: z
     .number()
     .finite()
+    .gte(-MAX_ABS_AMOUNT)
+    .lte(MAX_ABS_AMOUNT)
     .refine((value) => value !== 0, { message: 'Monto no puede ser 0' }),
   description: z.string().min(1),
   sourceRef: z.string().optional()

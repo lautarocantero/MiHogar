@@ -1,5 +1,5 @@
 import { format, subMonths } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { getDateFnsLocale } from '@/i18n'
 import type { Movement, MonthlyExpensePoint } from '@/typings/domain/types'
 import { MovementType } from '@/typings/domain/enums'
 
@@ -23,7 +23,7 @@ export function computeMonthlyExpenseSeries(
 
     return {
       monthKey,
-      monthLabel: format(monthDate, 'MMM', { locale: es }).replace('.', ''),
+      monthLabel: format(monthDate, 'MMM', { locale: getDateFnsLocale() }).replace('.', ''),
       total,
       isCurrentMonth: monthKey === format(referenceDate, 'yyyy-MM')
     }

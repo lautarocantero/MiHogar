@@ -1,31 +1,33 @@
 import { Button, Card, Stack, Typography } from '@mui/material'
 import { useFontScale } from '@/theme/FontScale/useFontScale'
 import { FontSizeLevel } from '@/theme/FontScale/typings/enums'
+import { useT } from '@/i18n'
 
-const OPTIONS: Array<{ level: FontSizeLevel; label: string }> = [
-  { level: FontSizeLevel.XSMALL, label: 'Muy chica (-20%)' },
-  { level: FontSizeLevel.SMALL, label: 'Chica (-10%)' },
-  { level: FontSizeLevel.NORMAL, label: 'Normal' },
-  { level: FontSizeLevel.LARGE, label: 'Grande (+15%)' },
-  { level: FontSizeLevel.XLARGE, label: 'Muy grande (+30%)' }
+const OPTIONS: Array<{ level: FontSizeLevel; labelKey: string }> = [
+  { level: FontSizeLevel.XSMALL, labelKey: 'settings.fontSize.xsmall' },
+  { level: FontSizeLevel.SMALL, labelKey: 'settings.fontSize.small' },
+  { level: FontSizeLevel.NORMAL, labelKey: 'settings.fontSize.normal' },
+  { level: FontSizeLevel.LARGE, labelKey: 'settings.fontSize.large' },
+  { level: FontSizeLevel.XLARGE, labelKey: 'settings.fontSize.xlarge' }
 ]
 
 export function FontSizeSwitcher(): React.JSX.Element {
+  const t = useT()
   const { level, setLevel } = useFontScale()
 
   return (
-    <Card sx={{ p: 3 }} elevation={0}>
+    <Card sx={{ p: { xs: 2, sm: 3 } }} elevation={0}>
       <Stack spacing={2}>
-        <Typography variant="h6" component="h2">
-          Tamaño de la letra
+        <Typography id="font-size-title" variant="h6" component="h2">
+          {t('settings.fontSize.title')}
         </Typography>
         <Stack
           direction="row"
           spacing={2}
           flexWrap="wrap"
           useFlexGap
-          role="radiogroup"
-          aria-label="Tamaño de la letra"
+          role="group"
+          aria-labelledby="font-size-title"
         >
           {OPTIONS.map((option) => (
             <Button
@@ -35,7 +37,7 @@ export function FontSizeSwitcher(): React.JSX.Element {
               aria-pressed={level === option.level}
               size="large"
             >
-              {option.label}
+              {t(option.labelKey)}
             </Button>
           ))}
         </Stack>

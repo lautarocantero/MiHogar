@@ -226,7 +226,14 @@ export function SavingsPage(): React.JSX.Element {
       </Grid>
 
       <Box>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2} gap={2}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          flexWrap="wrap"
+          mb={2}
+          gap={2}
+        >
           <SectionHeading icon={<SavingsIcon sx={{ color: organicColors.orange.dark }} />}>
             Ahorros
           </SectionHeading>
@@ -234,6 +241,7 @@ export function SavingsPage(): React.JSX.Element {
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => setIsAddSavingsOpen(true)}
+            sx={{ whiteSpace: 'nowrap' }}
           >
             Agregar un ahorro
           </Button>

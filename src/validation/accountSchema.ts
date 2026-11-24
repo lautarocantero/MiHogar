@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { boundedNumber } from './zodNumberField'
 import { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 
 export const accountSchema = z.object({
@@ -7,18 +8,18 @@ export const accountSchema = z.object({
   type: z.nativeEnum(AccountType),
   ownerType: z.nativeEnum(OwnerType),
   ownerId: z.string().optional(),
-  balance: z.number(),
+  balance: boundedNumber(),
   currency: z.nativeEnum(Currency).default(Currency.ARS),
   contextPhrase: z.string().optional(),
   sourceAccountId: z.string().optional(),
-  creditLimit: z.number().optional(),
-  usedAmount: z.number().nonnegative().optional(),
-  closingDay: z.number().int().min(1).max(31).optional(),
-  dueDay: z.number().int().min(1).max(31).optional(),
-  nextClosingDay: z.number().int().min(1).max(31).optional(),
-  nextDueDay: z.number().int().min(1).max(31).optional(),
-  minPayment: z.number().nonnegative().optional(),
+  creditLimit: boundedNumber().optional(),
+  usedAmount: boundedNumber().nonnegative().optional(),
+  closingDay: boundedNumber().int().min(1).max(31).optional(),
+  dueDay: boundedNumber().int().min(1).max(31).optional(),
+  nextClosingDay: boundedNumber().int().min(1).max(31).optional(),
+  nextDueDay: boundedNumber().int().min(1).max(31).optional(),
+  minPayment: boundedNumber().nonnegative().optional(),
   minPaymentDueDate: z.string().optional(),
   color: z.string().optional(),
-  sortOrder: z.number().optional()
+  sortOrder: boundedNumber().optional()
 })

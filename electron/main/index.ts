@@ -1,17 +1,14 @@
 import { app, BrowserWindow } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { createMainWindow } from './windowManager'
-import { registerVaultHandlers } from './ipc/vaultHandlers'
-import { registerAttachmentHandlers } from './ipc/attachmentHandlers'
-import { registerPreferencesHandlers } from './ipc/preferencesHandlers'
-import { registerImportStatementsHandlers } from './ipc/importStatementsHandlers'
 
 if (process.platform === 'linux') {
   // El AppImage no queda instalado con el chrome-sandbox setuid root que
   // Chromium exige para sandboxear sin este flag (falla con
   // "SUID sandbox helper binary... not configured correctly" en Linux al
-  // correr sin instalación privilegiada). La app no carga contenido remoto,
-  // así que desactivar el sandbox de Chromium acá es un tradeoff aceptable.
+  // correr sin instalación privilegiada). La ventana solo carga la UI empaquetada
+  // (los datos van cifrados a Supabase por fetch), así que desactivar el sandbox
+  // de Chromium acá es un tradeoff aceptable.
   app.commandLine.appendSwitch('no-sandbox')
   // Evita que Chromium use /dev/shm para memoria compartida: en algunos
   // hosts falla con "Creating shared memory in /dev/shm/... failed: No
@@ -34,12 +31,9 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  const mainWindow = createMainWindow()
+  createMainWindow()
 
-  registerVaultHandlers(mainWindow)
-  registerAttachmentHandlers()
-  registerPreferencesHandlers()
-  registerImportStatementsHandlers()
+  // TODO(002-web-app): se elimina cuando los parsers de boletas corran en el navegador.
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

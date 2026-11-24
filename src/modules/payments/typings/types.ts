@@ -1,5 +1,5 @@
 import type { z } from 'zod'
-import type { Movement, Payment } from '@/typings/domain/types'
+import type { AttachmentMeta, Movement, Payment } from '@/typings/domain/types'
 import type { AccountType, AmountMode, PaymentStatus } from '@/typings/domain/enums'
 import type { addPaymentFormSchema } from '@/validation/addPaymentFormSchema'
 import type { unlockFormSchema } from '@/validation/unlockFormSchema'
@@ -73,8 +73,8 @@ export type UseCancelPaymentResult = {
 
 export type UseAttachmentsResult = {
   uploadFile: (file: File) => void
-  openFile: (relativePath: string) => void
-  removeFile: (attachmentId: string, relativePath: string) => void
+  openFile: (attachment: AttachmentMeta) => void
+  removeFile: (attachment: AttachmentMeta) => void
   isLoading: boolean
   errorMessage: string | null
 }

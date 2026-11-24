@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { SaveStatus } from './typings/enums'
+import type { PendingExitReason } from './typings/enums'
 import type { UiState } from './typings/types'
 
 const initialState: UiState = {
   saveStatus: SaveStatus.IDLE,
   errorMessage: null,
-  toast: null
+  toast: null,
+  pendingExit: null
 }
 
 const uiSlice = createSlice({
@@ -24,9 +26,13 @@ const uiSlice = createSlice({
     },
     clearToast: (state) => {
       state.toast = null
+    },
+    setPendingExit: (state, action: PayloadAction<PendingExitReason | null>) => {
+      state.pendingExit = action.payload
     }
   }
 })
 
-export const { setSaveStatus, setErrorMessage, showToast, clearToast } = uiSlice.actions
+export const { setSaveStatus, setErrorMessage, showToast, clearToast, setPendingExit } =
+  uiSlice.actions
 export const uiReducer = uiSlice.reducer

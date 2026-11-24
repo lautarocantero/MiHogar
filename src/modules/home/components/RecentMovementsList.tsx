@@ -40,7 +40,7 @@ export function RecentMovementsList({ movements }: RecentMovementsListProps): Re
               bgcolor={getMovementColor(movement.type)}
               aria-hidden="true"
             />
-            <Box flexGrow={1}>
+            <Box flexGrow={1} minWidth={0} sx={{ overflowWrap: 'anywhere' }}>
               <Typography variant="body1">{movement.note ?? accountName}</Typography>
               <Typography variant="body2" color="text.secondary">
                 {accountName} · {movement.date}

@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useAppDispatch } from '@/store/hooks'
 import { useLoader } from '@/hooks/shared/useLoader'
+import { useT } from '@/i18n'
 import { hydrateAccounts } from '@/store/accounts/accountsSlice'
 import { hydrateMovements } from '@/store/movements/movementsSlice'
 import { hydratePayments } from '@/store/payments/paymentsSlice'
@@ -10,12 +11,13 @@ import { hydrateSavingsSnapshots } from '@/store/savingsSnapshots/savingsSnapsho
 import { hydrateMembers } from '@/store/household/membersSlice'
 import { hydrateCategories } from '@/store/categories/categoriesSlice'
 import { setHouseholdName } from '@/store/household/householdSlice'
-import { saveVaultThunk } from '@/store/vault/vaultThunks'
+import { saveVaultNow } from '@/store/middleware/vaultSaveControl'
 import { buildDefaultCategories } from '@/utils/domain/buildDefaultCategories'
 import { FactoryResetCategory } from './typings/enums'
 import type { UseFactoryResetResult } from './typings/types'
 
 export function useFactoryReset(onReset: () => void): UseFactoryResetResult {
+  const t = useT()
   const dispatch = useAppDispatch()
   const { isLoading, error, run } = useLoader()
 
@@ -47,13 +49,13 @@ export function useFactoryReset(onReset: () => void): UseFactoryResetResult {
         }
 
         // Las acciones hydrate* no disparan el guardado automático (son las
-        // que se usan para cargar el vault al desbloquear), así que hay que
-        // guardar a mano acá.
-        await dispatch(saveVaultThunk()).unwrap()
+        // que se usan para cargar el vault al desbloquear), así que se pide el
+        // guardado a la misma cola del middleware (nunca dos guardados a la vez).
+        await saveVaultNow()
         onReset()
-      }, 'No se pudo reiniciar la aplicación')
+      }, t('settings.factoryReset.failed'))
     },
-    [dispatch, run, onReset]
+    [dispatch, run, onReset, t]
   )
 
   return { submit, isSubmitting: isLoading, errorMessage: error }

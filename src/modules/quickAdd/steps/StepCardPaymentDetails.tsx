@@ -12,6 +12,8 @@ import { LeafButton } from '@/components/shared/LeafButton'
 import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
+import { isAmountInRange } from '@/utils/domain/amountLimits'
+import { t } from '@/i18n'
 import type { StepAmountAndDetailsProps } from '../typings/props'
 import type { QuickAddFormValues } from '../typings/types'
 
@@ -79,6 +81,10 @@ export function StepCardPaymentDetails({
     }
 
     const amount = payMode === 'total' ? cardDebt : parseAmountInput(partialAmount)
+    if (!isAmountInRange(amount)) {
+      setFormError(t('vaultErrors.amountTooLarge'))
+      return
+    }
     if (!amount || amount <= 0) {
       setFormError('Ingresá un monto válido')
       return

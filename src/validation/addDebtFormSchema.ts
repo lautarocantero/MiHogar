@@ -5,11 +5,11 @@ import { numberField } from './zodNumberField'
 export const addDebtFormSchema = z
   .object({
     direction: z.nativeEnum(DebtDirection),
-    name: z.string().min(1, 'Ingresá un nombre'),
-    counterparty: z.string().min(1, 'Ingresá quién es la otra parte'),
-    principal: numberField(z.number({ message: 'Ingresá un monto' }).nonnegative()),
+    name: z.string().min(1, 'validation.nameRequired'),
+    counterparty: z.string().min(1, 'validation.counterpartyRequired'),
+    principal: numberField(z.number({ message: 'validation.amountRequired' }).nonnegative()),
     outstandingBalance: numberField(
-      z.number({ message: 'Ingresá el saldo pendiente' }).nonnegative()
+      z.number({ message: 'validation.outstandingBalanceRequired' }).nonnegative()
     ),
     rateAnnual: numberField(z.number().nonnegative().optional()),
     installmentAmount: numberField(z.number().nonnegative().optional()),
@@ -24,6 +24,6 @@ export const addDebtFormSchema = z
     notes: z.string().optional()
   })
   .refine((data) => data.ownerType !== OwnerType.MEMBER || Boolean(data.ownerId), {
-    message: 'Elegí quién es el dueño',
+    message: 'validation.ownerRequired',
     path: ['ownerId']
   })

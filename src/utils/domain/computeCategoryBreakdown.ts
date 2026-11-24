@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { t } from '@/i18n'
 import type { CategoryBreakdownEntry, Category, Movement } from '@/typings/domain/types'
 import { MovementType } from '@/typings/domain/enums'
 
@@ -24,7 +25,7 @@ export function computeCategoryBreakdown(
   return Array.from(totalsByCategory.entries())
     .map(([categoryId, total]) => ({
       categoryId,
-      categoryName: categoriesById.get(categoryId)?.name ?? 'Sin categoría',
+      categoryName: categoriesById.get(categoryId)?.name ?? t('common.uncategorized'),
       total,
       percent: totalExpense > 0 ? Math.round((total / totalExpense) * 100) : 0
     }))

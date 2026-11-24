@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getPreferences, setPreferences } from '@/apis/preferencesApi'
 import { useLoader } from '@/hooks/shared/useLoader'
+import { t } from '@/i18n'
 import { DateFormat } from './typings/enums'
 import type { DateFormatPersistenceResult } from './typings/types'
 
@@ -9,7 +10,7 @@ export function useDateFormatPersistence(): DateFormatPersistenceResult {
   const { error, run } = useLoader()
 
   useEffect(() => {
-    run(getPreferences, 'No se pudo cargar el formato de fecha guardado').then((preferences) => {
+    run(getPreferences, t('settings.dateFormat.loadFailed')).then((preferences) => {
       if (preferences) {
         setFormatState(preferences.dateFormat as DateFormat)
       }
@@ -23,7 +24,7 @@ export function useDateFormatPersistence(): DateFormatPersistenceResult {
       run(async () => {
         const currentPreferences = await getPreferences()
         await setPreferences({ ...currentPreferences, dateFormat: nextFormat })
-      }, 'No se pudo guardar el formato de fecha')
+      }, t('settings.dateFormat.saveFailed'))
     },
     [run]
   )

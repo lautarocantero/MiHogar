@@ -7,6 +7,7 @@ import { organicColors } from '@/theme/tokens'
 import { PasswordField } from '@/components/shared/PasswordField'
 import type { UnlockCredentialsFormValues } from '../typings/types'
 import type { SectionLockGateProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 export function SectionLockGate({
   isUnlocked,
@@ -16,6 +17,7 @@ export function SectionLockGate({
   errorMessage,
   children
 }: SectionLockGateProps): React.JSX.Element {
+  const t = useT()
   const {
     register,
     handleSubmit,
@@ -30,7 +32,7 @@ export function SectionLockGate({
       <Stack spacing={2}>
         {children}
         <Button variant="outlined" onClick={onHide}>
-          Ocultar de nuevo
+          {t('payments.credentials.hide')}
         </Button>
       </Stack>
     )
@@ -41,26 +43,26 @@ export function SectionLockGate({
       <Stack spacing={2} alignItems="flex-start">
         <LockIcon sx={{ color: organicColors.orange.dark }} aria-hidden="true" />
         <Typography variant="h6" component="h3">
-          Datos para entrar
+          {t('payments.credentials.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Por seguridad, estos datos están ocultos. Ingresá la clave del hogar para verlos.
+          {t('payments.credentials.lockedDescription')}
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate width="100%">
           <Stack spacing={2}>
             <PasswordField
-              label="Clave del hogar"
+              label={t('payments.credentials.householdKey')}
               fullWidth
               {...register('householdKey')}
               error={Boolean(errors.householdKey)}
-              helperText={errors.householdKey?.message}
+              helperText={errors.householdKey?.message && t(errors.householdKey.message)}
             />
             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
             <Button type="submit" variant="contained" disabled={isVerifying}>
-              {isVerifying ? 'Verificando…' : 'Mostrar los datos'}
+              {isVerifying ? t('payments.credentials.verifying') : t('payments.credentials.show')}
             </Button>
             <Typography variant="caption" color="text.secondary">
-              Si no la recordás, alguien más del hogar puede ayudarte desde Ajustes.
+              {t('payments.credentials.forgotHint')}
             </Typography>
           </Stack>
         </Box>

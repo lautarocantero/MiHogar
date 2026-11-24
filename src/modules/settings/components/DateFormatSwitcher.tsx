@@ -1,28 +1,30 @@
 import { Button, Card, Stack, Typography } from '@mui/material'
 import { useDateFormat } from '@/theme/DateFormat/useDateFormat'
 import { DateFormat } from '@/theme/DateFormat/typings/enums'
+import { useT } from '@/i18n'
 
-const OPTIONS: Array<{ format: DateFormat; label: string }> = [
-  { format: DateFormat.DMY, label: 'Día/Mes/Año (31/12/2026)' },
-  { format: DateFormat.MDY, label: 'Mes/Día/Año (12/31/2026)' }
+const OPTIONS: Array<{ format: DateFormat; labelKey: string }> = [
+  { format: DateFormat.DMY, labelKey: 'settings.dateFormat.dmy' },
+  { format: DateFormat.MDY, labelKey: 'settings.dateFormat.mdy' }
 ]
 
 export function DateFormatSwitcher(): React.JSX.Element {
+  const t = useT()
   const { format, setFormat } = useDateFormat()
 
   return (
-    <Card sx={{ p: 3 }} elevation={0}>
+    <Card sx={{ p: { xs: 2, sm: 3 } }} elevation={0}>
       <Stack spacing={2}>
-        <Typography variant="h6" component="h2">
-          Formato de fecha
+        <Typography id="date-format-title" variant="h6" component="h2">
+          {t('settings.dateFormat.title')}
         </Typography>
         <Stack
           direction="row"
           spacing={2}
           flexWrap="wrap"
           useFlexGap
-          role="radiogroup"
-          aria-label="Formato de fecha"
+          role="group"
+          aria-labelledby="date-format-title"
         >
           {OPTIONS.map((option) => (
             <Button
@@ -32,7 +34,7 @@ export function DateFormatSwitcher(): React.JSX.Element {
               aria-pressed={format === option.format}
               size="large"
             >
-              {option.label}
+              {t(option.labelKey)}
             </Button>
           ))}
         </Stack>

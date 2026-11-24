@@ -6,6 +6,7 @@ import { getPreferences } from '@/apis/preferencesApi'
 import { checkPaymentReminders } from '@/apis/remindersApi'
 import { computeDueReminders } from '@/utils/domain/computeDueReminders'
 import { computeDueDebtReminders } from '@/utils/domain/computeDueDebtReminders'
+import { t } from '@/i18n'
 import { useHandleError } from './useHandleError'
 
 const CHECK_INTERVAL_MS = 60 * 60 * 1000
@@ -36,7 +37,7 @@ export function usePaymentReminderScheduler(): void {
           await checkPaymentReminders(reminders)
         }
       } catch (error) {
-        handleError(error, 'No se pudieron revisar los recordatorios de pago')
+        handleError(error, t('reminders.checkFailed'))
       }
     }
 

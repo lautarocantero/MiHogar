@@ -1,11 +1,14 @@
 import { differenceInCalendarDays, format, isTomorrow, isToday, parseISO } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { getDateFnsLocale, t } from '@/i18n'
+
+/** Verbo con el que arranca la etiqueta de vencimiento ("Vence…", "Entra…", "Próxima cuota vence…"). */
+export type DueLabelVerb = 'due' | 'incoming' | 'nextInstallment'
 
 export function formatDayMonth(isoDate: string): { day: string; month: string } {
   const date = parseISO(isoDate)
   return {
     day: format(date, 'd'),
-    month: format(date, 'MMM', { locale: es }).replace('.', '')
+    month: format(date, 'MMM', { locale: getDateFnsLocale() }).replace('.', '')
   }
 }
 
@@ -13,41 +16,47 @@ export function formatShortDate(isoDate: string, dateFormat: 'DMY' | 'MDY' = 'DM
   return format(parseISO(isoDate), dateFormat === 'MDY' ? 'MM/dd/yy' : 'dd/MM/yy')
 }
 
-export function formatDueLabel(isoDate: string, verb: string = 'Vence'): string {
+/** Fecha larga sin año ("3 de mayo" / "May 3") en el idioma activo. */
+export function formatLongDayMonth(isoDate: string): string {
+  return format(parseISO(isoDate), t('format.dayMonthLong'), { locale: getDateFnsLocale() })
+}
+
+export function formatDueLabel(isoDate: string, verb: DueLabelVerb = 'due'): string {
   const date = parseISO(isoDate)
+  const verbLabel = t(`format.dueVerb.${verb}`)
   if (isToday(date)) {
-    return `${verb} hoy`
+    return t('format.dueToday', { verb: verbLabel })
   }
   if (isTomorrow(date)) {
-    return `${verb} mañana`
+    return t('format.dueTomorrow', { verb: verbLabel })
   }
-  return `${verb} el ${format(date, "d 'de' MMMM", { locale: es })}`
+  return t('format.dueOn', { verb: verbLabel, date: formatLongDayMonth(isoDate) })
 }
 
 export function formatRelativeDaysLabel(isoDate: string, referenceDate: Date = new Date()): string {
   const date = parseISO(isoDate)
   const daysDiff = differenceInCalendarDays(date, referenceDate)
   if (daysDiff === 0) {
-    return 'Hoy'
+    return t('format.today')
   }
   if (daysDiff > 0) {
-    return `Faltan ${daysDiff} día${daysDiff === 1 ? '' : 's'}`
+    return t(daysDiff === 1 ? 'format.inOneDay' : 'format.inDays', { count: daysDiff })
   }
   const daysAgo = Math.abs(daysDiff)
-  return `Hace ${daysAgo} día${daysAgo === 1 ? '' : 's'}`
+  return t(daysAgo === 1 ? 'format.oneDayAgo' : 'format.daysAgo', { count: daysAgo })
 }
 
 export function formatDaysRemainingLabel(isoDate: string): string {
   const date = parseISO(isoDate)
   if (isToday(date)) {
-    return 'Vence hoy'
+    return t('format.dueToday', { verb: t('format.dueVerb.due') })
   }
   if (isTomorrow(date)) {
-    return 'Vence mañana'
+    return t('format.dueTomorrow', { verb: t('format.dueVerb.due') })
   }
   const daysRemaining = differenceInCalendarDays(date, new Date())
   if (daysRemaining < 0) {
-    return 'Vencido'
+    return t('format.overdue')
   }
-  return `Faltan ${daysRemaining} días`
+  return t('format.daysLeft', { count: daysRemaining })
 }

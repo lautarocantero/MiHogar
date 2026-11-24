@@ -7,6 +7,7 @@ import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
 import type { PaymentView } from '../typings/types'
+import { t, useI18n } from '@/i18n'
 
 export function usePaymentDetailData(paymentId: string): PaymentView | null {
   const payment = useAppSelector((state) => selectPaymentById(state, paymentId))
@@ -16,16 +17,19 @@ export function usePaymentDetailData(paymentId: string): PaymentView | null {
   const members = useAppSelector(selectAllMembers)
   const categories = useAppSelector(selectAllCategories)
 
+  const { locale } = useI18n()
+
   return useMemo(() => {
     if (!payment) {
       return null
     }
     return {
       ...payment,
-      accountName: account?.name ?? 'Cuenta sin definir',
+      accountName: account?.name ?? t('payments.accountUndefined'),
       ownerLabel: resolveOwnerLabel(payment.ownerType, payment.ownerId, members),
-      categoryName: categories.find((c) => c.id === payment.categoryId)?.name ?? 'Sin categoría',
+      categoryName: categories.find((c) => c.id === payment.categoryId)?.name ?? t('common.uncategorized'),
       displayDate: resolvePaymentDisplayDate(payment, account)
     }
-  }, [payment, account, members, categories])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- textos traducidos con el idioma activo
+  }, [payment, account, members, categories, locale])
 }

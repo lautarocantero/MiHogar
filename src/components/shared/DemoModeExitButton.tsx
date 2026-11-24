@@ -3,6 +3,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import { useAppSelector } from '@/store/hooks'
 import { selectIsDemoMode } from '@/store/vault/vaultSelectors'
 import { useExitDemoMode } from '@/hooks/shared/useExitDemoMode'
+import { useT } from '@/i18n'
 
 type DemoModeExitButtonProps = {
   collapsed?: boolean
@@ -11,6 +12,7 @@ type DemoModeExitButtonProps = {
 export function DemoModeExitButton({
   collapsed = false
 }: DemoModeExitButtonProps): React.JSX.Element | null {
+  const t = useT()
   const isDemoMode = useAppSelector(selectIsDemoMode)
   const { exitDemo, isExiting } = useExitDemoMode()
 
@@ -18,7 +20,7 @@ export function DemoModeExitButton({
     return null
   }
 
-  const label = isExiting ? 'Saliendo…' : 'Salir del demo'
+  const label = isExiting ? t('layout.exitingDemo') : t('layout.exitDemo')
 
   const button = (
     <Button

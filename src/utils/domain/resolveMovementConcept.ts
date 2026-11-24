@@ -1,12 +1,5 @@
 import type { Category, Movement, Payment } from '@/typings/domain/types'
-import { MovementType } from '@/typings/domain/enums'
-
-const DEFAULT_LABELS: Record<MovementType, string> = {
-  [MovementType.INCOME]: 'Ingreso',
-  [MovementType.EXPENSE]: 'Gasto',
-  [MovementType.TRANSFER]: 'Transferencia',
-  [MovementType.CARD_PAYMENT]: 'Pago de tarjeta'
-}
+import { resolveMovementTypeLabel } from './resolveMovementTypeLabel'
 
 export function resolveMovementConcept(
   movement: Movement,
@@ -28,5 +21,5 @@ export function resolveMovementConcept(
       return category.name
     }
   }
-  return DEFAULT_LABELS[movement.type]
+  return resolveMovementTypeLabel(movement.type)
 }

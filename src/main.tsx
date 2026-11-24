@@ -6,6 +6,7 @@ import { store } from '@/store'
 import { organicTheme } from '@/theme/organicTheme'
 import { FontScaleProvider } from '@/theme/FontScale/FontScaleProvider'
 import { DateFormatProvider } from '@/theme/DateFormat/DateFormatProvider'
+import { I18nProvider } from '@/i18n'
 import { App } from './App'
 import './assets/globalStyles.css'
 
@@ -16,15 +17,17 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <Provider store={store}>
-      <ThemeProvider theme={organicTheme}>
-        <CssBaseline />
-        <FontScaleProvider>
-          <DateFormatProvider>
-            <App />
-          </DateFormatProvider>
-        </FontScaleProvider>
-      </ThemeProvider>
-    </Provider>
+    <I18nProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={organicTheme}>
+          <CssBaseline />
+          <FontScaleProvider>
+            <DateFormatProvider>
+              <App />
+            </DateFormatProvider>
+          </FontScaleProvider>
+        </ThemeProvider>
+      </Provider>
+    </I18nProvider>
   </StrictMode>
 )

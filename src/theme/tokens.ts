@@ -86,3 +86,17 @@ export const organicFontScaleLevels: Record<FontSizeLevel, number> = {
   [FontSizeLevel.LARGE]: 1.15,
   [FontSizeLevel.XLARGE]: 1.3
 }
+
+export const organicLayout = {
+  sidebarWidth: 290,
+  sidebarWidthCollapsed: 88,
+  /** En mobile el drawer deja ver una franja del fondo para que se entienda cómo cerrarlo. */
+  sidebarMobileMaxWidth: '85vw',
+  /** Márgenes seguros de iOS (notch / home indicator); valen 0 donde no aplican. */
+  safeArea: {
+    top: 'env(safe-area-inset-top, 0px)',
+    right: 'env(safe-area-inset-right, 0px)',
+    bottom: 'env(safe-area-inset-bottom, 0px)',
+    left: 'env(safe-area-inset-left, 0px)'
+  }
+} as const

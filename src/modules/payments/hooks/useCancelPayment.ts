@@ -6,6 +6,7 @@ import { removeMovementThunk } from '@/store/movements/movementThunks'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { PaymentStatus } from '@/typings/domain/enums'
 import type { PaymentView, UseCancelPaymentResult } from '../typings/types'
+import { t } from '@/i18n'
 
 export function useCancelPayment(payment: PaymentView | null): UseCancelPaymentResult {
   const dispatch = useAppDispatch()
@@ -27,7 +28,7 @@ export function useCancelPayment(payment: PaymentView | null): UseCancelPaymentR
           ? Math.max((payment.installmentsPaid ?? 0) - 1, 0)
           : payment.installmentsPaid
       dispatch(updatePayment({ ...payment, status: PaymentStatus.PENDING, installmentsPaid }))
-    }, 'No se pudo cancelar el pago')
+    }, t('payments.error.cancel'))
   }, [dispatch, run, payment, relatedMovements])
 
   return { cancel, isSubmitting: isLoading, errorMessage: error }

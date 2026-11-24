@@ -5,6 +5,7 @@ import { recordMovementThunk } from '@/store/movements/movementThunks'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { MovementType, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import type { PaymentView, UseMarkPaymentAsPaidResult } from '../typings/types'
+import { t } from '@/i18n'
 
 export function useMarkPaymentAsPaid(payment: PaymentView | null): UseMarkPaymentAsPaidResult {
   const dispatch = useAppDispatch()
@@ -40,7 +41,7 @@ export function useMarkPaymentAsPaid(payment: PaymentView | null): UseMarkPaymen
           note: payment.concept
         })
       ).unwrap()
-    }, 'No se pudo marcar el pago como pagado')
+    }, t('payments.error.markPaid'))
   }, [dispatch, run, payment])
 
   return { markAsPaid, isSubmitting: isLoading, errorMessage: error }

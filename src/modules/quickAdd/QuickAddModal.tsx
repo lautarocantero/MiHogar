@@ -12,8 +12,10 @@ import { StepCardPaymentDetails } from './steps/StepCardPaymentDetails'
 import { StepIncomeDetails } from './steps/StepIncomeDetails'
 import { useQuickAddForm } from './useQuickAddForm'
 import type { QuickAddModalProps } from './typings/props'
+import { useFullScreenDialog } from '@/hooks/shared/useResponsive'
 
 export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.Element {
+  const fullScreen = useFullScreenDialog()
   const {
     step,
     selectedType,
@@ -39,6 +41,7 @@ export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.
 
   return (
     <Dialog
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       fullWidth
@@ -50,7 +53,7 @@ export function QuickAddModal({ open, onClose }: QuickAddModalProps): React.JSX.
           component="span"
           sx={{
             fontFamily: organicTypography.titleFontFamily,
-            fontSize: '1.75rem',
+            fontSize: { xs: '1.375rem', sm: '1.75rem' },
             fontWeight: 400,
             color: organicColors.orange.dark
           }}

@@ -21,6 +21,8 @@ import { CategoryField } from '@/components/shared/CategoryField'
 import { LeafButton } from '@/components/shared/LeafButton'
 import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
+import { isAmountInRange } from '@/utils/domain/amountLimits'
+import { t } from '@/i18n'
 import { CategoryKind } from '@/typings/domain/enums'
 import type { StepAmountAndDetailsProps } from '../typings/props'
 import type { QuickAddFormValues } from '../typings/types'
@@ -69,6 +71,10 @@ export function StepIncomeDetails({
 
   const handleSave = (): void => {
     const value = parseAmountInput(amount)
+    if (!isAmountInRange(value)) {
+      setFormError(t('vaultErrors.amountTooLarge'))
+      return
+    }
     if (!value || value <= 0) {
       setFormError('Ingresá un monto')
       return

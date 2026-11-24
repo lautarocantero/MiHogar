@@ -14,7 +14,9 @@ export function SavingsInstrumentRow({ instrument }: SavingsInstrumentRowProps):
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: 2,
+        flexWrap: 'wrap',
+        columnGap: { xs: 1.5, sm: 2 },
+        rowGap: 0.5,
         p: 2,
         backgroundColor: organicColors.surface,
         border: `1px solid ${organicColors.neutral.border}`
@@ -24,7 +26,7 @@ export function SavingsInstrumentRow({ instrument }: SavingsInstrumentRowProps):
       <Box sx={{ alignSelf: 'stretch', width: 8, flexShrink: 0, backgroundColor: accent }} />
       <Box
         sx={{
-          display: 'flex',
+          display: { xs: 'none', sm: 'flex' },
           alignItems: 'center',
           justifyContent: 'center',
           width: 44,
@@ -36,7 +38,7 @@ export function SavingsInstrumentRow({ instrument }: SavingsInstrumentRowProps):
       >
         <SavingsIcon fontSize="small" />
       </Box>
-      <Box flexGrow={1} minWidth={0}>
+      <Box flex="1 1 140px" minWidth={0}>
         <Typography
           component="p"
           noWrap
@@ -53,7 +55,7 @@ export function SavingsInstrumentRow({ instrument }: SavingsInstrumentRowProps):
           {instrument.conditionText ? ` · ${instrument.conditionText}` : ''}
         </Typography>
       </Box>
-      <Stack alignItems="flex-end" spacing={0.25}>
+      <Stack alignItems="flex-end" spacing={0.25} flexShrink={0} sx={{ ml: 'auto' }}>
         <Typography
           component="p"
           sx={{

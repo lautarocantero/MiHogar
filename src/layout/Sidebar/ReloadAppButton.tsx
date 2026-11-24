@@ -1,4 +1,5 @@
 import RefreshIcon from '@mui/icons-material/Refresh'
+import { useT } from '@/i18n'
 import { SidebarActionButton } from './SidebarActionButton'
 
 type ReloadAppButtonProps = {
@@ -6,11 +7,12 @@ type ReloadAppButtonProps = {
 }
 
 export function ReloadAppButton({ collapsed = false }: ReloadAppButtonProps): React.JSX.Element {
+  const t = useT()
   return (
     <SidebarActionButton
       collapsed={collapsed}
       action={{
-        label: 'Recargar aplicación',
+        label: t('layout.reloadApp'),
         icon: RefreshIcon,
         onClick: () => window.location.reload()
       }}

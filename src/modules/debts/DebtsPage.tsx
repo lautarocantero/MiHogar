@@ -214,7 +214,7 @@ export function DebtsPage(): React.JSX.Element {
 
       <Card
         sx={{
-          p: 2.5,
+          p: { xs: 1.5, sm: 2.5 },
           backgroundColor: organicColors.surface,
           border: `1px solid ${organicColors.neutral.border}`
         }}
@@ -245,7 +245,7 @@ export function DebtsPage(): React.JSX.Element {
 
       <Card
         sx={{
-          p: 2.5,
+          p: { xs: 1.5, sm: 2.5 },
           backgroundColor: organicColors.surface,
           border: `1px solid ${organicColors.neutral.border}`
         }}

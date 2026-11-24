@@ -5,6 +5,7 @@ import { PieChart } from '@mui/x-charts/PieChart'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { ReportChartType } from '../typings/enums'
+import { useResponsive } from '@/hooks/shared/useResponsive'
 import type { MonthComparisonChartProps } from '../typings/props'
 import type { CategoryBreakdownEntry } from '@/typings/domain/types'
 
@@ -19,6 +20,9 @@ export function MonthComparisonChart({
   monthA,
   monthB
 }: MonthComparisonChartProps): React.JSX.Element {
+  // En teléfonos la leyenda ocupa dos renglones: se deja más margen arriba para que no
+  // tape el eje.
+  const { isPhone } = useResponsive()
   const categoryNames = Array.from(
     new Set([
       ...monthA.breakdown.map((entry) => entry.categoryName),
@@ -38,7 +42,7 @@ export function MonthComparisonChart({
     return (
       <Stack direction="row" spacing={4} flexWrap="wrap" useFlexGap>
         {[monthA, monthB].map((entry) => (
-          <Box key={entry.monthKey} sx={{ minWidth: 260 }}>
+          <Box key={entry.monthKey} sx={{ flex: '1 1 260px', minWidth: 0 }}>
             <Typography variant="body2" color="text.secondary" textAlign="center" gutterBottom>
               {entry.monthLabel}
             </Typography>
@@ -87,7 +91,7 @@ export function MonthComparisonChart({
           value === null ? '' : formatCurrency(value)
       }
     ],
-    margin: { left: 90, top: 40 }
+    margin: { left: isPhone ? 76 : 90, top: isPhone ? 80 : 40 }
   }
 
   return isLine ? <LineChart {...sharedProps} /> : <BarChart {...sharedProps} />

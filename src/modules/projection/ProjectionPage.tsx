@@ -119,7 +119,7 @@ export function ProjectionPage(): React.JSX.Element {
               size="small"
               value={periodMode}
               onChange={(event) => setPeriodMode(event.target.value as ProjectionPeriodMode)}
-              sx={{ minWidth: 260 }}
+              sx={{ minWidth: { sm: 260 }, width: { xs: '100%', sm: 'auto' } }}
             >
               <MenuItem value={ProjectionPeriodMode.FROM_TODAY}>
                 Desde hoy hasta fin de mes

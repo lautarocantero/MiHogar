@@ -1,17 +1,19 @@
 import { Card, Stack, Typography } from '@mui/material'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import type { PaymentHistoryCardProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 export function PaymentHistoryCard({ history }: PaymentHistoryCardProps): React.JSX.Element {
+  const t = useT()
   return (
-    <Card sx={{ p: 3 }} elevation={0}>
+    <Card sx={{ p: { xs: 2, sm: 3 } }} elevation={0}>
       <Stack spacing={2}>
         <Typography variant="h6" component="h3">
-          Historial de este pago
+          {t('payments.history.title')}
         </Typography>
         {history.entries.length === 0 ? (
           <Typography variant="body2" color="text.secondary">
-            Todavía no hay pagos anteriores registrados.
+            {t('payments.history.empty')}
           </Typography>
         ) : (
           <Stack spacing={1} component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>

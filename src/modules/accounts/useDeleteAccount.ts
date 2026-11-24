@@ -5,6 +5,7 @@ import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { useLoader } from '@/hooks/shared/useLoader'
 import type { Account } from '@/typings/domain/types'
 import type { UseDeleteAccountResult } from './typings/types'
+import { t } from '@/i18n'
 
 export function useDeleteAccount(account: Account, onDeleted: () => void): UseDeleteAccountResult {
   const dispatch = useAppDispatch()
@@ -21,7 +22,7 @@ export function useDeleteAccount(account: Account, onDeleted: () => void): UseDe
       }
       dispatch(removeAccount(account.id))
       onDeleted()
-    }, 'No se pudo eliminar la cuenta')
+    }, t('accounts.error.delete'))
   }, [dispatch, run, account, allAccounts, onDeleted])
 
   return { submit, isSubmitting: isLoading, errorMessage: error }

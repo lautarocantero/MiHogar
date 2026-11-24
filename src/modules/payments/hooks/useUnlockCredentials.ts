@@ -1,16 +1,35 @@
 import { useCallback, useState } from 'react'
 import { verifyHouseholdKey } from '@/apis/vaultApi'
+import { AppError } from '@/apis/cloud/errors'
+import { getVaultSession } from '@/apis/cloud/vaultSession'
+import type { VaultSession } from '@/apis/cloud/vaultSession'
 import { useLoader } from '@/hooks/shared/useLoader'
+import { useT } from '@/i18n'
 import type { UnlockCredentialsFormValues, UseUnlockCredentialsResult } from '../typings/types'
 
 /**
- * Módulo en memoria: sobrevive a que React Router desmonte la página al
- * navegar, pero se limpia solo al reiniciar la app (no queda en disco).
+ * Pagos con las credenciales a la vista, por sesión del vault. Vive en memoria y sobrevive
+ * a que React Router desmonte la página al navegar; al bloquear, cerrar sesión o cambiar
+ * la clave la sesión es otra (o no hay), así que todo vuelve a quedar oculto.
  */
-const unlockedPaymentIds = new Set<string>()
+const unlockedPaymentIdsBySession = new WeakMap<VaultSession, Set<string>>()
+
+function getUnlockedPaymentIds(): Set<string> | null {
+  const session = getVaultSession()
+  if (!session) return null
+  let unlocked = unlockedPaymentIdsBySession.get(session)
+  if (!unlocked) {
+    unlocked = new Set<string>()
+    unlockedPaymentIdsBySession.set(session, unlocked)
+  }
+  return unlocked
+}
 
 export function useUnlockCredentials(paymentId: string): UseUnlockCredentialsResult {
-  const [isUnlocked, setIsUnlocked] = useState(() => unlockedPaymentIds.has(paymentId))
+  const t = useT()
+  const [isUnlocked, setIsUnlocked] = useState(
+    () => getUnlockedPaymentIds()?.has(paymentId) ?? false
+  )
   const { isLoading, error, run } = useLoader()
 
   const submit = useCallback(
@@ -18,17 +37,17 @@ export function useUnlockCredentials(paymentId: string): UseUnlockCredentialsRes
       run(async () => {
         const isValid = await verifyHouseholdKey(values.householdKey)
         if (!isValid) {
-          throw new Error('La clave del hogar no es correcta')
+          throw new AppError('vaultErrors.wrongHouseholdKey')
         }
-        unlockedPaymentIds.add(paymentId)
+        getUnlockedPaymentIds()?.add(paymentId)
         setIsUnlocked(true)
-      }, 'No se pudo verificar la clave del hogar')
+      }, t('vaultErrors.verifyKeyFailed'))
     },
-    [run, paymentId]
+    [run, paymentId, t]
   )
 
   const hide = useCallback(() => {
-    unlockedPaymentIds.delete(paymentId)
+    getUnlockedPaymentIds()?.delete(paymentId)
     setIsUnlocked(false)
   }, [paymentId])
 

@@ -18,7 +18,7 @@ import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { formatDueLabel } from '@/utils/formatting/formatDate'
 import { resolveFrequencyLabel } from '@/utils/domain/resolveFrequencyLabel'
-import { resolveUrlHostname } from '@/utils/resolveUrlHostname'
+import { isHttpUrl, resolveUrlHostname } from '@/utils/resolveUrlHostname'
 import { computeInstallmentsRemaining } from '@/utils/domain/computeInstallmentsRemaining'
 import { AmountMode, PaymentKind, PaymentStatus } from '@/typings/domain/enums'
 import { ROUTES } from '@/router/routes'
@@ -35,8 +35,10 @@ import { EditCredentialsDialog } from './components/EditCredentialsDialog'
 import { EditPaymentDialog } from './components/EditPaymentDialog'
 import { DeletePaymentDialog } from './components/DeletePaymentDialog'
 import { PlaceholderPage } from '@/modules/placeholder/PlaceholderPage'
+import { useT } from '@/i18n'
 
 export function PaymentDetailPage(): React.JSX.Element {
+  const t = useT()
   const { paymentId } = useParams<{ paymentId: string }>()
   const navigate = useNavigate()
   const payment = usePaymentDetailData(paymentId ?? '')
@@ -50,7 +52,7 @@ export function PaymentDetailPage(): React.JSX.Element {
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   if (!payment) {
-    return <PlaceholderPage title="No encontramos este pago" />
+    return <PlaceholderPage title={t('payments.detail.notFound')} />
   }
 
   const frequencyLabel = resolveFrequencyLabel(payment.frequency)
@@ -58,7 +60,7 @@ export function PaymentDetailPage(): React.JSX.Element {
   const isVariableUnset = payment.amountMode === AmountMode.VARIABLE && payment.amount === 0
 
   return (
-    <Grid container spacing={4} component="section" aria-label="Detalle del pago">
+    <Grid container spacing={{ xs: 3, md: 4 }} component="section" aria-label={t('payments.detail.pageLabel')}>
       <Grid size={{ xs: 12, md: 7 }}>
         <Stack spacing={3}>
           <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
@@ -67,9 +69,9 @@ export function PaymentDetailPage(): React.JSX.Element {
                 label={
                   payment.status === PaymentStatus.PAID
                     ? isDeposit
-                      ? 'Recibido'
-                      : 'Pagado'
-                    : formatDueLabel(payment.displayDate, isDeposit ? 'Entra' : 'Vence')
+                      ? t('payments.status.received')
+                      : t('payments.status.paid')
+                    : formatDueLabel(payment.displayDate, isDeposit ? 'incoming' : 'due')
                 }
                 sx={{
                   backgroundColor:
@@ -88,7 +90,7 @@ export function PaymentDetailPage(): React.JSX.Element {
               />
             </Stack>
             <IconButton
-              aria-label={`Opciones de ${payment.concept}`}
+              aria-label={t('payments.detail.optionsFor', { name: payment.concept })}
               onClick={(event) => setMenuAnchor(event.currentTarget)}
             >
               <MoreVertIcon />
@@ -104,7 +106,7 @@ export function PaymentDetailPage(): React.JSX.Element {
                   setIsEditPaymentOpen(true)
                 }}
               >
-                Editar
+                {t('common.edit')}
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -112,35 +114,42 @@ export function PaymentDetailPage(): React.JSX.Element {
                   setIsDeletePaymentOpen(true)
                 }}
               >
-                Eliminar
+                {t('common.delete')}
               </MenuItem>
             </Menu>
           </Stack>
 
           <Box>
             <Typography variant="body1" color="text.secondary">
-              {isDeposit ? 'Cuánto vas a recibir' : 'Cuánto hay que pagar'}
+              {isDeposit ? t('payments.detail.toReceive') : t('payments.detail.toPay')}
             </Typography>
             <Typography
               variant="h2"
               component="p"
-              sx={{ fontSize: { xs: '2.5rem', md: '3.75rem' } }}
+              sx={{
+                fontSize: { xs: '2.25rem', sm: '2.5rem', md: '3.75rem' },
+                overflowWrap: 'anywhere'
+              }}
             >
-              {isVariableUnset ? 'A confirmar' : formatCurrency(payment.amount)}
+              {isVariableUnset ? t('payments.toConfirm') : formatCurrency(payment.amount)}
             </Typography>
           </Box>
 
           <Grid container spacing={2}>
             {[
-              { label: 'Concepto', value: payment.concept },
-              { label: 'Entidad', value: payment.entity },
-              { label: isDeposit ? 'Entra a' : 'Se paga con', value: payment.accountName },
-              { label: 'A nombre de', value: payment.ownerLabel },
+              { label: t('payments.detail.concept'), value: payment.concept },
+              { label: t('payments.detail.entity'), value: payment.entity },
+              { label: isDeposit ? t('payments.detail.goesTo') : t('payments.detail.paidWith'), value: payment.accountName },
+              { label: t('payments.detail.owner'), value: payment.ownerLabel },
               ...(typeof payment.installmentsTotal === 'number'
                 ? [
                     {
-                      label: 'Cuotas',
-                      value: `${payment.installmentsPaid ?? 0} de ${payment.installmentsTotal} (quedan ${computeInstallmentsRemaining(payment)})`
+                      label: t('payments.detail.installments'),
+                      value: t('payments.detail.installmentsValue', {
+                        paid: payment.installmentsPaid ?? 0,
+                        total: payment.installmentsTotal ?? 0,
+                        remaining: computeInstallmentsRemaining(payment) ?? 0
+                      })
                     }
                   ]
                 : [])
@@ -157,7 +166,9 @@ export function PaymentDetailPage(): React.JSX.Element {
                   <Typography variant="caption" color="text.secondary">
                     {field.label}
                   </Typography>
-                  <Typography variant="body1">{field.value}</Typography>
+                  <Typography variant="body1" sx={{ overflowWrap: 'anywhere' }}>
+                    {field.value}
+                  </Typography>
                 </Box>
               </Grid>
             ))}
@@ -166,7 +177,7 @@ export function PaymentDetailPage(): React.JSX.Element {
           <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
             {payment.status === PaymentStatus.PAID ? (
               <Button variant="outlined" size="large" disabled={isCancelling} onClick={cancel}>
-                {isDeposit ? 'Cancelar cobro' : 'Cancelar pago'}
+                {isDeposit ? t('payments.action.cancelDeposit') : t('payments.action.cancelPayment')}
               </Button>
             ) : (
               <Button
@@ -175,15 +186,15 @@ export function PaymentDetailPage(): React.JSX.Element {
                 disabled={isMarkingPaid || isVariableUnset}
                 onClick={markAsPaid}
               >
-                {isDeposit ? 'Marcar como recibido' : 'Marcar como pagado'}
+                {isDeposit ? t('payments.action.markReceived') : t('payments.action.markPaid')}
               </Button>
             )}
             {isVariableUnset && payment.status !== PaymentStatus.PAID && (
               <Typography variant="body2" color="text.secondary" width="100%">
-                Editá el pago para cargar el monto recibido antes de confirmarlo.
+                {t('payments.detail.variableHint')}
               </Typography>
             )}
-            {payment.providerUrl && (
+            {payment.providerUrl && isHttpUrl(payment.providerUrl) && (
               <Button
                 variant="outlined"
                 size="large"
@@ -193,7 +204,7 @@ export function PaymentDetailPage(): React.JSX.Element {
                 rel="noopener noreferrer"
                 startIcon={<LaunchIcon />}
               >
-                Pagar en {resolveUrlHostname(payment.providerUrl)}
+                {t('payments.detail.payAt', { site: resolveUrlHostname(payment.providerUrl) })}
               </Button>
             )}
           </Stack>
@@ -213,7 +224,7 @@ export function PaymentDetailPage(): React.JSX.Element {
           >
             <CredentialsPanel credentials={payment.credentials} />
             <Button variant="text" onClick={() => setIsEditCredentialsOpen(true)}>
-              Editar datos de acceso
+              {t('payments.credentials.edit')}
             </Button>
           </SectionLockGate>
 

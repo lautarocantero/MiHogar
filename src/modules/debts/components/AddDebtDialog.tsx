@@ -3,12 +3,21 @@ import { DialogHeader } from '@/components/shared/DialogHeader'
 import { AddDebtForm } from './AddDebtForm'
 import { useCreateDebt } from '../useCreateDebt'
 import type { AddDebtDialogProps } from '../typings/props'
+import { useFullScreenDialog } from '@/hooks/shared/useResponsive'
 
 export function AddDebtDialog({ open, onClose }: AddDebtDialogProps): React.JSX.Element {
+  const fullScreen = useFullScreenDialog()
   const { submit, isSubmitting, errorMessage } = useCreateDebt(onClose)
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md" aria-labelledby="add-debt-title">
+    <Dialog
+      fullScreen={fullScreen}
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="md"
+      aria-labelledby="add-debt-title"
+    >
       <DialogHeader id="add-debt-title" onClose={onClose}>
         Agregar una deuda o préstamo
       </DialogHeader>

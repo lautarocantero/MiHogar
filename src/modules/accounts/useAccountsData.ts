@@ -5,12 +5,15 @@ import { selectAllMembers } from '@/store/household/householdSelectors'
 import { computeCreditCardAvailable } from '@/utils/domain/computeCreditCardAvailable'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { resolveAccountTypeLabel } from '@/utils/domain/resolveAccountTypeLabel'
+import { useI18n } from '@/i18n'
 import type { AccountsData } from './typings/types'
 
 export function useAccountsData(): AccountsData {
   const accounts = useAppSelector(selectAllAccounts)
   const totalAvailable = useAppSelector(selectTotalAvailableBalance)
   const members = useAppSelector(selectAllMembers)
+  // Las etiquetas (dueño, tipo) se traducen con el idioma activo: se recalculan al cambiarlo.
+  const { locale } = useI18n()
 
   return useMemo(() => {
     const accountViews = accounts
@@ -30,5 +33,6 @@ export function useAccountsData(): AccountsData {
       totalCreditAvailable: computeCreditCardAvailable(accounts),
       accountViews
     }
-  }, [accounts, totalAvailable, members])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts, totalAvailable, members, locale])
 }

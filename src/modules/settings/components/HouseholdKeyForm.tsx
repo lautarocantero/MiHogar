@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { changeHouseholdKeyFormSchema } from '@/validation/changeHouseholdKeyFormSchema'
 import { PasswordField } from '@/components/shared/PasswordField'
+import { useT } from '@/i18n'
 import type { HouseholdKeyFormProps } from '../typings/props'
 import type { ChangeHouseholdKeyFormValues } from '../typings/types'
 
@@ -12,6 +13,7 @@ export function HouseholdKeyForm({
   errorMessage,
   successMessage
 }: HouseholdKeyFormProps): React.JSX.Element {
+  const t = useT()
   const {
     register,
     handleSubmit,
@@ -33,31 +35,30 @@ export function HouseholdKeyForm({
     >
       <Stack spacing={3}>
         <Typography variant="body2" color="text.secondary">
-          Esta clave protege todos los datos guardados. Cambiarla no borra nada, solo actualiza con
-          qué contraseña se abre la aplicación.
+          {t('settings.householdKey.description')}
         </Typography>
         <PasswordField
-          label="Clave actual"
+          label={t('settings.householdKey.current')}
           {...register('currentKey')}
           error={Boolean(errors.currentKey)}
-          helperText={errors.currentKey?.message}
+          helperText={errors.currentKey?.message && t(errors.currentKey.message)}
         />
         <PasswordField
-          label="Clave nueva"
+          label={t('settings.householdKey.new')}
           {...register('newKey')}
           error={Boolean(errors.newKey)}
-          helperText={errors.newKey?.message}
+          helperText={errors.newKey?.message && t(errors.newKey.message)}
         />
         <PasswordField
-          label="Repetila"
+          label={t('settings.householdKey.confirm')}
           {...register('confirmNewKey')}
           error={Boolean(errors.confirmNewKey)}
-          helperText={errors.confirmNewKey?.message}
+          helperText={errors.confirmNewKey?.message && t(errors.confirmNewKey.message)}
         />
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         {successMessage && <Alert severity="success">{successMessage}</Alert>}
         <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-          {isSubmitting ? 'Guardando…' : 'Guardar la clave'}
+          {isSubmitting ? t('common.saving') : t('settings.householdKey.submit')}
         </Button>
       </Stack>
     </Box>

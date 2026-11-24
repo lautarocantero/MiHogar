@@ -7,6 +7,7 @@ import { AmountMode, PaymentFrequency, PaymentKind } from '@/typings/domain/enum
 import { PaymentFormFields } from './PaymentFormFields'
 import type { EditPaymentFormProps } from '../typings/props'
 import type { AddPaymentFormValues } from '../typings/types'
+import { useT } from '@/i18n'
 
 export function EditPaymentForm({
   payment,
@@ -15,6 +16,7 @@ export function EditPaymentForm({
   isSubmitting,
   errorMessage
 }: EditPaymentFormProps): React.JSX.Element {
+  const t = useT()
   const {
     register,
     handleSubmit,
@@ -75,10 +77,10 @@ export function EditPaymentForm({
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-            {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
+            {isSubmitting ? t('common.saving') : t('common.saveChanges')}
           </Button>
         </Stack>
       </Stack>

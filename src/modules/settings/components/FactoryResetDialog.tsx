@@ -14,20 +14,22 @@ import { DialogHeader } from '@/components/shared/DialogHeader'
 import { useFactoryReset } from '../useFactoryReset'
 import { FactoryResetCategory } from '../typings/enums'
 import type { FactoryResetDialogProps } from '../typings/props'
+import { useT } from '@/i18n'
 
-const CATEGORY_OPTIONS: Array<{ value: FactoryResetCategory; label: string }> = [
-  { value: FactoryResetCategory.ACCOUNTS, label: 'Cuentas y tarjetas' },
-  { value: FactoryResetCategory.MOVEMENTS, label: 'Movimientos (gastos e ingresos)' },
-  { value: FactoryResetCategory.PAYMENTS, label: 'Pagos y servicios' },
-  { value: FactoryResetCategory.SAVINGS, label: 'Ahorros e inversiones' },
-  { value: FactoryResetCategory.MEMBERS, label: 'Integrantes del hogar' },
-  { value: FactoryResetCategory.CATEGORIES, label: 'Categorías (vuelven a las de fábrica)' },
-  { value: FactoryResetCategory.HOUSEHOLD_NAME, label: 'Nombre del hogar' }
+const CATEGORY_OPTIONS: Array<{ value: FactoryResetCategory; labelKey: string }> = [
+  { value: FactoryResetCategory.ACCOUNTS, labelKey: 'settings.factoryReset.accounts' },
+  { value: FactoryResetCategory.MOVEMENTS, labelKey: 'settings.factoryReset.movements' },
+  { value: FactoryResetCategory.PAYMENTS, labelKey: 'settings.factoryReset.payments' },
+  { value: FactoryResetCategory.SAVINGS, labelKey: 'settings.factoryReset.savings' },
+  { value: FactoryResetCategory.MEMBERS, labelKey: 'settings.factoryReset.members' },
+  { value: FactoryResetCategory.CATEGORIES, labelKey: 'settings.factoryReset.categories' },
+  { value: FactoryResetCategory.HOUSEHOLD_NAME, labelKey: 'settings.factoryReset.householdName' }
 ]
 
 const ALL_CATEGORIES = CATEGORY_OPTIONS.map((option) => option.value)
 
 export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): React.JSX.Element {
+  const t = useT()
   const [selected, setSelected] = useState<FactoryResetCategory[]>([])
   const { submit, isSubmitting, errorMessage } = useFactoryReset(() => {
     setSelected([])
@@ -58,15 +60,11 @@ export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): 
       aria-labelledby="factory-reset-title"
     >
       <DialogHeader id="factory-reset-title" onClose={handleClose}>
-        Volver a estado de fábrica
+        {t('settings.factoryReset.title')}
       </DialogHeader>
       <DialogContent>
         <Stack spacing={2}>
-          <Alert severity="warning">
-            Esto no se puede deshacer. Elegí qué querés borrar — si dejás algo que otra sección
-            todavía usa (por ejemplo cuentas de movimientos que sí borrás), esos registros van a
-            quedar sin esa referencia.
-          </Alert>
+          <Alert severity="warning">{t('settings.factoryReset.warning')}</Alert>
           <FormControlLabel
             control={
               <Checkbox
@@ -75,7 +73,7 @@ export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): 
                 onChange={() => setSelected(allSelected ? [] : ALL_CATEGORIES)}
               />
             }
-            label="Seleccionar todo (reinicio completo)"
+            label={t('settings.factoryReset.selectAll')}
           />
           <Divider />
           <Stack spacing={0.5}>
@@ -88,7 +86,7 @@ export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): 
                     onChange={() => toggle(option.value)}
                   />
                 }
-                label={option.label}
+                label={t(option.labelKey)}
               />
             ))}
           </Stack>
@@ -97,7 +95,7 @@ export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} disabled={isSubmitting}>
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button
           onClick={() => submit(selected)}
@@ -105,7 +103,7 @@ export function FactoryResetDialog({ open, onClose }: FactoryResetDialogProps): 
           variant="contained"
           disabled={isSubmitting || selected.length === 0}
         >
-          {isSubmitting ? 'Eliminando…' : 'Eliminar lo seleccionado'}
+          {isSubmitting ? t('common.deleting') : t('settings.factoryReset.submit')}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,32 +1,33 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0
-- Modified principles: none
-- Added sections: none
+- Version change: 1.1.0 → 2.0.0
+- Modified principles:
+  - I. "Local-First y Privacidad por Diseño" → "Privacidad por Diseño — Cifrado de Punta a Punta":
+    se permite un backend (Supabase) para sincronizar entre dispositivos, siempre que solo reciba
+    datos ya cifrados en el cliente con la clave del hogar.
+  - V. Simplicidad: se aclara que el backend permitido es un BaaS administrado, sin servidor propio.
 - Modified sections:
-  - Flujo de Trabajo de Desarrollo (Spec-Driven Development): la etapa inicial de spec pasa de
-    `/speckit-specify` + `/speckit-clarify` a `/spec` (discovery del repo + entrevista acotada) con
-    gate de revisión independiente `/spec-review` (PASS o NEEDS-DECISION para avanzar); después
-    sigue igual con `/speckit-plan` → `/speckit-tasks` → `/speckit-implement` → `/speckit-converge`.
-    Se agrega cuándo NO hace falta spec.
+  - Restricciones Tecnológicas: la app pasa a ser web (Vite) + escritorio (Electron) con la misma
+    UI; el cifrado se hace con WebCrypto en el cliente; se suma Supabase.
 - Removed sections: none
-- Follow-up TODOs: none
+- Follow-up TODOs: none (ver specs/002-web-app/spec.md)
 -->
 
 # Mi Hogar Constitution
 
 ## Core Principles
 
-### I. Local-First y Privacidad por Diseño (NON-NEGOTIABLE)
+### I. Privacidad por Diseño — Cifrado de Punta a Punta (NON-NEGOTIABLE)
 
-Todos los datos del hogar (cuentas, pagos, movimientos, ahorros, deudas, adjuntos) viven
-únicamente en el vault cifrado local del usuario. La app MUST NOT introducir un backend,
-sincronización en la nube, ni el envío de datos del hogar a servicios de terceros. Toda
-nueva integración externa (por ejemplo Google Calendar, en `docs/pending.md`) MUST tratar
-los datos del hogar como algo que no sale del dispositivo salvo acción explícita e
+Los datos del hogar (cuentas, pagos, movimientos, ahorros, deudas, adjuntos) MUST cifrarse en el
+dispositivo del usuario, con una clave derivada de la clave del hogar, antes de salir de él. El
+único backend permitido es Supabase (auth + Postgres + Storage), usado para identificar la cuenta
+y guardar blobs cifrados; MUST NOT recibir datos del hogar en claro ni la clave del hogar. Toda
+nueva integración externa (por ejemplo Google Calendar, en `docs/pending.md`) MUST tratar los
+datos del hogar como algo que no sale del dispositivo sin cifrar salvo acción explícita e
 informada del usuario.
-**Rationale**: es la propuesta de valor central de la app — finanzas domésticas sin
-exponer información sensible a un tercero ni depender de un servidor.
+**Rationale**: la propuesta de valor es tener las finanzas en todos los dispositivos sin exponer
+información sensible a un tercero: el proveedor guarda datos que no puede leer.
 
 ### II. Seguridad de Tipos y Validación en los Bordes
 
@@ -63,8 +64,9 @@ consistencia en vez de revertirla.
 ### V. Simplicidad y Alcance Acotado (YAGNI)
 
 Mi Hogar es mantenida por un solo desarrollador. El proyecto MUST NOT incorporar
-infraestructura (backend, colas, microservicios, capas de abstracción genéricas) que no
-resuelva una necesidad ya documentada en un spec o en `docs/pending.md`. Ante una nueva
+infraestructura (servidores propios, colas, microservicios, capas de abstracción genéricas)
+que no resuelva una necesidad ya documentada en un spec o en `docs/pending.md`; el backend se
+limita a servicios administrados de Supabase. Ante una nueva
 necesidad, SHOULD preferirse extender el patrón existente (slice + módulo) antes que
 introducir una abstracción nueva para un solo caso de uso.
 **Rationale**: evitar sobre-ingeniería en una app de alcance doméstico; cada capa nueva
@@ -72,13 +74,14 @@ es carga de mantenimiento adicional para un solo mantenedor.
 
 ## Restricciones Tecnológicas
 
-El stack MUST mantenerse: Electron + `electron-vite` (procesos main/preload/renderer),
-React 18 + TypeScript, Redux Toolkit + `react-redux` para estado global, React Router
-(`HashRouter`) para ruteo, MUI + MUI X Charts para UI y gráficos, `react-hook-form` +
-Zod/Yup para formularios, `date-fns` para manejo de fechas, y el módulo `crypto` de Node
-(proceso main) para derivar la clave y cifrar/descifrar el vault. No se introduce un
-framework de UI, gestor de estado o motor de persistencia alternativo sin una enmienda a
-esta constitución que justifique el cambio.
+El stack MUST mantenerse: una única UI React 18 + TypeScript que se compila como web app (Vite)
+y como app de escritorio (Electron + `electron-vite`, que carga la misma UI); Redux Toolkit +
+`react-redux` para estado global, React Router (`HashRouter`) para ruteo, MUI + MUI X Charts para
+UI y gráficos, `react-hook-form` + Zod/Yup para formularios, `date-fns` para fechas, WebCrypto
+(`crypto.subtle`) en el cliente para derivar la clave y cifrar/descifrar el vault (formato
+`VaultEnvelope` v1, compatible con los respaldos de escritorio) y Supabase como backend. No se
+introduce un framework de UI, gestor de estado o motor de persistencia alternativo sin una
+enmienda a esta constitución que justifique el cambio.
 
 ## Flujo de Trabajo de Desarrollo (Spec-Driven Development)
 
@@ -111,4 +114,4 @@ material de una sección existente, PATCH para aclaraciones o correcciones de re
 Todo spec y plan generado MUST incluir una verificación de cumplimiento de esta
 constitución en su sección "Constitution Check".
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-27 | **Last Amended**: 2026-09-27
+**Version**: 2.0.0 | **Ratified**: 2026-09-27 | **Last Amended**: 2026-11-20

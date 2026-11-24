@@ -9,6 +9,10 @@ export type SidebarItem = {
 
 export type SidebarAction = {
   label: string
+  /** Nombre accesible cuando difiere del texto visible. */
+  ariaLabel?: string
+  /** Idioma del texto visible, si no es el de la página. */
+  lang?: string
   icon: ComponentType<SvgIconProps>
   onClick: () => void
 }

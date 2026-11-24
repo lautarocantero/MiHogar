@@ -4,8 +4,8 @@ import { numberField } from './zodNumberField'
 
 export const addAccountFormSchema = z
   .object({
-    name: z.string().min(1, 'Ingresá un nombre para la cuenta'),
-    type: z.nativeEnum(AccountType, { message: 'Elegí un tipo de cuenta' }),
+    name: z.string().min(1, 'validation.accountNameRequired'),
+    type: z.nativeEnum(AccountType, { message: 'validation.accountTypeRequired' }),
     currency: z.nativeEnum(Currency).default(Currency.ARS),
     ownerType: z.nativeEnum(OwnerType),
     ownerId: z.string().optional(),
@@ -21,7 +21,7 @@ export const addAccountFormSchema = z
     color: z.string().optional()
   })
   .refine((data) => data.ownerType !== OwnerType.MEMBER || Boolean(data.ownerId), {
-    message: 'Elegí quién es el dueño de la cuenta',
+    message: 'validation.accountOwnerRequired',
     path: ['ownerId']
   })
   .superRefine((data, ctx) => {
@@ -29,14 +29,14 @@ export const addAccountFormSchema = z
       if (!data.sourceAccountId) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Elegí de qué cuenta sale la plata',
+          message: 'validation.sourceAccountRequired',
           path: ['sourceAccountId']
         })
       }
       if (typeof data.creditLimit !== 'number') {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Ingresá el límite de la tarjeta',
+          message: 'validation.creditLimitRequired',
           path: ['creditLimit']
         })
       }
@@ -45,7 +45,7 @@ export const addAccountFormSchema = z
     if (typeof data.balance !== 'number') {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Ingresá un monto',
+        message: 'validation.amountRequired',
         path: ['balance']
       })
     }

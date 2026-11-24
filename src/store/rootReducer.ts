@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
+import { authReducer } from './auth/authSlice'
 import { vaultReducer } from './vault/vaultSlice'
 import { householdReducer } from './household/householdSlice'
 import { membersReducer } from './household/membersSlice'
@@ -15,6 +16,7 @@ import { savingsSnapshotsReducer } from './savingsSnapshots/savingsSnapshotsSlic
 import { uiReducer } from './ui/uiSlice'
 
 export const rootReducer = combineReducers({
+  auth: authReducer,
   vault: vaultReducer,
   household: householdReducer,
   members: membersReducer,

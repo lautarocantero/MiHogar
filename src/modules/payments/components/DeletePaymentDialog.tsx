@@ -4,6 +4,7 @@ import { useAppSelector } from '@/store/hooks'
 import { selectMovementsByPaymentId } from '@/store/movements/movementsSelectors'
 import { useDeletePayment } from '../useDeletePayment'
 import type { DeletePaymentDialogProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 export function DeletePaymentDialog({
   payment,
@@ -11,6 +12,7 @@ export function DeletePaymentDialog({
   onClose,
   onDeleted
 }: DeletePaymentDialogProps): React.JSX.Element {
+  const t = useT()
   const relatedMovements = useAppSelector((state) => selectMovementsByPaymentId(state, payment.id))
   const { submit, isSubmitting, errorMessage } = useDeletePayment(payment, onDeleted)
 
@@ -23,14 +25,13 @@ export function DeletePaymentDialog({
       aria-labelledby="delete-payment-title"
     >
       <DialogHeader id="delete-payment-title" onClose={onClose}>
-        Eliminar &quot;{payment.concept}&quot;
+        {t('payments.delete.title', { name: payment.concept })}
       </DialogHeader>
       <DialogContent>
         <Stack spacing={2}>
           {relatedMovements.length > 0 && (
             <Alert severity="warning">
-              Este pago generó {relatedMovements.length} movimiento(s) al marcarse como pagado. Van
-              a seguir existiendo, pero sin el pago asociado.
+              {t('payments.delete.warning', { count: relatedMovements.length })}
             </Alert>
           )}
           {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -38,10 +39,10 @@ export function DeletePaymentDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isSubmitting}>
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button onClick={submit} color="error" variant="contained" disabled={isSubmitting}>
-          {isSubmitting ? 'Eliminando…' : 'Eliminar'}
+          {isSubmitting ? t('common.deleting') : t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>

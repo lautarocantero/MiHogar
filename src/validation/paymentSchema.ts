@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import { boundedNumber } from './zodNumberField'
+import { isHttpUrl } from '@/utils/resolveUrlHostname'
 import {
   AmountMode,
   OwnerType,
@@ -12,9 +14,12 @@ export const attachmentMetaSchema = z.object({
   paymentId: z.string().min(1),
   fileName: z.string().min(1),
   mimeType: z.string().min(1),
-  sizeBytes: z.number().nonnegative(),
+  sizeBytes: boundedNumber().nonnegative(),
   relativePath: z.string().min(1),
-  createdAt: z.string()
+  createdAt: z.string(),
+  // Clave AES-256-GCM (base64) con la que se cifró el archivo en Storage. Los adjuntos
+  // de la app de escritorio vieja no la tienen: quedaron en esa computadora.
+  encryptionKey: z.string().min(1).optional()
 })
 
 export const paymentCredentialsSchema = z.object({
@@ -33,14 +38,19 @@ export const paymentSchema = z.object({
   recurring: z.boolean(),
   frequency: z.nativeEnum(PaymentFrequency).optional(),
   dueDate: z.string(),
-  amount: z.number(),
+  amount: boundedNumber(),
   status: z.nativeEnum(PaymentStatus),
   categoryId: z.string().min(1),
-  installmentsTotal: z.number().int().min(1).optional(),
-  installmentsPaid: z.number().int().min(0).optional(),
+  installmentsTotal: boundedNumber().int().min(1).optional(),
+  installmentsPaid: boundedNumber().int().min(0).optional(),
   /** @deprecated legacy field, kept only so old saved vault files still parse. Use installmentsTotal/installmentsPaid instead. */
-  installmentsRemaining: z.number().int().min(0).optional(),
-  providerUrl: z.string().url().optional(),
+  installmentsRemaining: boundedNumber().int().min(0).optional(),
+  // Solo http/https (se usa como link). Uno inválido o `javascript:` se descarta en vez
+  // de impedir que se abra el vault.
+  providerUrl: z.preprocess(
+    (value) => (typeof value === 'string' && !isHttpUrl(value) ? undefined : value),
+    z.string().url().optional()
+  ),
   credentials: paymentCredentialsSchema.optional(),
   attachments: z.array(attachmentMetaSchema),
   reminderEnabled: z.boolean().optional(),

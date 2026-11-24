@@ -6,6 +6,7 @@ import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import { useLoader } from '@/hooks/shared/useLoader'
 import { AccountType, OwnerType } from '@/typings/domain/enums'
 import type { AddAccountFormValues, UseCreateAccountResult } from './typings/types'
+import { t } from '@/i18n'
 
 export function useCreateAccount(onCreated: () => void): UseCreateAccountResult {
   const dispatch = useAppDispatch()
@@ -38,7 +39,7 @@ export function useCreateAccount(onCreated: () => void): UseCreateAccountResult 
           })
         )
         onCreated()
-      }, 'No se pudo agregar la cuenta')
+      }, t('accounts.error.create'))
     },
     [dispatch, run, onCreated, accounts]
   )

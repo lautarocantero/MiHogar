@@ -1,11 +1,6 @@
-import { AccountType } from '@/typings/domain/enums'
-
-const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
-  [AccountType.BANK]: 'Cuenta bancaria',
-  [AccountType.CASH]: 'Efectivo',
-  [AccountType.CREDIT_CARD]: 'Tarjeta de crédito'
-}
+import { t } from '@/i18n'
+import type { AccountType } from '@/typings/domain/enums'
 
 export function resolveAccountTypeLabel(type: AccountType): string {
-  return ACCOUNT_TYPE_LABELS[type]
+  return t(`format.accountType.${type}`)
 }

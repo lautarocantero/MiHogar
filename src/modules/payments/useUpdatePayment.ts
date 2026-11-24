@@ -6,6 +6,7 @@ import { useLoader } from '@/hooks/shared/useLoader'
 import { OwnerType } from '@/typings/domain/enums'
 import type { Payment } from '@/typings/domain/types'
 import type { AddPaymentFormValues, UseUpdatePaymentResult } from './typings/types'
+import { t } from '@/i18n'
 
 export function useUpdatePayment(payment: Payment, onUpdated: () => void): UseUpdatePaymentResult {
   const dispatch = useAppDispatch()
@@ -32,9 +33,9 @@ export function useUpdatePayment(payment: Payment, onUpdated: () => void): UseUp
             amountMode: values.amountMode
           })
         )
-        dispatch(showToast('Pago actualizado'))
+        dispatch(showToast(t('payments.toast.updated')))
         onUpdated()
-      }, 'No se pudo guardar el pago')
+      }, t('payments.error.update'))
     },
     [dispatch, run, payment, onUpdated]
   )

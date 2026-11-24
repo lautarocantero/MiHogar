@@ -13,7 +13,11 @@ export function MonthGrid({
       {weeks.map((week) => (
         <Box key={week[0].isoDate} role="row" sx={{ display: 'flex' }}>
           {week.map((day) => (
-            <Box key={day.isoDate} role="gridcell" sx={{ width: '14.28%', p: 0.5 }}>
+            <Box
+              key={day.isoDate}
+              role="gridcell"
+              sx={{ width: '14.28%', minWidth: 0, p: { xs: 0.25, sm: 0.5 } }}
+            >
               <MonthGridCell
                 day={day}
                 isSelected={day.isoDate === selectedDate}

@@ -7,6 +7,7 @@ import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import { AccountFormFields } from './AccountFormFields'
 import type { EditAccountFormProps } from '../typings/props'
 import type { AddAccountFormValues } from '../typings/types'
+import { useT } from '@/i18n'
 
 export function EditAccountForm({
   account,
@@ -15,6 +16,7 @@ export function EditAccountForm({
   isSubmitting,
   errorMessage
 }: EditAccountFormProps): React.JSX.Element {
+  const t = useT()
   const {
     register,
     handleSubmit,
@@ -60,10 +62,10 @@ export function EditAccountForm({
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-            {isSubmitting ? 'Guardando…' : 'Guardar cambios'}
+            {isSubmitting ? t('common.saving') : t('common.saveChanges')}
           </Button>
         </Stack>
       </Stack>

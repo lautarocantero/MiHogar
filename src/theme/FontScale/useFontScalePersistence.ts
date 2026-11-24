@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getPreferences, setPreferences } from '@/apis/preferencesApi'
 import { useLoader } from '@/hooks/shared/useLoader'
+import { t } from '@/i18n'
 import { FontSizeLevel } from './typings/enums'
 import { organicFontScaleLevels } from '../tokens'
 import type { FontScalePersistenceResult } from './typings/types'
@@ -12,7 +13,7 @@ export function useFontScalePersistence(): FontScalePersistenceResult {
   const { error, run } = useLoader()
 
   useEffect(() => {
-    run(getPreferences, 'No se pudo cargar el tamaño de letra guardado').then((preferences) => {
+    run(getPreferences, t('settings.fontSize.loadFailed')).then((preferences) => {
       if (preferences) {
         setLevelState(preferences.fontSizeLevel as FontSizeLevel)
       }
@@ -31,7 +32,7 @@ export function useFontScalePersistence(): FontScalePersistenceResult {
       run(async () => {
         const currentPreferences = await getPreferences()
         await setPreferences({ ...currentPreferences, fontSizeLevel: nextLevel })
-      }, 'No se pudo guardar el tamaño de letra')
+      }, t('settings.fontSize.saveFailed'))
     },
     [run]
   )

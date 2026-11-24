@@ -5,6 +5,7 @@ import { useLoader } from '@/hooks/shared/useLoader'
 import { AccountType, OwnerType } from '@/typings/domain/enums'
 import type { Account } from '@/typings/domain/types'
 import type { AddAccountFormValues, UseUpdateAccountResult } from './typings/types'
+import { t } from '@/i18n'
 
 export function useUpdateAccount(account: Account, onUpdated: () => void): UseUpdateAccountResult {
   const dispatch = useAppDispatch()
@@ -35,7 +36,7 @@ export function useUpdateAccount(account: Account, onUpdated: () => void): UseUp
           })
         )
         onUpdated()
-      }, 'No se pudo guardar la cuenta')
+      }, t('accounts.error.update'))
     },
     [dispatch, run, account, onUpdated]
   )

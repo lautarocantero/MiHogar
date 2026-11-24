@@ -1,4 +1,5 @@
 import { format, subMonths } from 'date-fns'
+import { t } from '@/i18n'
 import type { Category, ExpenseComparison, Movement } from '@/typings/domain/types'
 import { MovementType } from '@/typings/domain/enums'
 
@@ -44,7 +45,7 @@ export function computeExpenseComparison(
     .filter((entry) => entry.delta > 0)
     .sort((a, b) => b.delta - a.delta)
     .slice(0, TOP_CATEGORIES_LIMIT)
-    .map((entry) => categoriesById.get(entry.categoryId)?.name ?? 'Sin categoría')
+    .map((entry) => categoriesById.get(entry.categoryId)?.name ?? t('common.uncategorized'))
 
   return {
     differenceAmount: Math.abs(currentTotal - previousTotal),

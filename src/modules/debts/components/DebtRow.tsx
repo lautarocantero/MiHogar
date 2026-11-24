@@ -31,17 +31,17 @@ export function DebtRow({ debt, onEdit, onDelete }: DebtRowProps): React.JSX.Ele
     <Card
       component="li"
       sx={{
-        p: 2,
+        p: { xs: 1.5, sm: 2 },
         backgroundColor: organicColors.surface,
         border: `1px solid ${organicColors.neutral.border}`
       }}
       elevation={0}
     >
       <Stack spacing={1.5}>
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" alignItems="center" columnGap={2} rowGap={1} flexWrap="wrap">
           <Box
             sx={{
-              display: 'flex',
+              display: { xs: 'none', sm: 'flex' },
               alignItems: 'center',
               justifyContent: 'center',
               width: 44,
@@ -57,7 +57,7 @@ export function DebtRow({ debt, onEdit, onDelete }: DebtRowProps): React.JSX.Ele
               <CallReceivedIcon fontSize="small" />
             )}
           </Box>
-          <Box flexGrow={1} minWidth={0}>
+          <Box flex="1 1 160px" minWidth={0} sx={{ overflowWrap: 'anywhere' }}>
             <Typography
               component="p"
               sx={{
@@ -73,32 +73,52 @@ export function DebtRow({ debt, onEdit, onDelete }: DebtRowProps): React.JSX.Ele
               {debt.conditionText ? ` · ${debt.conditionText}` : ''}
             </Typography>
           </Box>
-          <Chip
-            label={debt.ownerLabel}
-            size="small"
-            sx={{ backgroundColor: organicColors.orange.tint, color: organicColors.orange.dark }}
-          />
-          <Typography
-            component="p"
-            sx={{
-              fontFamily: organicTypography.titleFontFamily,
-              fontSize: '1.25rem',
-              color: accent.main,
-              whiteSpace: 'nowrap'
-            }}
+          {/* Dueño, saldo y acciones van juntos; en pantallas angostas bajan a otra fila. */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            flexShrink={0}
+            useFlexGap
+            flexWrap="wrap"
+            justifyContent="flex-end"
+            sx={{ ml: 'auto', maxWidth: '100%' }}
           >
-            {formatCurrency(debt.outstandingBalance)}
-          </Typography>
-          <IconButton aria-label={`Editar ${debt.name}`} onClick={() => onEdit(debt)} size="small">
-            <EditIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            aria-label={`Eliminar ${debt.name}`}
-            onClick={() => onDelete(debt)}
-            size="small"
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
+            <Chip
+              label={debt.ownerLabel}
+              size="small"
+              sx={{
+                maxWidth: '100%',
+                backgroundColor: organicColors.orange.tint,
+                color: organicColors.orange.dark
+              }}
+            />
+            <Typography
+              component="p"
+              sx={{
+                fontFamily: organicTypography.titleFontFamily,
+                fontSize: '1.25rem',
+                color: accent.main,
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {formatCurrency(debt.outstandingBalance)}
+            </Typography>
+            <IconButton
+              aria-label={`Editar ${debt.name}`}
+              onClick={() => onEdit(debt)}
+              size="small"
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              aria-label={`Eliminar ${debt.name}`}
+              onClick={() => onDelete(debt)}
+              size="small"
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Stack>
         </Stack>
         {debt.progressPercent != null && (
           <LinearProgress

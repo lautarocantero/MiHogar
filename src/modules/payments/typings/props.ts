@@ -102,8 +102,9 @@ export type AttachmentListProps = {
 
 export type AttachmentItemProps = {
   attachment: Payment['attachments'][number]
-  onOpen: (relativePath: string) => void
-  onRemove: (attachmentId: string, relativePath: string) => void
+  onOpen: (attachment: Payment['attachments'][number]) => void
+  onRemove: (attachment: Payment['attachments'][number]) => void
+  isBusy: boolean
 }
 
 export type AttachmentTypeIconProps = {

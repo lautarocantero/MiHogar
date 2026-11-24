@@ -1,0 +1,16 @@
+{
+  "name": "Mi Hogar",
+  "short_name": "Mi Hogar",
+  "description": "Tus finanzas del hogar en un solo lugar: cuentas, pagos, ahorros y proyecciones, cifrados de punta a punta.",
+  "lang": "es-AR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5ead8",
+  "theme_color": "#f5ead8",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

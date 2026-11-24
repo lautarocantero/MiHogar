@@ -76,7 +76,7 @@ export function SavingsEvolutionChart({ points }: SavingsEvolutionChartProps): R
       ) : (
         <StackedBarsChart points={barPoints} yTicks={buildYTicks(maxTotal)} />
       )}
-      <Stack direction="row" spacing={2.75} flexWrap="wrap" fontSize="0.8125rem">
+      <Stack direction="row" spacing={2.75} flexWrap="wrap" useFlexGap fontSize="0.8125rem">
         <Stack direction="row" alignItems="center" spacing={1}>
           <Box sx={{ width: 11, height: 11, borderRadius: '50%', backgroundColor: '#b5502a' }} />
           <span>Ahorros</span>

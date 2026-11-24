@@ -3,12 +3,16 @@ import { DialogHeader } from '@/components/shared/DialogHeader'
 import { AddMemberForm } from './AddMemberForm'
 import { useAddMember } from '../useAddMember'
 import type { AddMemberDialogProps } from '../typings/props'
+import { useFullScreenDialog } from '@/hooks/shared/useResponsive'
+import { useT } from '@/i18n'
 
 export function AddMemberDialog({
   open,
   onClose,
   onCreated
 }: AddMemberDialogProps): React.JSX.Element {
+  const t = useT()
+  const fullScreen = useFullScreenDialog()
   const { submit, isSubmitting, errorMessage } = useAddMember((memberId) => {
     onCreated?.(memberId)
     onClose()
@@ -16,6 +20,7 @@ export function AddMemberDialog({
 
   return (
     <Dialog
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       fullWidth
@@ -23,7 +28,7 @@ export function AddMemberDialog({
       aria-labelledby="add-member-title"
     >
       <DialogHeader id="add-member-title" onClose={onClose}>
-        Agregar quién usa la app
+        {t('settings.members.dialogTitle')}
       </DialogHeader>
       <DialogContent>
         <AddMemberForm

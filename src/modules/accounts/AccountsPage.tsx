@@ -16,8 +16,10 @@ import { EditAccountDialog } from './components/EditAccountDialog'
 import { DeleteAccountDialog } from './components/DeleteAccountDialog'
 import { useAccountsData } from './useAccountsData'
 import { useReorderAccounts } from './useReorderAccounts'
+import { useT } from '@/i18n'
 
 export function AccountsPage(): React.JSX.Element {
+  const t = useT()
   const { totalAvailable, totalCreditAvailable, accountViews } = useAccountsData()
   const reorderAccounts = useReorderAccounts()
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false)
@@ -43,13 +45,21 @@ export function AccountsPage(): React.JSX.Element {
   return (
     <Box
       component="section"
-      aria-label="Cuentas y tarjetas"
-      sx={{ display: 'flex', gap: 3, alignItems: 'stretch', height: '100%' }}
+      aria-label={t('accounts.pageLabel')}
+      // Desde `lg` cuentas y tarjetas van lado a lado, cada una con su scroll; por debajo se
+      // apilan y scrollea la página.
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', lg: 'row' },
+        gap: 3,
+        alignItems: 'stretch',
+        height: { lg: '100%' }
+      }}
     >
-      <Stack spacing={3} flexGrow={1} minWidth={0} height="100%" minHeight={0}>
+      <Stack spacing={3} flexGrow={1} minWidth={0} minHeight={0} sx={{ height: { lg: '100%' } }}>
         <Card
           sx={{
-            p: 3,
+            p: { xs: 2, sm: 3 },
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -59,30 +69,32 @@ export function AccountsPage(): React.JSX.Element {
           }}
           elevation={0}
         >
-          <Box flexGrow={1}>
+          <Box flexGrow={1} minWidth={0}>
             <Typography variant="body2" color="text.secondary">
-              Sumando todo lo que tenés
+              {t('accounts.totalAvailable')}
             </Typography>
             <Typography
               component="p"
               sx={{
                 fontFamily: organicTypography.titleFontFamily,
-                fontSize: '1.875rem',
+                fontSize: { xs: '1.5rem', sm: '1.875rem' },
+                overflowWrap: 'anywhere',
                 color: organicColors.orange.dark
               }}
             >
               {formatCurrency(totalAvailable)}
             </Typography>
           </Box>
-          <Box flexGrow={1}>
+          <Box flexGrow={1} minWidth={0}>
             <Typography variant="body2" color="text.secondary">
-              Disponible en tarjetas
+              {t('accounts.cardsAvailable')}
             </Typography>
             <Typography
               component="p"
               sx={{
                 fontFamily: organicTypography.titleFontFamily,
-                fontSize: '1.875rem',
+                fontSize: { xs: '1.5rem', sm: '1.875rem' },
+                overflowWrap: 'anywhere',
                 color: organicColors.orange.dark
               }}
             >
@@ -105,10 +117,10 @@ export function AccountsPage(): React.JSX.Element {
           }}
         >
           <AccountBalanceIcon aria-hidden="true" />
-          Cuentas
+          {t('accounts.accountsTitle')}
         </Typography>
 
-        <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', pr: 0.5 }}>
+        <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: { lg: 'auto' }, pr: { lg: 0.5 } }}>
           <Stack spacing={1.5}>
             <Box
               component="button"
@@ -133,7 +145,7 @@ export function AccountsPage(): React.JSX.Element {
             >
               <AddIcon fontSize="small" />
               <Typography variant="body1" sx={{ color: 'inherit' }}>
-                Agregar una cuenta
+                {t('accounts.addAccount')}
               </Typography>
             </Box>
 
@@ -179,10 +191,10 @@ export function AccountsPage(): React.JSX.Element {
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          width: 340,
+          width: { xs: '100%', lg: 340 },
           flexShrink: 0,
           background: sidebarColors.gradient,
-          p: 3,
+          p: { xs: 2, sm: 3 },
           display: 'flex',
           flexDirection: 'column',
           gap: 2
@@ -216,11 +228,17 @@ export function AccountsPage(): React.JSX.Element {
           }}
         >
           <CreditCardIcon aria-hidden="true" />
-          Tarjetas
+          {t('accounts.cardsTitle')}
         </Typography>
         <Stack
           spacing={2}
-          sx={{ position: 'relative', flex: 1, minHeight: 0, overflowY: 'auto', pr: 0.5 }}
+          sx={{
+            position: 'relative',
+            flex: 1,
+            minHeight: 0,
+            overflowY: { lg: 'auto' },
+            pr: { lg: 0.5 }
+          }}
         >
           <Button
             variant="outlined"
@@ -237,7 +255,7 @@ export function AccountsPage(): React.JSX.Element {
               }
             }}
           >
-            Agregar una tarjeta
+            {t('accounts.addCard')}
           </Button>
           {cardAccounts.map((account) => (
             <Box

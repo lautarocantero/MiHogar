@@ -5,6 +5,7 @@ import { showToast } from '@/store/ui/uiSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
 import type { Payment } from '@/typings/domain/types'
 import type { UseDeletePaymentResult } from './typings/types'
+import { t } from '@/i18n'
 
 export function useDeletePayment(payment: Payment, onDeleted: () => void): UseDeletePaymentResult {
   const dispatch = useAppDispatch()
@@ -13,9 +14,9 @@ export function useDeletePayment(payment: Payment, onDeleted: () => void): UseDe
   const submit = useCallback(() => {
     run(async () => {
       dispatch(removePayment(payment.id))
-      dispatch(showToast('Pago eliminado'))
+      dispatch(showToast(t('payments.toast.deleted')))
       onDeleted()
-    }, 'No se pudo eliminar el pago')
+    }, t('payments.error.delete'))
   }, [dispatch, run, payment, onDeleted])
 
   return { submit, isSubmitting: isLoading, errorMessage: error }

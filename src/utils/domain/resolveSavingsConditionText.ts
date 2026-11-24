@@ -1,23 +1,21 @@
-import { format, parseISO } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { t } from '@/i18n'
+import { formatLongDayMonth } from '@/utils/formatting/formatDate'
 import type { SavingsInstrument } from '@/typings/domain/types'
 
 export function resolveSavingsConditionText(instrument: SavingsInstrument): string {
   const parts: string[] = []
 
   if (instrument.maturityDate) {
-    parts.push(
-      `Vence el ${format(parseISO(instrument.maturityDate), "d 'de' MMMM", { locale: es })}`
-    )
+    parts.push(t('format.savings.maturesOn', { date: formatLongDayMonth(instrument.maturityDate) }))
   }
   if (instrument.rateAnnual) {
-    parts.push(`${instrument.rateAnnual}% anual`)
+    parts.push(t('format.ratePerYear', { rate: instrument.rateAnnual }))
   }
   if (parts.length === 0 && instrument.liquidAnytime) {
-    return 'Podés sacarlo cuando quieras'
+    return t('format.savings.liquidAnytime')
   }
   if (instrument.liquidAnytime) {
-    parts.push('Podés sacarlo cuando quieras')
+    parts.push(t('format.savings.liquidAnytime'))
   }
 
   return parts.join(' · ')

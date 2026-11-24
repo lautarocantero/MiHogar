@@ -19,6 +19,7 @@ import { NumberField } from '@/components/shared/NumberField'
 import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import type { PaymentFormFieldsProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 const TODAY_ISO = new Date().toISOString().slice(0, 10)
 
@@ -34,6 +35,7 @@ export function PaymentFormFields({
   hasInstallments,
   onToggleInstallments
 }: PaymentFormFieldsProps): React.JSX.Element {
+  const t = useT()
   const accounts = useAppSelector(selectAllAccounts)
   const isDeposit = kind === PaymentKind.DEPOSIT
   const categoryKind = isDeposit ? CategoryKind.INCOME : CategoryKind.EXPENSE
@@ -58,28 +60,28 @@ export function PaymentFormFields({
           <Grid size={12}>
             <FormSectionHeader
               step={1}
-              title="Información básica"
-              subtitle="Completá los datos del movimiento"
+              title={t('payments.form.basicInfo')}
+              subtitle={t('payments.form.basicInfoSubtitle')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
               fullWidth
-              label="Concepto"
-              placeholder="Ej: Luz — Edesur"
+              label={t('payments.form.concept')}
+              placeholder={t('payments.form.conceptPlaceholder')}
               {...register('concept')}
               error={Boolean(errors.concept)}
-              helperText={errors.concept?.message}
+              helperText={errors.concept?.message && t(errors.concept.message)}
             />
           </Grid>
           <Grid size={12}>
             <TextField
               fullWidth
-              label="Entidad"
-              placeholder="Ej: Edesur S.A."
+              label={t('payments.form.entity')}
+              placeholder={t('payments.form.entityPlaceholder')}
               {...register('entity')}
               error={Boolean(errors.entity)}
-              helperText={errors.entity?.message}
+              helperText={errors.entity?.message && t(errors.entity.message)}
             />
           </Grid>
           <Grid size={12}>
@@ -89,7 +91,7 @@ export function PaymentFormFields({
               render={({ field }) => (
                 <TextField
                   fullWidth
-                  label={isDeposit ? '¿A qué cuenta entra?' : '¿Con qué cuenta se paga?'}
+                  label={isDeposit ? t('payments.form.depositAccount') : t('payments.form.paymentAccount')}
                   select
                   value={field.value ?? ''}
                   onChange={(event) => {
@@ -103,7 +105,7 @@ export function PaymentFormFields({
                   }}
                   onBlur={field.onBlur}
                   error={Boolean(errors.accountId)}
-                  helperText={errors.accountId?.message}
+                  helperText={errors.accountId?.message && t(errors.accountId.message)}
                 >
                   {accounts.map((account) => (
                     <MenuItem key={account.id} value={account.id}>
@@ -121,11 +123,11 @@ export function PaymentFormFields({
               render={({ field }) => (
                 <CategoryField
                   kind={categoryKind}
-                  label="Categoría"
+                  label={t('payments.form.category')}
                   value={field.value ?? ''}
                   onChange={field.onChange}
                   error={Boolean(errors.categoryId)}
-                  helperText={errors.categoryId?.message}
+                  helperText={errors.categoryId?.message && t(errors.categoryId.message)}
                 />
               )}
             />
@@ -137,7 +139,7 @@ export function PaymentFormFields({
               render={({ field }) => (
                 <TextField
                   fullWidth
-                  label="¿De quién es?"
+                  label={t('payments.form.owner')}
                   select
                   value={field.value}
                   onChange={field.onChange}
@@ -158,7 +160,7 @@ export function PaymentFormFields({
                     value={field.value ?? ''}
                     onChange={field.onChange}
                     error={Boolean(errors.ownerId)}
-                    helperText={errors.ownerId?.message}
+                    helperText={errors.ownerId?.message && t(errors.ownerId.message)}
                   />
                 )}
               />
@@ -172,14 +174,14 @@ export function PaymentFormFields({
           <Grid size={12}>
             <FormSectionHeader
               step={2}
-              title="Detalles del pago"
-              subtitle="Completá la información adicional"
+              title={t('payments.form.details')}
+              subtitle={t('payments.form.detailsSubtitle')}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: isRecurring ? 6 : 12 }}>
             <FormControlLabel
               control={<Switch defaultChecked={isRecurring} {...register('recurring')} />}
-              label="Se repite todos los meses"
+              label={t('payments.form.recurring')}
             />
           </Grid>
           {isRecurring && (
@@ -190,7 +192,7 @@ export function PaymentFormFields({
                 render={({ field }) => (
                   <TextField
                     fullWidth
-                    label="Frecuencia"
+                    label={t('payments.form.frequency')}
                     select
                     value={field.value ?? ''}
                     onChange={field.onChange}
@@ -210,22 +212,22 @@ export function PaymentFormFields({
               fullWidth
               label={
                 isCardPayment
-                  ? 'Fecha en que se agrega'
+                  ? t('payments.form.addedDate')
                   : isDeposit
-                    ? 'Próximo ingreso'
-                    : 'Próximo vencimiento'
+                    ? t('payments.form.nextIncome')
+                    : t('payments.form.nextDueDate')
               }
               type="date"
               slotProps={{ inputLabel: { shrink: true } }}
               {...register('dueDate')}
               error={Boolean(errors.dueDate)}
-              helperText={errors.dueDate?.message}
+              helperText={errors.dueDate?.message && t(errors.dueDate.message)}
             />
           </Grid>
           {nextClosingDate && (
             <Grid size={12}>
               <Typography variant="body2" color="text.secondary">
-                Se va a pagar el {nextClosingDate}, según el día de cierre de la tarjeta.
+                {t('payments.form.cardPaidOn', { date: nextClosingDate })}
               </Typography>
             </Grid>
           )}
@@ -237,13 +239,13 @@ export function PaymentFormFields({
                 render={({ field }) => (
                   <TextField
                     fullWidth
-                    label="El monto es"
+                    label={t('payments.form.amountMode')}
                     select
                     value={field.value}
                     onChange={field.onChange}
                   >
-                    <MenuItem value={AmountMode.FIXED}>Fijo, siempre el mismo</MenuItem>
-                    <MenuItem value={AmountMode.VARIABLE}>Variable, cambia cada vez</MenuItem>
+                    <MenuItem value={AmountMode.FIXED}>{t('payments.form.amountFixed')}</MenuItem>
+                    <MenuItem value={AmountMode.VARIABLE}>{t('payments.form.amountVariable')}</MenuItem>
                   </TextField>
                 )}
               />
@@ -252,17 +254,17 @@ export function PaymentFormFields({
           {isDeposit && selectedAmountMode === AmountMode.VARIABLE ? (
             <Grid size={12}>
               <Typography variant="body2" color="text.secondary">
-                Vas a cargar el monto cuando llegue el depósito.
+                {t('payments.form.variableHint')}
               </Typography>
             </Grid>
           ) : (
             <Grid size={12}>
               <NumberField
                 fullWidth
-                label="Monto"
+                label={t('payments.form.amount')}
                 {...register('amount', { setValueAs: parseAmountInput })}
                 error={Boolean(errors.amount)}
-                helperText={errors.amount?.message}
+                helperText={errors.amount?.message && t(errors.amount.message)}
               />
             </Grid>
           )}
@@ -274,7 +276,7 @@ export function PaymentFormFields({
                   onChange={(event) => onToggleInstallments(event.target.checked)}
                 />
               }
-              label="¿Es en cuotas?"
+              label={t('payments.form.hasInstallments')}
             />
           </Grid>
           {hasInstallments && (
@@ -282,25 +284,27 @@ export function PaymentFormFields({
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Cantidad total de cuotas"
+                  label={t('payments.form.installmentsTotal')}
                   {...register('installmentsTotal', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.installmentsTotal)}
-                  helperText={errors.installmentsTotal?.message}
+                  helperText={errors.installmentsTotal?.message && t(errors.installmentsTotal.message)}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Cuotas ya pagadas"
+                  label={t('payments.form.installmentsPaid')}
                   {...register('installmentsPaid', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.installmentsPaid)}
-                  helperText={errors.installmentsPaid?.message}
+                  helperText={errors.installmentsPaid?.message && t(errors.installmentsPaid.message)}
                 />
               </Grid>
               {installmentsRemaining != null && (
                 <Grid size={12}>
                   <Typography variant="body2" color="text.secondary">
-                    Quedan {installmentsRemaining} cuota{installmentsRemaining === 1 ? '' : 's'}.
+                    {installmentsRemaining === 1
+                      ? t('payments.form.oneInstallmentLeft')
+                      : t('payments.form.installmentsLeft', { count: installmentsRemaining })}
                   </Typography>
                 </Grid>
               )}

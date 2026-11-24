@@ -8,21 +8,21 @@ export const quickAddFormSchema = z
   .object({
     type: z.nativeEnum(MovementType),
     amount: numberField(
-      z.number({ message: 'Ingresá un monto' }).positive('El monto debe ser mayor a 0')
+      z.number({ message: 'validation.amountRequired' }).positive('validation.amountMustBePositive')
     ),
     currency: z.nativeEnum(Currency).optional(),
-    date: z.string().min(1, 'Elegí el día'),
+    date: z.string().min(1, 'validation.dateRequired'),
     categoryId: z.string().optional(),
-    accountId: z.string().min(1, 'Elegí una cuenta'),
+    accountId: z.string().min(1, 'validation.accountRequired'),
     toAccountId: z.string().optional(),
     note: z.string().optional()
   })
   .refine((data) => SECONDARY_ACCOUNT_TYPES.includes(data.type) || Boolean(data.categoryId), {
-    message: 'Elegí de qué fue',
+    message: 'validation.movementCategoryRequired',
     path: ['categoryId']
   })
   .refine((data) => !SECONDARY_ACCOUNT_TYPES.includes(data.type) || Boolean(data.toAccountId), {
-    message: 'Elegí a qué cuenta entra',
+    message: 'validation.toAccountRequired',
     path: ['toAccountId']
   })
   .refine(
@@ -30,5 +30,5 @@ export const quickAddFormSchema = z
       !SECONDARY_ACCOUNT_TYPES.includes(data.type) ||
       !data.toAccountId ||
       data.toAccountId !== data.accountId,
-    { message: 'Elegí dos cuentas distintas', path: ['toAccountId'] }
+    { message: 'validation.differentAccountsRequired', path: ['toAccountId'] }
   )

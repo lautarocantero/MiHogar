@@ -1,9 +1,12 @@
 import { BarChart } from '@mui/x-charts/BarChart'
 import { organicColors } from '@/theme/tokens'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
+import { useResponsive } from '@/hooks/shared/useResponsive'
 import type { MonthlyBarsChartProps } from '../typings/props'
 
 export function MonthlyBarsChart({ series }: MonthlyBarsChartProps): React.JSX.Element {
+  // En teléfonos las barras son angostas y las etiquetas se pisan: el monto queda en el tooltip.
+  const { isPhone } = useResponsive()
   return (
     <BarChart
       height={280}
@@ -25,8 +28,10 @@ export function MonthlyBarsChart({ series }: MonthlyBarsChartProps): React.JSX.E
           valueFormatter: (value: number | null) => (value === null ? '' : formatCurrency(value))
         }
       ]}
-      barLabel={(item) => (item.value ? formatCurrency(item.value) : '')}
-      margin={{ left: 90, top: 40 }}
+      barLabel={
+        isPhone ? undefined : (item): string => (item.value ? formatCurrency(item.value) : '')
+      }
+      margin={{ left: isPhone ? 76 : 90, top: 40 }}
     />
   )
 }

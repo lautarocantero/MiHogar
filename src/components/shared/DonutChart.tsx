@@ -31,7 +31,14 @@ export function DonutChart({
     .join(', ')
 
   return (
-    <Stack direction="row" spacing={3} flexWrap="wrap" alignItems="center">
+    <Stack
+      direction="row"
+      spacing={3}
+      flexWrap="wrap"
+      useFlexGap
+      alignItems="center"
+      justifyContent={{ xs: 'center', sm: 'flex-start' }}
+    >
       <Box
         sx={{
           position: 'relative',

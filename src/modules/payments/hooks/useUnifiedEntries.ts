@@ -12,6 +12,7 @@ import { resolveMovementConcept } from '@/utils/domain/resolveMovementConcept'
 import { resolveMovementDetail } from '@/utils/domain/resolveMovementDetail'
 import { PaymentStatus } from '@/typings/domain/enums'
 import type { PaymentView, UnifiedEntry } from '../typings/types'
+import { t, useI18n } from '@/i18n'
 
 export function useUnifiedEntries(): UnifiedEntry[] {
   const payments = useAppSelector(selectAllPayments)
@@ -19,6 +20,8 @@ export function useUnifiedEntries(): UnifiedEntry[] {
   const accounts = useAppSelector(selectAllAccounts)
   const members = useAppSelector(selectAllMembers)
   const categories = useAppSelector(selectAllCategories)
+
+  const { locale } = useI18n()
 
   return useMemo<UnifiedEntry[]>(() => {
     const accountsById = new Map(accounts.map((account) => [account.id, account]))
@@ -30,10 +33,10 @@ export function useUnifiedEntries(): UnifiedEntry[] {
       const displayDate = resolvePaymentDisplayDate(payment, account)
       const view: PaymentView = {
         ...payment,
-        accountName: account?.name ?? 'Cuenta sin definir',
+        accountName: account?.name ?? t('payments.accountUndefined'),
         accountType: account?.type,
         ownerLabel: resolveOwnerLabel(payment.ownerType, payment.ownerId, members),
-        categoryName: categoriesById.get(payment.categoryId)?.name ?? 'Sin categoría',
+        categoryName: categoriesById.get(payment.categoryId)?.name ?? t('common.uncategorized'),
         displayDate
       }
       return { ...view, origin: 'payment', isPast: displayDate < todayIso }
@@ -48,11 +51,11 @@ export function useUnifiedEntries(): UnifiedEntry[] {
         displayDate: movement.date,
         status: movement.date <= todayIso ? PaymentStatus.PAID : PaymentStatus.PENDING,
         accountType: accountsById.get(movement.accountId)?.type,
-        accountName: accountsById.get(movement.accountId)?.name ?? 'Cuenta sin definir',
+        accountName: accountsById.get(movement.accountId)?.name ?? t('payments.accountUndefined'),
         ownerLabel: resolveOwnerLabel(movement.ownerType, movement.ownerId, members),
         categoryName: movement.categoryId
-          ? (categoriesById.get(movement.categoryId)?.name ?? 'Sin categoría')
-          : 'Sin categoría',
+          ? (categoriesById.get(movement.categoryId)?.name ?? t('common.uncategorized'))
+          : t('common.uncategorized'),
         recurring: false,
         amountMode: undefined,
         movement,
@@ -65,5 +68,6 @@ export function useUnifiedEntries(): UnifiedEntry[] {
     return [...paymentEntries, ...movementEntries].sort((a, b) =>
       a.displayDate.localeCompare(b.displayDate)
     )
-  }, [payments, movements, accounts, members, categories])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- textos traducidos con el idioma activo
+  }, [payments, movements, accounts, members, categories, locale])
 }

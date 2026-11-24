@@ -3,16 +3,19 @@ import { DialogHeader } from '@/components/shared/DialogHeader'
 import { EditSavingsGoalForm } from './EditSavingsGoalForm'
 import { useUpdateSavingsGoal } from '../useUpdateSavingsGoal'
 import type { EditSavingsGoalDialogProps } from '../typings/props'
+import { useFullScreenDialog } from '@/hooks/shared/useResponsive'
 
 export function EditSavingsGoalDialog({
   goal,
   open,
   onClose
 }: EditSavingsGoalDialogProps): React.JSX.Element {
+  const fullScreen = useFullScreenDialog()
   const { submit, isSubmitting, errorMessage } = useUpdateSavingsGoal(goal, onClose)
 
   return (
     <Dialog
+      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       fullWidth

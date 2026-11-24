@@ -7,17 +7,23 @@ import { MembersList } from './components/MembersList'
 import { ExportImportButtons } from './components/ExportImportButtons'
 import { ReminderSettings } from './components/ReminderSettings'
 import { FactoryResetDialog } from './components/FactoryResetDialog'
+import { AccountSettingsCard } from './components/AccountSettingsCard'
 import { useChangeHouseholdKey } from './useChangeHouseholdKey'
 import { useAppSelector } from '@/store/hooks'
 import { selectIsDemoMode } from '@/store/vault/vaultSelectors'
+import { useT } from '@/i18n'
+import { LanguageSwitcher } from './components/LanguageSwitcher'
 
 export function SettingsPage(): React.JSX.Element {
+  const t = useT()
   const { submit, isSubmitting, errorMessage, successMessage } = useChangeHouseholdKey()
   const [isFactoryResetOpen, setIsFactoryResetOpen] = useState(false)
   const isDemoMode = useAppSelector(selectIsDemoMode)
 
   return (
-    <Stack spacing={4} component="section" aria-label="Configuración" maxWidth={640}>
+    <Stack spacing={{ xs: 3, sm: 4 }} component="section" aria-label={t('settings.pageLabel')} maxWidth={640}>
+      <LanguageSwitcher />
+
       <FontSizeSwitcher />
 
       <DateFormatSwitcher />
@@ -27,13 +33,12 @@ export function SettingsPage(): React.JSX.Element {
       <MembersList />
 
       {isDemoMode ? (
-        <Alert severity="info">
-          La clave del hogar, el respaldo y el reinicio de fábrica no están disponibles en el modo
-          demo.
-        </Alert>
+        <Alert severity="info">{t('settings.demoNotice')}</Alert>
       ) : (
         <>
-          <Card sx={{ p: 3 }} elevation={0}>
+          <AccountSettingsCard />
+
+          <Card sx={{ p: { xs: 2, sm: 3 } }} elevation={0}>
             <HouseholdKeyForm
               onSubmit={submit}
               isSubmitting={isSubmitting}
@@ -44,13 +49,13 @@ export function SettingsPage(): React.JSX.Element {
 
           <ExportImportButtons />
 
-          <Card sx={{ p: 3 }} elevation={0}>
+          <Card sx={{ p: { xs: 2, sm: 3 } }} elevation={0}>
             <Stack spacing={2}>
               <Typography variant="h6" component="h2">
-                Zona de riesgo
+                {t('settings.danger.title')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Borrá tus datos y volvé a empezar de cero. Te va a preguntar qué querés eliminar.
+                {t('settings.danger.description')}
               </Typography>
               <Button
                 variant="outlined"
@@ -58,7 +63,7 @@ export function SettingsPage(): React.JSX.Element {
                 onClick={() => setIsFactoryResetOpen(true)}
                 sx={{ alignSelf: 'flex-start' }}
               >
-                Volver a estado de fábrica
+                {t('settings.factoryReset.title')}
               </Button>
             </Stack>
           </Card>

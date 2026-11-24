@@ -2,12 +2,21 @@ import { BrowserWindow, shell } from 'electron'
 import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 
+function isExternalHttpsUrl(url: string): boolean {
+  try {
+    return new URL(url).protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 export function createMainWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 860,
-    minWidth: 1024,
-    minHeight: 700,
+    // La UI es responsive (360px → desktop), así que la ventana puede achicarse.
+    minWidth: 360,
+    minHeight: 560,
     show: false,
     autoHideMenuBar: true,
     icon: join(__dirname, '../../resources/icon.png'),
@@ -34,7 +43,11 @@ export function createMainWindow(): BrowserWindow {
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    // Solo los links https se abren en el navegador del sistema. blob:, file: y
+    // cualquier otro esquema se descartan: los adjuntos se descargan desde el renderer.
+    if (isExternalHttpsUrl(details.url)) {
+      void shell.openExternal(details.url)
+    }
     return { action: 'deny' }
   })
 

@@ -8,15 +8,17 @@ import { LeafButton } from '@/components/shared/LeafButton'
 import { PaymentFormFields } from './PaymentFormFields'
 import type { AddPaymentFormProps } from '../typings/props'
 import type { AddPaymentFormValues } from '../typings/types'
+import { useT } from '@/i18n'
 
 export function AddPaymentForm({
   kind,
   onSubmit,
   onCancel,
-  cancelLabel = 'Cancelar',
+  cancelLabel,
   isSubmitting,
   errorMessage
 }: AddPaymentFormProps): React.JSX.Element {
+  const t = useT()
   const {
     register,
     handleSubmit,
@@ -81,14 +83,14 @@ export function AddPaymentForm({
             disabled={isSubmitting}
             sx={{ borderRadius: 0 }}
           >
-            {cancelLabel}
+            {cancelLabel ?? t('common.cancel')}
           </Button>
           <LeafButton type="submit" size="large" disabled={isSubmitting}>
             {isSubmitting
-              ? 'Guardando…'
+              ? t('common.saving')
               : kind === PaymentKind.DEPOSIT
-                ? 'Agregar el depósito'
-                : 'Agregar el pago'}
+                ? t('payments.add.depositSubmit')
+                : t('payments.add.paymentSubmit')}
           </LeafButton>
         </Stack>
       </Stack>

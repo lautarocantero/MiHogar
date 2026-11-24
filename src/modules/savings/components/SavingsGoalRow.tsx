@@ -16,7 +16,9 @@ export function SavingsGoalRow({ goal, onEdit, onDelete }: SavingsGoalRowProps):
       sx={{
         display: 'flex',
         alignItems: 'center',
-        gap: 2,
+        flexWrap: 'wrap',
+        columnGap: 2,
+        rowGap: 1,
         p: 2,
         backgroundColor: organicColors.surface,
         border: `1px solid ${organicColors.neutral.border}`
@@ -37,7 +39,7 @@ export function SavingsGoalRow({ goal, onEdit, onDelete }: SavingsGoalRowProps):
       >
         <Icon fontSize="small" />
       </Box>
-      <Box flex="1 1 240px" minWidth={0}>
+      <Box flex="1 1 160px" minWidth={0}>
         <Typography
           component="p"
           noWrap
@@ -68,20 +70,29 @@ export function SavingsGoalRow({ goal, onEdit, onDelete }: SavingsGoalRowProps):
           </Typography>
         </Stack>
       </Box>
-      <Stack alignItems="flex-end" spacing={0.25} flexShrink={0}>
-        <Typography component="p" fontSize="0.875rem" whiteSpace="nowrap">
-          {formatCurrency(goal.currentAmount)} / {formatCurrency(goal.targetAmount)}
-        </Typography>
-        <Typography variant="caption" color="text.secondary" whiteSpace="nowrap">
-          Faltan {formatCurrency(goal.remainingAmount)}
-        </Typography>
-      </Stack>
-      <IconButton aria-label={`Editar ${goal.name}`} onClick={() => onEdit(goal)} size="small">
-        <EditIcon fontSize="small" />
-      </IconButton>
-      <IconButton aria-label={`Eliminar ${goal.name}`} onClick={() => onDelete(goal)} size="small">
-        <DeleteIcon fontSize="small" />
-      </IconButton>
+      {/* En pantallas angostas montos y acciones bajan juntos a una segunda fila, a la derecha. */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto', flexShrink: 0 }}>
+        <Stack alignItems="flex-end" spacing={0.25}>
+          <Typography component="p" fontSize="0.875rem" whiteSpace="nowrap">
+            {formatCurrency(goal.currentAmount)} / {formatCurrency(goal.targetAmount)}
+          </Typography>
+          <Typography variant="caption" color="text.secondary" whiteSpace="nowrap">
+            Faltan {formatCurrency(goal.remainingAmount)}
+          </Typography>
+        </Stack>
+        <Box sx={{ display: 'flex', flexShrink: 0 }}>
+          <IconButton aria-label={`Editar ${goal.name}`} onClick={() => onEdit(goal)} size="small">
+            <EditIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label={`Eliminar ${goal.name}`}
+            onClick={() => onDelete(goal)}
+            size="small"
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
     </Card>
   )
 }

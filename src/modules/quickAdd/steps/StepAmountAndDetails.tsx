@@ -24,6 +24,8 @@ import { LeafButton } from '@/components/shared/LeafButton'
 import { FormSectionHeader } from '@/components/shared/FormSectionHeader'
 import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
+import { isAmountInRange } from '@/utils/domain/amountLimits'
+import { t } from '@/i18n'
 import type { StepAmountAndDetailsProps } from '../typings/props'
 import type { QuickAddFormValues } from '../typings/types'
 
@@ -120,6 +122,10 @@ export function StepAmountAndDetails({
 
   const handleAddItem = (): void => {
     const value = parseAmountInput(amount)
+    if (!isAmountInRange(value)) {
+      setFormError(t('vaultErrors.amountTooLarge'))
+      return
+    }
     if (!value || value <= 0) {
       setFormError('Ingresá un monto para el elemento')
       return
@@ -147,6 +153,10 @@ export function StepAmountAndDetails({
     }
 
     const value = parseAmountInput(amount)
+    if (!isAmountInRange(value)) {
+      setFormError(t('vaultErrors.amountTooLarge'))
+      return
+    }
     if (!value || value <= 0) {
       setFormError('Ingresá un monto')
       return

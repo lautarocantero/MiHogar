@@ -21,7 +21,7 @@ export function HomePage(): React.JSX.Element {
   } = useHomeData()
 
   return (
-    <Stack spacing={5} component="section" aria-label="Resumen de hoy">
+    <Stack spacing={{ xs: 4, md: 5 }} component="section" aria-label="Resumen de hoy">
       <HeroBalanceCard
         totalAvailable={totalAvailable}
         accounts={accounts}

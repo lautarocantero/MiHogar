@@ -1,18 +1,23 @@
 import { Box, Stack, Typography } from '@mui/material'
 import { organicColors } from '@/theme/tokens'
 import type { CredentialsPanelProps } from '../typings/props'
+import { useT } from '@/i18n'
 
-const CREDENTIAL_FIELDS: Array<{ key: 'username' | 'password' | 'clientNumber'; label: string }> = [
-  { key: 'username', label: 'Usuario' },
-  { key: 'password', label: 'Contraseña' },
-  { key: 'clientNumber', label: 'Número de cliente' }
+const CREDENTIAL_FIELDS: Array<{
+  key: 'username' | 'password' | 'clientNumber'
+  labelKey: string
+}> = [
+  { key: 'username', labelKey: 'payments.credentials.username' },
+  { key: 'password', labelKey: 'payments.credentials.password' },
+  { key: 'clientNumber', labelKey: 'payments.credentials.clientNumber' }
 ]
 
 export function CredentialsPanel({ credentials }: CredentialsPanelProps): React.JSX.Element {
+  const t = useT()
   if (!credentials) {
     return (
       <Typography variant="body2" color="text.secondary">
-        No hay datos de acceso guardados para este pago.
+        {t('payments.credentials.empty')}
       </Typography>
     )
   }
@@ -30,7 +35,7 @@ export function CredentialsPanel({ credentials }: CredentialsPanelProps): React.
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            {field.label}
+            {t(field.labelKey)}
           </Typography>
           <Typography variant="body1" fontFamily="monospace">
             {credentials[field.key]}

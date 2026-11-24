@@ -11,17 +11,18 @@ import {
 import { organicColors } from '@/theme/tokens'
 import { PaymentTableRow } from './PaymentTableRow'
 import type { PaymentColumnKey, PaymentsTableProps } from '../typings/props'
+import { useT } from '@/i18n'
 
-const HEADERS: Array<{ key: PaymentColumnKey; label: string }> = [
-  { key: 'date', label: 'Fecha' },
-  { key: 'title', label: 'Título' },
-  { key: 'status', label: 'Estado' },
-  { key: 'method', label: 'Método de pago' },
-  { key: 'type', label: 'Tipo de pago' },
-  { key: 'account', label: 'Cuenta' },
-  { key: 'category', label: 'Categoría' },
-  { key: 'owner', label: 'De quién es' },
-  { key: 'mode', label: 'Monto fijo/variable' }
+const HEADERS: Array<{ key: PaymentColumnKey; labelKey: string }> = [
+  { key: 'date', labelKey: 'payments.column.date' },
+  { key: 'title', labelKey: 'payments.column.title' },
+  { key: 'status', labelKey: 'payments.column.status' },
+  { key: 'method', labelKey: 'payments.column.method' },
+  { key: 'type', labelKey: 'payments.column.type' },
+  { key: 'account', labelKey: 'payments.column.account' },
+  { key: 'category', labelKey: 'payments.column.category' },
+  { key: 'owner', labelKey: 'payments.column.owner' },
+  { key: 'mode', labelKey: 'payments.column.mode' }
 ]
 
 export function PaymentsTable({
@@ -33,6 +34,7 @@ export function PaymentsTable({
   onEditMovement,
   onDeleteMovement
 }: PaymentsTableProps): React.JSX.Element {
+  const t = useT()
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>())
 
   useEffect(() => {
@@ -48,12 +50,17 @@ export function PaymentsTable({
     >
       <Table
         size="small"
-        sx={{
+        sx={(theme) => ({
           borderCollapse: 'collapse',
           '& .MuiTableCell-root': {
             border: `1px solid ${organicColors.brown.main}`
+          },
+          // En teléfonos cada fila ocupa una línea y la tabla scrollea en horizontal dentro
+          // de su contenedor, en vez de apretar las columnas en filas altísimas.
+          [theme.breakpoints.down('sm')]: {
+            '& .MuiTableCell-root': { whiteSpace: 'nowrap' }
           }
-        }}
+        })}
       >
         <TableHead>
           <TableRow>
@@ -70,20 +77,20 @@ export function PaymentsTable({
                   whiteSpace: 'nowrap'
                 }}
               >
-                {header.label}
+                {t(header.labelKey)}
               </TableCell>
             ))}
             <TableCell
               align="right"
               sx={{ backgroundColor: organicColors.brown.main, color: '#fffdf9', fontWeight: 600 }}
             >
-              Monto
+              {t('payments.column.amount')}
             </TableCell>
             <TableCell
               align="right"
               sx={{ backgroundColor: organicColors.brown.main, color: '#fffdf9', fontWeight: 600 }}
             >
-              Acciones
+              {t('payments.column.actions')}
             </TableCell>
           </TableRow>
         </TableHead>

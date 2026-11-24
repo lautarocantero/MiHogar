@@ -2,9 +2,12 @@ import { useCallback, useState } from 'react'
 import { useAppDispatch } from '@/store/hooks'
 import { changeHouseholdKeyThunk } from '@/store/vault/vaultThunks'
 import { useLoader } from '@/hooks/shared/useLoader'
+import { sensitive } from '@/utils/sensitive'
+import { useT } from '@/i18n'
 import type { ChangeHouseholdKeyFormValues, UseChangeHouseholdKeyResult } from './typings/types'
 
 export function useChangeHouseholdKey(): UseChangeHouseholdKeyResult {
+  const t = useT()
   const dispatch = useAppDispatch()
   const { isLoading, error, run } = useLoader()
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -15,16 +18,18 @@ export function useChangeHouseholdKey(): UseChangeHouseholdKeyResult {
       run(
         () =>
           dispatch(
-            changeHouseholdKeyThunk({ currentKey: values.currentKey, newKey: values.newKey })
+            changeHouseholdKeyThunk(
+              sensitive({ currentKey: values.currentKey, newKey: values.newKey })
+            )
           ).unwrap(),
-        'No se pudo cambiar la clave del hogar'
+        t('settings.householdKey.changeFailed')
       ).then((result) => {
         if (result !== undefined) {
-          setSuccessMessage('Guardamos la nueva clave del hogar.')
+          setSuccessMessage(t('settings.householdKey.changed'))
         }
       })
     },
-    [dispatch, run]
+    [dispatch, run, t]
   )
 
   return { submit, isSubmitting: isLoading, errorMessage: error, successMessage }

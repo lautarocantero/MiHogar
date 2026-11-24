@@ -8,18 +8,20 @@ import { formatCurrency } from '@/utils/formatting/formatCurrency'
 import { computeSingleCardAvailable } from '@/utils/domain/computeCreditCardAvailable'
 import { resolveAccountTypeColor } from '@/utils/domain/resolveAccountTypeColor'
 import type { AccountCardProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 function OptionsMenu({
   onEdit,
   onDelete
 }: Pick<AccountCardProps, 'onEdit' | 'onDelete'>): React.JSX.Element {
+  const t = useT()
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null)
 
   return (
     <>
       <IconButton
         size="small"
-        aria-label="Opciones"
+        aria-label={t('accounts.card.options')}
         onClick={(event) => setMenuAnchor(event.currentTarget)}
         sx={{ color: 'inherit' }}
       >
@@ -32,7 +34,7 @@ function OptionsMenu({
             onEdit()
           }}
         >
-          Editar
+          {t('common.edit')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -40,7 +42,7 @@ function OptionsMenu({
             onDelete()
           }}
         >
-          Eliminar
+          {t('common.delete')}
         </MenuItem>
       </Menu>
     </>
@@ -58,6 +60,7 @@ function shadeHexColor(hex: string, percent: number): string {
 }
 
 export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): React.JSX.Element {
+  const t = useT()
   const isCreditCard = account.type === AccountType.CREDIT_CARD
 
   if (isCreditCard) {
@@ -126,7 +129,7 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
         >
           <Box minWidth={0}>
             <Typography variant="caption" sx={{ opacity: 0.8 }}>
-              Disponible
+              {t('accounts.card.available')}
             </Typography>
             <Typography
               component="p"
@@ -166,19 +169,30 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
       component="article"
       elevation={0}
       sx={{
-        display: 'flex',
+        // Grilla con áreas: en teléfonos el saldo baja debajo del nombre y se oculta el ícono.
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: '8px minmax(0, 1fr) auto',
+          sm: '8px 44px minmax(0, 1fr) auto auto'
+        },
+        gridTemplateAreas: {
+          xs: '"bar text menu" "bar balance balance"',
+          sm: '"bar icon text balance menu"'
+        },
+        columnGap: { xs: 1.5, sm: 2 },
+        rowGap: 1,
         alignItems: 'center',
-        gap: 2,
-        p: 2.25,
+        p: { xs: 1.75, sm: 2.25 },
         backgroundColor: organicColors.surface,
         border: `1px solid ${organicColors.neutral.border}`,
         cursor: 'pointer'
       }}
     >
-      <Box sx={{ alignSelf: 'stretch', width: 8, flexShrink: 0, backgroundColor: accent }} />
+      <Box sx={{ gridArea: 'bar', alignSelf: 'stretch', backgroundColor: accent }} />
       <Box
         sx={{
-          display: 'flex',
+          gridArea: 'icon',
+          display: { xs: 'none', sm: 'flex' },
           alignItems: 'center',
           justifyContent: 'center',
           width: 44,
@@ -190,7 +204,7 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
       >
         <AccountBalanceIcon fontSize="small" />
       </Box>
-      <Box flexGrow={1} minWidth={0}>
+      <Box sx={{ gridArea: 'text', minWidth: 0 }}>
         <Typography
           component="p"
           noWrap
@@ -225,9 +239,9 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
           </Typography>
         )}
       </Box>
-      <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
+      <Box sx={{ gridArea: 'balance', textAlign: { xs: 'left', sm: 'right' } }}>
         <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-          Saldo disponible
+          {t('accounts.card.availableBalance')}
         </Typography>
         <Typography
           component="p"
@@ -241,7 +255,9 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps): Re
           {formatCurrency(account.balance)}
         </Typography>
       </Box>
-      <OptionsMenu onEdit={onEdit} onDelete={onDelete} />
+      <Box sx={{ gridArea: 'menu' }}>
+        <OptionsMenu onEdit={onEdit} onDelete={onDelete} />
+      </Box>
     </Card>
   )
 }

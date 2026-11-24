@@ -5,12 +5,14 @@ import { selectMovementsByAccountId } from '@/store/movements/movementsSelectors
 import { selectPaymentsByAccountId } from '@/store/payments/paymentsSelectors'
 import { useDeleteAccount } from '../useDeleteAccount'
 import type { DeleteAccountDialogProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 export function DeleteAccountDialog({
   account,
   open,
   onClose
 }: DeleteAccountDialogProps): React.JSX.Element {
+  const t = useT()
   const relatedMovements = useAppSelector((state) => selectMovementsByAccountId(state, account.id))
   const relatedPayments = useAppSelector((state) => selectPaymentsByAccountId(state, account.id))
   const { submit, isSubmitting, errorMessage } = useDeleteAccount(account, onClose)
@@ -26,14 +28,16 @@ export function DeleteAccountDialog({
       aria-labelledby="delete-account-title"
     >
       <DialogHeader id="delete-account-title" onClose={onClose}>
-        Eliminar &quot;{account.name}&quot;
+        {t('accounts.delete.title', { name: account.name })}
       </DialogHeader>
       <DialogContent>
         <Stack spacing={2}>
           {hasReferences && (
             <Alert severity="warning">
-              Esta cuenta tiene {relatedMovements.length} movimiento(s) y {relatedPayments.length}{' '}
-              pago(s) asociados. Van a seguir existiendo, pero sin la cuenta.
+              {t('accounts.delete.warning', {
+                movements: relatedMovements.length,
+                payments: relatedPayments.length
+              })}
             </Alert>
           )}
           {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -41,10 +45,10 @@ export function DeleteAccountDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isSubmitting}>
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button onClick={submit} color="error" variant="contained" disabled={isSubmitting}>
-          {isSubmitting ? 'Eliminando…' : 'Eliminar'}
+          {isSubmitting ? t('common.deleting') : t('common.delete')}
         </Button>
       </DialogActions>
     </Dialog>

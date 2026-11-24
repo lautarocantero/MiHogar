@@ -4,6 +4,7 @@ import { updatePayment } from '@/store/payments/paymentsSlice'
 import { useLoader } from '@/hooks/shared/useLoader'
 import type { EditCredentialsFormValues, UseUpdateCredentialsResult } from './typings/types'
 import type { PaymentView } from './typings/types'
+import { t } from '@/i18n'
 
 export function useUpdateCredentials(
   payment: PaymentView,
@@ -27,7 +28,7 @@ export function useUpdateCredentials(
           })
         )
         onUpdated()
-      }, 'No se pudieron guardar los datos de acceso')
+      }, t('payments.error.saveCredentials'))
     },
     [dispatch, run, payment, onUpdated]
   )

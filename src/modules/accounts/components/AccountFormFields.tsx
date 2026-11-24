@@ -10,6 +10,7 @@ import { parseAmountInput } from '@/utils/formatting/parseAmountInput'
 import { useAppSelector } from '@/store/hooks'
 import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
 import type { AccountFormFieldsProps } from '../typings/props'
+import { useT } from '@/i18n'
 
 const ACCOUNT_TYPES = [AccountType.BANK, AccountType.CASH, AccountType.CREDIT_CARD]
 const SOURCE_ACCOUNT_TYPES = [AccountType.BANK, AccountType.CASH]
@@ -22,6 +23,7 @@ export function AccountFormFields({
   selectedOwnerType,
   selectedCurrency
 }: AccountFormFieldsProps): React.JSX.Element {
+  const t = useT()
   const allAccounts = useAppSelector(selectAllAccounts)
   const sourceAccountOptions = allAccounts.filter((account) =>
     SOURCE_ACCOUNT_TYPES.includes(account.type)
@@ -34,23 +36,23 @@ export function AccountFormFields({
           <Grid size={12}>
             <FormSectionHeader
               step={1}
-              title="Información básica"
-              subtitle="Completá los datos de la cuenta"
+              title={t('accounts.form.basicInfo')}
+              subtitle={t('accounts.form.basicInfoSubtitle')}
             />
           </Grid>
           <Grid size={12}>
             <TextField
               fullWidth
-              label="Nombre de la cuenta"
+              label={t('accounts.form.name')}
               {...register('name')}
               error={Boolean(errors.name)}
-              helperText={errors.name?.message}
+              helperText={errors.name?.message && t(errors.name.message)}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
-              label="Tipo de cuenta"
+              label={t('accounts.form.type')}
               select
               {...register('type')}
               defaultValue={selectedType}
@@ -64,12 +66,12 @@ export function AccountFormFields({
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-              Moneda
+              {t('accounts.form.currency')}
             </Typography>
             <Box sx={{ display: 'flex', gap: 1.5 }}>
               {[
-                { id: Currency.ARS, label: 'Pesos' },
-                { id: Currency.USD, label: 'Dólares' }
+                { id: Currency.ARS, label: t('accounts.form.currencyARS') },
+                { id: Currency.USD, label: t('accounts.form.currencyUSD') }
               ].map((option) => (
                 <Box
                   key={option.id}
@@ -99,7 +101,7 @@ export function AccountFormFields({
           <Grid size={{ xs: 12, sm: selectedOwnerType === OwnerType.MEMBER ? 6 : 12 }}>
             <TextField
               fullWidth
-              label="¿De quién es?"
+              label={t('accounts.form.owner')}
               select
               {...register('ownerType')}
               defaultValue={selectedOwnerType}
@@ -118,7 +120,7 @@ export function AccountFormFields({
                     value={field.value ?? ''}
                     onChange={field.onChange}
                     error={Boolean(errors.ownerId)}
-                    helperText={errors.ownerId?.message}
+                    helperText={errors.ownerId?.message && t(errors.ownerId.message)}
                   />
                 )}
               />
@@ -132,8 +134,8 @@ export function AccountFormFields({
           <Grid size={12}>
             <FormSectionHeader
               step={2}
-              title="Detalles de la cuenta"
-              subtitle="Completá la información adicional"
+              title={t('accounts.form.details')}
+              subtitle={t('accounts.form.detailsSubtitle')}
             />
           </Grid>
           {selectedType === AccountType.CREDIT_CARD ? (
@@ -145,15 +147,14 @@ export function AccountFormFields({
                   render={({ field }) => (
                     <TextField
                       fullWidth
-                      label="¿De qué cuenta sale la plata?"
+                      label={t('accounts.form.sourceAccount')}
                       select
                       value={field.value ?? ''}
                       onChange={field.onChange}
                       onBlur={field.onBlur}
                       error={Boolean(errors.sourceAccountId)}
                       helperText={
-                        errors.sourceAccountId?.message ??
-                        'Cuando pagues con esta tarjeta, se va a descontar de esta cuenta'
+                        t(errors.sourceAccountId?.message ?? 'accounts.form.sourceAccountHelp')
                       }
                     >
                       {sourceAccountOptions.map((account) => (
@@ -168,62 +169,60 @@ export function AccountFormFields({
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Límite de la tarjeta"
+                  label={t('accounts.form.creditLimit')}
                   {...register('creditLimit', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.creditLimit)}
-                  helperText={errors.creditLimit?.message}
+                  helperText={errors.creditLimit?.message && t(errors.creditLimit.message)}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Monto usado (opcional)"
+                  label={t('accounts.form.usedAmount')}
                   {...register('usedAmount', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.usedAmount)}
                   helperText={
-                    errors.usedAmount?.message ?? 'Cuánto llevás gastado en el ciclo actual'
+                    t(errors.usedAmount?.message ?? 'accounts.form.usedAmountHelp')
                   }
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Día de cierre"
+                  label={t('accounts.form.closingDay')}
                   {...register('closingDay', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.closingDay)}
-                  helperText={errors.closingDay?.message}
+                  helperText={errors.closingDay?.message && t(errors.closingDay.message)}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Día de vencimiento"
+                  label={t('accounts.form.dueDay')}
                   {...register('dueDay', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.dueDay)}
-                  helperText={errors.dueDay?.message}
+                  helperText={errors.dueDay?.message && t(errors.dueDay.message)}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Próximo día de cierre (opcional)"
+                  label={t('accounts.form.nextClosingDay')}
                   {...register('nextClosingDay', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.nextClosingDay)}
                   helperText={
-                    errors.nextClosingDay?.message ??
-                    'Si sabés que el día de cierre cambia el próximo ciclo, cargalo acá'
+                    t(errors.nextClosingDay?.message ?? 'accounts.form.nextClosingDayHelp')
                   }
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <NumberField
                   fullWidth
-                  label="Próximo día de vencimiento (opcional)"
+                  label={t('accounts.form.nextDueDay')}
                   {...register('nextDueDay', { setValueAs: parseAmountInput })}
                   error={Boolean(errors.nextDueDay)}
                   helperText={
-                    errors.nextDueDay?.message ??
-                    'Se va a aplicar solo cuando pase el próximo vencimiento'
+                    t(errors.nextDueDay?.message ?? 'accounts.form.nextDueDayHelp')
                   }
                 />
               </Grid>
@@ -232,10 +231,10 @@ export function AccountFormFields({
             <Grid size={{ xs: 12, sm: 6 }}>
               <NumberField
                 fullWidth
-                label="Saldo actual"
+                label={t('accounts.form.balance')}
                 {...register('balance', { setValueAs: parseAmountInput })}
                 error={Boolean(errors.balance)}
-                helperText={errors.balance?.message}
+                helperText={errors.balance?.message && t(errors.balance.message)}
               />
             </Grid>
           )}
@@ -250,7 +249,7 @@ export function AccountFormFields({
                     color="text.secondary"
                     sx={{ display: 'block', mb: 0.5 }}
                   >
-                    Color de la cuenta
+                    {t('accounts.form.color')}
                   </Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     <Box
@@ -270,7 +269,7 @@ export function AccountFormFields({
                       }}
                     />
                     <Typography variant="body2" color="text.secondary">
-                      Se usa para distinguir esta cuenta o tarjeta
+                      {t('accounts.form.colorHelp')}
                     </Typography>
                   </Box>
                 </Box>
@@ -280,8 +279,8 @@ export function AccountFormFields({
           <Grid size={12}>
             <TextField
               fullWidth
-              label="Frase de contexto (opcional)"
-              placeholder="Ej: Acá entra la jubilación todos los días 11"
+              label={t('accounts.form.contextPhrase')}
+              placeholder={t('accounts.form.contextPhrasePlaceholder')}
               {...register('contextPhrase')}
             />
           </Grid>

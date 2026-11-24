@@ -75,11 +75,11 @@ export function MonthGridCell({
           : `Día ${day.dayOfMonth}`
       }
       sx={{
-        minHeight: 96,
-        maxHeight: 96,
+        minHeight: { xs: 52, sm: 96 },
+        maxHeight: { xs: 52, sm: 96 },
         overflow: 'hidden',
         borderRadius: 0,
-        p: 1,
+        p: { xs: 0.5, sm: 1 },
         display: 'flex',
         flexDirection: 'column',
         gap: 0.5,
@@ -115,11 +115,42 @@ export function MonthGridCell({
       >
         {day.dayOfMonth}
       </Typography>
+      {/* En teléfonos la celda mide ~45px: en vez de textos se muestran puntos de color
+          (el detalle aparece al tocar el día, en los totales y la línea de tiempo). */}
+      {(visibleBadges.length > 0 || visibleEvents.length > 0) && (
+        <Box
+          aria-hidden="true"
+          sx={{ display: { xs: 'flex', sm: 'none' }, gap: 0.25, flexWrap: 'wrap' }}
+        >
+          {visibleBadges.map((badge, index) => (
+            <Box
+              key={`badge-${index}`}
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                backgroundColor: BADGE_STYLES[badge.kind].text
+              }}
+            />
+          ))}
+          {visibleEvents.map((event, index) => (
+            <Box
+              key={`event-${index}`}
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                backgroundColor: EVENT_STYLES[event.kind].text
+              }}
+            />
+          ))}
+        </Box>
+      )}
       {visibleBadges.map((badge, index) => (
         <Box
           key={index}
           sx={{
-            display: 'inline-block',
+            display: { xs: 'none', sm: 'inline-block' },
             alignSelf: 'flex-start',
             maxWidth: '100%',
             px: 0.75,
@@ -129,7 +160,11 @@ export function MonthGridCell({
             color: BADGE_STYLES[badge.kind].text
           }}
         >
-          <Typography variant="caption" noWrap sx={{ fontSize: '0.625rem', fontWeight: 600 }}>
+          <Typography
+            variant="caption"
+            noWrap
+            sx={{ display: 'block', fontSize: '0.625rem', fontWeight: 600 }}
+          >
             {badge.kind === CalendarBadgeKind.INCOME
               ? badge.label
               : badge.kind === CalendarBadgeKind.CARD_CLOSING
@@ -142,14 +177,22 @@ export function MonthGridCell({
         <Typography
           key={index}
           variant="caption"
-          sx={{ color: EVENT_STYLES[event.kind].text, lineHeight: 1.2 }}
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            color: EVENT_STYLES[event.kind].text,
+            lineHeight: 1.2
+          }}
           noWrap
         >
           {formatCurrency(event.amount)}
         </Typography>
       ))}
       {hiddenCount > 0 && (
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: { xs: 'none', sm: 'block' } }}
+        >
           +{hiddenCount} más
         </Typography>
       )}

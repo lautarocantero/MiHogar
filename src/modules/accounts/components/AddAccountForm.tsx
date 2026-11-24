@@ -6,6 +6,7 @@ import { AccountType, Currency, OwnerType } from '@/typings/domain/enums'
 import { AccountFormFields } from './AccountFormFields'
 import type { AddAccountFormProps } from '../typings/props'
 import type { AddAccountFormValues } from '../typings/types'
+import { useT } from '@/i18n'
 
 export function AddAccountForm({
   onSubmit,
@@ -13,6 +14,7 @@ export function AddAccountForm({
   isSubmitting,
   errorMessage
 }: AddAccountFormProps): React.JSX.Element {
+  const t = useT()
   const {
     register,
     handleSubmit,
@@ -58,10 +60,10 @@ export function AddAccountForm({
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button variant="outlined" size="large" onClick={onCancel} disabled={isSubmitting}>
-            Cancelar
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-            {isSubmitting ? 'Guardando…' : 'Agregar la cuenta'}
+            {isSubmitting ? t('common.saving') : t('accounts.addAccountSubmit')}
           </Button>
         </Stack>
       </Stack>

@@ -10,6 +10,7 @@ export function SidebarActionButton({
   const button = (
     <ListItemButton
       onClick={action.onClick}
+      aria-label={action.ariaLabel}
       sx={{
         borderRadius: 0,
         minHeight: 48,
@@ -25,7 +26,7 @@ export function SidebarActionButton({
         <Icon aria-hidden="true" />
       </ListItemIcon>
       {!collapsed && (
-        <ListItemText slotProps={{ primary: { fontSize: '1.0625rem' } }}>
+        <ListItemText slotProps={{ primary: { fontSize: '1.0625rem', lang: action.lang } }}>
           {action.label}
         </ListItemText>
       )}
