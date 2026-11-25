@@ -1,0 +1,93 @@
+{
+  "batch": "2026-12",
+  "accounts": [
+    {
+      "key": "visa",
+      "name": "Visa Banco 1234",
+      "type": "CREDIT_CARD",
+      "match": "visa|1234",
+      "closingDay": 10,
+      "dueDay": 18
+    },
+    {
+      "key": "billetera",
+      "name": "Billetera virtual",
+      "type": "BANK",
+      "match": "billetera",
+      "balance": 15000
+    }
+  ],
+  "payments": [
+    {
+      "key": "internet",
+      "account": "visa",
+      "concept": "Internet",
+      "entity": "Proveedor de internet",
+      "amount": 25000,
+      "dueDate": "2027-01-05",
+      "category": "Servicios",
+      "frequency": "MONTHLY"
+    }
+  ],
+  "movements": [
+    {
+      "key": "internet-diciembre",
+      "account": "visa",
+      "date": "2026-12-05",
+      "amount": 25000,
+      "note": "Internet",
+      "category": "Servicios",
+      "payment": "internet"
+    },
+    {
+      "key": "super-1",
+      "account": "visa",
+      "date": "2026-12-07",
+      "amount": 12345.67,
+      "note": "Supermercado",
+      "category": "Supermercado"
+    },
+    {
+      "key": "suscripcion-usd",
+      "account": "visa",
+      "date": "2026-12-08",
+      "amount": 10,
+      "currency": "USD",
+      "note": "Suscripción en dólares",
+      "category": "Otros gastos"
+    },
+    {
+      "key": "devolucion-1",
+      "account": "visa",
+      "date": "2026-12-09",
+      "amount": 2000,
+      "type": "INCOME",
+      "note": "Devolución de una compra"
+    }
+  ],
+  "debts": [
+    {
+      "key": "prestamo-personal",
+      "name": "Préstamo personal",
+      "counterparty": "Banco",
+      "principal": 500000,
+      "installmentAmount": 60000,
+      "installmentsTotal": 12,
+      "installmentsPaid": 0,
+      "outstandingBalance": 720000,
+      "nextInstallmentDate": "2027-01-15",
+      "frequency": "MONTHLY",
+      "notes": "Primera cuota en enero."
+    }
+  ],
+  "savings": [
+    {
+      "key": "plazo-fijo",
+      "name": "Plazo fijo",
+      "principal": 100000,
+      "rateAnnual": 30,
+      "liquidAnytime": false,
+      "maturityDate": "2027-01-30"
+    }
+  ]
+}
