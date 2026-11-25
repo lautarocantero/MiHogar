@@ -322,7 +322,7 @@ export const changeHouseholdKeyThunk = thunkTypes(
   }
 )
 
-/** Descarga `mihogar-respaldo.dat` con el contenido actual. Devuelve el nombre del archivo. */
+/** Descarga `gastito-respaldo.dat` con el contenido actual. Devuelve el nombre del archivo. */
 export const exportVaultBackupThunk = thunkTypes(
   'vault/exportBackup',
   async (_: void, { getState }) => {

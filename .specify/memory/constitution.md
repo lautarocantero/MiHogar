@@ -13,7 +13,7 @@ Sync Impact Report
 - Follow-up TODOs: none (ver specs/002-web-app/spec.md)
 -->
 
-# Mi Hogar Constitution
+# Gastito Constitution
 
 ## Core Principles
 
@@ -63,7 +63,7 @@ consistencia en vez de revertirla.
 
 ### V. Simplicidad y Alcance Acotado (YAGNI)
 
-Mi Hogar es mantenida por un solo desarrollador. El proyecto MUST NOT incorporar
+Gastito es mantenido por un solo desarrollador. El proyecto MUST NOT incorporar
 infraestructura (servidores propios, colas, microservicios, capas de abstracción genéricas)
 que no resuelva una necesidad ya documentada en un spec o en `docs/pending.md`; el backend se
 limita a servicios administrados de Supabase. Ante una nueva

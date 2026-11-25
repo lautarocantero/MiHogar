@@ -49,10 +49,10 @@ export const sync = {
     'vaultErrors.notUnlocked': 'Los datos del hogar están bloqueados. Ingresá la clave de nuevo.',
     'vaultErrors.notFound': 'No encontramos los datos del hogar en tu cuenta',
     'vaultErrors.alreadyExists': 'Tu cuenta ya tiene datos del hogar',
-    'vaultErrors.invalidBackup': 'Ese archivo no es un respaldo de Mi Hogar',
+    'vaultErrors.invalidBackup': 'Ese archivo no es un respaldo de Gastito',
     'vaultErrors.corrupted': 'Los datos del hogar están dañados y no se pueden abrir',
     'vaultErrors.cryptoUnavailable':
-      'Este navegador no permite cifrar los datos. Abrí Mi Hogar con https en un navegador actualizado.',
+      'Este navegador no permite cifrar los datos. Abrí Gastito con https en un navegador actualizado.',
 
     'cloudErrors.notConfigured': 'La app no está conectada a la nube',
     'cloudErrors.notSignedIn': 'Tu sesión terminó. Volvé a entrar.',
@@ -60,7 +60,7 @@ export const sync = {
     'cloudErrors.generic': 'No pudimos comunicarnos con la nube. Volvé a intentar en un rato.',
     'cloudErrors.configTitle': 'Falta configurar la conexión',
     'cloudErrors.configDescription':
-      'Esta copia de Mi Hogar no tiene configurado el servidor (VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY). Mientras tanto podés probar la demo.',
+      'Esta copia de Gastito no tiene configurado el servidor (VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY). Mientras tanto podés probar la demo.',
     'cloudErrors.loadTitle': 'No pudimos cargar tus datos'
   },
   en: {
@@ -110,10 +110,10 @@ export const sync = {
     'vaultErrors.notUnlocked': 'The household data is locked. Enter the key again.',
     'vaultErrors.notFound': "We couldn't find household data in your account",
     'vaultErrors.alreadyExists': 'Your account already has household data',
-    'vaultErrors.invalidBackup': 'That file is not a Mi Hogar backup',
+    'vaultErrors.invalidBackup': 'That file is not a Gastito backup',
     'vaultErrors.corrupted': 'The household data is damaged and cannot be opened',
     'vaultErrors.cryptoUnavailable':
-      'This browser cannot encrypt data. Open Mi Hogar over https in an up-to-date browser.',
+      'This browser cannot encrypt data. Open Gastito over https in an up-to-date browser.',
 
     'cloudErrors.notConfigured': 'The app is not connected to the cloud',
     'cloudErrors.notSignedIn': 'Your session ended. Please sign in again.',
@@ -121,7 +121,7 @@ export const sync = {
     'cloudErrors.generic': "We couldn't reach the cloud. Please try again in a while.",
     'cloudErrors.configTitle': 'Connection not configured',
     'cloudErrors.configDescription':
-      'This copy of Mi Hogar has no server configured (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY). Meanwhile you can try the demo.',
+      'This copy of Gastito has no server configured (VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY). Meanwhile you can try the demo.',
     'cloudErrors.loadTitle': "We couldn't load your data"
   }
 } satisfies LocaleNamespace

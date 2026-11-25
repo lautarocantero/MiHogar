@@ -1,4 +1,4 @@
--- Mi Hogar — esquema inicial (web app con cifrado de punta a punta)
+-- Gastito — esquema inicial (web app con cifrado de punta a punta)
 --
 -- El servidor NUNCA ve datos en claro: `envelope` es el mismo VaultEnvelope
 -- (PBKDF2-SHA256 600k + AES-256-GCM) que usa la app de escritorio, cifrado en

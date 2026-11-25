@@ -29,7 +29,7 @@ export type UseRestoreVaultBackupResult = {
   isRestoring: boolean
   /** Error dentro del diálogo (clave incorrecta, sin red...). */
   errorMessage: string | null
-  /** Error al elegir el archivo (no es un respaldo de Mi Hogar). */
+  /** Error al elegir el archivo (no es un respaldo de Gastito). */
   pickErrorMessage: string | null
 }
 

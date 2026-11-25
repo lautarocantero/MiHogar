@@ -34,7 +34,7 @@ Hay dos formas de evitar que Chromium intente usar ese sandbox:
    ese renderer**, lo cual puede pisar/contradecir el `--no-sandbox` global
    dependiendo de la versión de Electron/Chromium.
 
-El problema real, encontrado en Mi Hogar, tiene dos capas:
+El problema real, encontrado en Gastito, tiene dos capas:
 
 - **`sandbox: true` en `webPreferences`** competía con el `--no-sandbox`
   global y en algunos casos forzaba el intento de sandboxing del renderer

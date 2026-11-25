@@ -36,7 +36,7 @@ import { downloadBlob, pickFile } from './cloud/browserFiles'
  */
 const VAULTS_TABLE = 'vaults'
 const UNIQUE_VIOLATION = '23505'
-const BACKUP_FILE_NAME = 'mihogar-respaldo.dat'
+const BACKUP_FILE_NAME = 'gastito-respaldo.dat'
 const MAX_BACKUP_FILE_BYTES = 20 * 1024 * 1024
 
 export type RemoteVault = {
@@ -231,7 +231,7 @@ export async function exportVaultBackup(vaultJson: unknown): Promise<string> {
   return BACKUP_FILE_NAME
 }
 
-/** Abre el selector y valida que el archivo sea un respaldo de Mi Hogar. */
+/** Abre el selector y valida que el archivo sea un respaldo de Gastito. */
 export async function pickVaultBackupFile(): Promise<VaultEnvelope | null> {
   const file = await pickFile('.dat,application/octet-stream')
   if (!file) return null

@@ -3,7 +3,7 @@
 
 /**
  * Importador puntual: carga los datos exportados de LausVault (cuentas, gastos
- * fijos y movimientos) en el vault.dat real de Mi Hogar.
+ * fijos y movimientos) en el vault.dat real de Gastito.
  *
  * Corré esto en TU terminal. La contraseña del vault se pide acá mismo y
  * nunca se envía a ningún lado. Hace un backup (vault.dat.bak.import) antes
@@ -426,7 +426,7 @@ const MOVEMENTS_DATA = [
   }
 ]
 
-// Nota: no hay "horas trabajadas" ni "recibos" en el modelo de Mi Hogar; se
+// Nota: no hay "horas trabajadas" ni "recibos" en el modelo de Gastito; se
 // omiten por decisión del usuario. El ingreso de $218.030 por horas se carga
 // como un movimiento de tipo income normal (arriba), con la nota original.
 

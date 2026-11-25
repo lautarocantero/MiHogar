@@ -1,4 +1,4 @@
-# Mi Hogar
+# Gastito
 
 App de escritorio (Electron + React + TypeScript) para llevar las finanzas de un hogar: cuentas, pagos, ahorros, proyecciones y reportes en un solo lugar, con los datos cifrados y guardados localmente.
 

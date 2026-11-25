@@ -2,7 +2,7 @@ import type { LocaleNamespace } from '../types'
 
 export const common = {
   es: {
-    'common.appName': 'Mi Hogar',
+    'common.appName': 'Gastito',
     'common.appDescription':
       'Tus finanzas del hogar en un solo lugar: cuentas, pagos, ahorros y proyecciones, cifrados de punta a punta.',
     'common.loading': 'Cargando…',
@@ -27,7 +27,7 @@ export const common = {
     'common.language.en': 'English'
   },
   en: {
-    'common.appName': 'Mi Hogar',
+    'common.appName': 'Gastito',
     'common.appDescription':
       'Your household finances in one place: accounts, payments, savings and projections, end-to-end encrypted.',
     'common.loading': 'Loading…',

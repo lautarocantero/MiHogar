@@ -2,7 +2,7 @@
 
 ## 1. Resumen ejecutivo
 
-Mi Hogar guarda todos sus datos en Redux (hidratado desde un vault JSON cifrado local,
+Gastito guarda todos sus datos en Redux (hidratado desde un vault JSON cifrado local,
 sin backend). Un relevamiento del código encontró un **patrón sistemático**: casi cada
 slice de Redux (`accountsSlice`, `movementsSlice`, `paymentsSlice`, `savingsSlice`,
 `membersSlice`, `categoriesSlice`) fue construido con reducers `add/update/remove`

@@ -1,4 +1,4 @@
-# 002 — Mi Hogar como web app (multi-dispositivo)
+# 002 — Gastito como web app (multi-dispositivo)
 
 **Estado**: en implementación · **Rama**: `002-feature/web-app` · **Fecha**: 2026-11-20
 

@@ -15,3 +15,6 @@ docs/inspiration
 tmp-preview
 dist-web
 .vercel
+gastito-respaldo-antes-de-importar-*.dat
+scripts/import-data*.json
+!scripts/import-data.example.json

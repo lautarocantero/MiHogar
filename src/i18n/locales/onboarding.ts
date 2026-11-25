@@ -26,7 +26,7 @@ export const onboarding = {
 
     'onboarding.restore.title': '¿Ya tenés un respaldo?',
     'onboarding.restore.description':
-      'Si exportaste tus datos antes (archivo .dat de Mi Hogar), podés subirlos a tu cuenta en lugar de empezar de cero.',
+      'Si exportaste tus datos antes (archivo .dat de Gastito), podés subirlos a tu cuenta en lugar de empezar de cero.',
     'onboarding.restore.pick': 'Importar un respaldo (.dat)',
     'onboarding.restore.dialogTitle': 'Clave del respaldo',
     'onboarding.restore.dialogDescription':
@@ -63,7 +63,7 @@ export const onboarding = {
 
     'onboarding.restore.title': 'Already have a backup?',
     'onboarding.restore.description':
-      'If you exported your data before (a Mi Hogar .dat file), you can upload it to your account instead of starting from scratch.',
+      'If you exported your data before (a Gastito .dat file), you can upload it to your account instead of starting from scratch.',
     'onboarding.restore.pick': 'Import a backup (.dat)',
     'onboarding.restore.dialogTitle': 'Backup key',
     'onboarding.restore.dialogDescription':

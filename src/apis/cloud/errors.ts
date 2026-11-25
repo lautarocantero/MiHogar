@@ -5,7 +5,7 @@ import { t } from '@/i18n'
  * serialización de `createAsyncThunk` (que conserva `name`, `message` y `code`), así
  * que `useHandleError` puede traducirlo aunque el error llegue como objeto plano.
  */
-export const APP_ERROR_NAME = 'MiHogarAppError'
+export const APP_ERROR_NAME = 'GastitoAppError'
 
 export class AppError extends Error {
   readonly code: string

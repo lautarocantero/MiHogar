@@ -1,6 +1,6 @@
 {
-  "name": "Mi Hogar",
-  "short_name": "Mi Hogar",
+  "name": "Gastito",
+  "short_name": "Gastito",
   "description": "Tus finanzas del hogar en un solo lugar: cuentas, pagos, ahorros y proyecciones, cifrados de punta a punta.",
   "lang": "es-AR",
   "start_url": "./",

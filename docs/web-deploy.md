@@ -1,4 +1,4 @@
-# Publicar Mi Hogar como web app
+# Publicar Gastito como web app
 
 Guía para dejar la web andando con tu propia cuenta (una sola vez). Diseño en
 `specs/002-web-app/spec.md`.
@@ -17,7 +17,7 @@ Guía para dejar la web andando con tu propia cuenta (una sola vez). Diseño en
    "olvidé mi contraseña"): la cuenta queda activa apenas se crea. Si "Confirm email" queda
    prendido, la cuenta se crea pero no se puede entrar, y la app lo avisa.
 4. En **Authentication → URL Configuration**: poné en *Site URL* la URL donde vas a publicar la
-   web (por ejemplo `https://mi-hogar.vercel.app`) y agregala también en *Redirect URLs*.
+   web (por ejemplo `https://gastito.vercel.app`) y agregala también en *Redirect URLs*.
    Hoy no se usa; hace falta cuando se activen los mails (el código queda comentado con
    `EMAILS DESACTIVADOS`).
 5. En **Project Settings → API** copiá:
