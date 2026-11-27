@@ -85,14 +85,14 @@ termina cayendo en el chequeo SUID que falla igual.
 
 2. **Wrapper de shell inyectado en el build** (`scripts/afterPack.cjs`,
    enganchado vía `afterPack:` en `electron-builder.yml`): después de
-   empaquetar, renombra el binario real `mi-hogar` → `mi-hogar.bin` y lo
+   empaquetar, renombra el binario real `mi-hogar` → `gastito.bin` y lo
    reemplaza por un script que siempre re-ejecuta el binario real con
    `--no-sandbox`:
 
    ```sh
    #!/bin/sh
    DIR="$(cd "$(dirname "$0")" && pwd)"
-   exec "$DIR/mi-hogar.bin" --no-sandbox "$@"
+   exec "$DIR/gastito.bin" --no-sandbox "$@"
    ```
 
    Esto garantiza que el flag esté presente **desde el primer exec del

@@ -8,7 +8,7 @@ import { getCurrentLocale, t } from '@/i18n'
  */
 export type ReminderPermission = 'granted' | 'denied' | 'default' | 'unsupported'
 
-const NOTIFIED_STORAGE_KEY = 'mihogar.notifiedReminders'
+const NOTIFIED_STORAGE_KEY = 'gastito.notifiedReminders'
 const notifiedInMemory = new Set<string>()
 
 export function getReminderPermission(): ReminderPermission {

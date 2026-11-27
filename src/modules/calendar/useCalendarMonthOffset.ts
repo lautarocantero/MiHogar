@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const STORAGE_KEY = 'miHogar.calendar.monthOffset'
+const STORAGE_KEY = 'gastito.calendar.monthOffset'
 const MIN_OFFSET = -6
 const MAX_OFFSET = 6
 

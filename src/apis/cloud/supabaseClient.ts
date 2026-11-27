@@ -50,7 +50,7 @@ export function getSupabase(): CloudClient {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
-      storageKey: 'mihogar.auth'
+      storageKey: 'gastito.auth'
     }
   })
   return client

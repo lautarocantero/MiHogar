@@ -1,3 +1,4 @@
+import type { CardDebt } from '@/utils/domain/computeCardDebts'
 import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
 import type { Debt } from '@/typings/domain/types'
 import type { AddDebtFormValues, DebtsSummary, DebtView } from './types'
@@ -49,4 +50,8 @@ export type DeleteDebtDialogProps = {
   open: boolean
   onClose: () => void
   onDeleted: () => void
+}
+
+export type CardDebtRowProps = {
+  debt: CardDebt
 }

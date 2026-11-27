@@ -4,6 +4,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule'
 import { Link as RouterLink } from 'react-router-dom'
 import { ROUTES } from '@/router/routes'
 import { organicColors, organicTypography } from '@/theme/tokens'
+import { HomeDebtsCard } from './components/HomeDebtsCard'
 import { HeroBalanceCard } from './components/HeroBalanceCard'
 import { UpcomingPaymentsList } from './components/UpcomingPaymentsList'
 import { RecentMovementsList } from './components/RecentMovementsList'
@@ -17,7 +18,9 @@ export function HomePage(): React.JSX.Element {
     pendingCount,
     remainingAfterPayments,
     upcomingPayments,
-    recentMovements
+    recentMovements,
+    debts,
+    totalDebt
   } = useHomeData()
 
   return (
@@ -28,6 +31,7 @@ export function HomePage(): React.JSX.Element {
         pendingTotal={pendingTotal}
         pendingCount={pendingCount}
         remainingAfterPayments={remainingAfterPayments}
+        debtsSlot={<HomeDebtsCard debts={debts} totalDebt={totalDebt} />}
       />
 
       <Box component="section" aria-labelledby="upcoming-payments-title">

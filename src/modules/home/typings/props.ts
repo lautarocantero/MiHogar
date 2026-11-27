@@ -1,5 +1,5 @@
 import type { Account } from '@/typings/domain/types'
-import type { RecentMovementView, UpcomingPaymentView } from './types'
+import type { HomeDebtItem, RecentMovementView, UpcomingPaymentView } from './types'
 
 export type HeroBalanceCardProps = {
   totalAvailable: number
@@ -7,6 +7,7 @@ export type HeroBalanceCardProps = {
   pendingTotal: number
   pendingCount: number
   remainingAfterPayments: number
+  debtsSlot?: React.ReactNode
 }
 
 export type UpcomingPaymentsListProps = {
@@ -15,4 +16,9 @@ export type UpcomingPaymentsListProps = {
 
 export type RecentMovementsListProps = {
   movements: RecentMovementView[]
+}
+
+export type HomeDebtsCardProps = {
+  debts: HomeDebtItem[]
+  totalDebt: number
 }

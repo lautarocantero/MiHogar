@@ -15,7 +15,8 @@ export function HeroBalanceCard({
   accounts,
   pendingTotal,
   pendingCount,
-  remainingAfterPayments
+  remainingAfterPayments,
+  debtsSlot
 }: HeroBalanceCardProps): React.JSX.Element {
   const isRemainingPositive = remainingAfterPayments >= 0
 
@@ -174,6 +175,7 @@ export function HeroBalanceCard({
           </Card>
         </Stack>
       </Grid>
+      {debtsSlot && <Grid size={12}>{debtsSlot}</Grid>}
     </Grid>
   )
 }

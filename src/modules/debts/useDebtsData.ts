@@ -5,6 +5,9 @@ import {
   selectTotalOwedByHousehold,
   selectTotalOwedToHousehold
 } from '@/store/debts/debtsSelectors'
+import { selectAllAccounts } from '@/store/accounts/accountsSelectors'
+import { selectAllMovements } from '@/store/movements/movementsSelectors'
+import { computeCardDebts } from '@/utils/domain/computeCardDebts'
 import { selectAllMembers } from '@/store/household/householdSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { resolveDebtConditionText } from '@/utils/domain/resolveDebtConditionText'
@@ -37,14 +40,22 @@ export function useDebtsData(): DebtsData {
   const totalOwedByHousehold = useAppSelector(selectTotalOwedByHousehold)
   const totalOwedToHousehold = useAppSelector(selectTotalOwedToHousehold)
   const members = useAppSelector(selectAllMembers)
+  const accounts = useAppSelector(selectAllAccounts)
+  const movements = useAppSelector(selectAllMovements)
 
   return useMemo(() => {
     const views = debts.map((debt) => toDebtView(debt, members))
+    const cardDebts = computeCardDebts(accounts, movements)
+    const cardDebtsTotal = cardDebts.reduce((sum, debt) => sum + debt.totalRemaining, 0)
 
     return {
-      summary: { totalOwedByHousehold, totalOwedToHousehold },
+      summary: {
+        totalOwedByHousehold: totalOwedByHousehold + cardDebtsTotal,
+        totalOwedToHousehold
+      },
+      cardDebts,
       owedByHousehold: views.filter((debt) => debt.direction === DebtDirection.OWED_BY_HOUSEHOLD),
       owedToHousehold: views.filter((debt) => debt.direction === DebtDirection.OWED_TO_HOUSEHOLD)
     }
-  }, [debts, members, totalOwedByHousehold, totalOwedToHousehold])
+  }, [debts, members, accounts, movements, totalOwedByHousehold, totalOwedToHousehold])
 }

@@ -8,6 +8,8 @@ import { selectAllMembers } from '@/store/household/householdSelectors'
 import { selectAllCategories } from '@/store/categories/categoriesSelectors'
 import { resolveOwnerLabel } from '@/utils/domain/resolveOwnerLabel'
 import { resolvePaymentDisplayDate } from '@/utils/domain/resolvePaymentDisplayDate'
+import { allocateCardPayments } from '@/utils/domain/computeCardDebts'
+import { resolveCardMovementCycle } from '@/utils/domain/resolveCardMovementCycle'
 import { resolveMovementConcept } from '@/utils/domain/resolveMovementConcept'
 import { resolveMovementDetail } from '@/utils/domain/resolveMovementDetail'
 import { PaymentStatus } from '@/typings/domain/enums'
@@ -27,6 +29,7 @@ export function useUnifiedEntries(): UnifiedEntry[] {
     const accountsById = new Map(accounts.map((account) => [account.id, account]))
     const categoriesById = new Map(categories.map((category) => [category.id, category]))
     const todayIso = format(startOfDay(new Date()), 'yyyy-MM-dd')
+    const remainingById = allocateCardPayments(accounts, movements)
 
     const paymentEntries: UnifiedEntry[] = payments.map((payment) => {
       const account = accountsById.get(payment.accountId)
@@ -44,26 +47,36 @@ export function useUnifiedEntries(): UnifiedEntry[] {
 
     const movementEntries: UnifiedEntry[] = movements
       .filter((movement) => movement.paymentId == null)
-      .map((movement) => ({
-        origin: 'movement',
-        id: movement.id,
-        amount: movement.amount,
-        displayDate: movement.date,
-        status: movement.date <= todayIso ? PaymentStatus.PAID : PaymentStatus.PENDING,
-        accountType: accountsById.get(movement.accountId)?.type,
-        accountName: accountsById.get(movement.accountId)?.name ?? t('payments.accountUndefined'),
-        ownerLabel: resolveOwnerLabel(movement.ownerType, movement.ownerId, members),
-        categoryName: movement.categoryId
-          ? (categoriesById.get(movement.categoryId)?.name ?? t('common.uncategorized'))
-          : t('common.uncategorized'),
-        recurring: false,
-        amountMode: undefined,
-        movement,
-        concept: resolveMovementConcept(movement, payments, categories),
-        detail: resolveMovementDetail(movement, accounts),
-        isEstimated: movement.date > todayIso,
-        isPast: movement.date < todayIso
-      }))
+      .map((movement) => {
+        const cycle = resolveCardMovementCycle(
+          movement,
+          accountsById.get(movement.accountId),
+          remainingById
+        )
+        const displayDate = cycle?.displayDate ?? movement.date
+        return {
+          origin: 'movement',
+          id: movement.id,
+          amount: movement.amount,
+          displayDate,
+          status:
+            cycle?.status ??
+            (movement.date <= todayIso ? PaymentStatus.PAID : PaymentStatus.PENDING),
+          accountType: accountsById.get(movement.accountId)?.type,
+          accountName: accountsById.get(movement.accountId)?.name ?? t('payments.accountUndefined'),
+          ownerLabel: resolveOwnerLabel(movement.ownerType, movement.ownerId, members),
+          categoryName: movement.categoryId
+            ? (categoriesById.get(movement.categoryId)?.name ?? t('common.uncategorized'))
+            : t('common.uncategorized'),
+          recurring: false,
+          amountMode: undefined,
+          movement,
+          concept: resolveMovementConcept(movement, payments, categories),
+          detail: resolveMovementDetail(movement, accounts),
+          isEstimated: displayDate > todayIso && !cycle,
+          isPast: displayDate < todayIso
+        }
+      })
 
     return [...paymentEntries, ...movementEntries].sort((a, b) =>
       a.displayDate.localeCompare(b.displayDate)

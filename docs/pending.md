@@ -44,3 +44,7 @@ Bugs y cosas por agregar a la aplicación.
 - Hacer landing page.
 - Subir a portafolio personal.
 - Notificación de hace cuánto tiempo no se sube un nuevo registro.
+- Implementar revisión con facturas cargadas.
+- Revisar carga con tarjeta.
+- Deudas no funciona correctamente.
+- Agregar API de Mercado Pago.

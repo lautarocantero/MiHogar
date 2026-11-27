@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { CardDebt } from '@/utils/domain/computeCardDebts'
 import type { Debt } from '@/typings/domain/types'
 import type { addDebtFormSchema } from '@/validation/addDebtFormSchema'
 
@@ -17,6 +18,7 @@ export type DebtsData = {
   summary: DebtsSummary
   owedByHousehold: DebtView[]
   owedToHousehold: DebtView[]
+  cardDebts: CardDebt[]
 }
 
 export type AddDebtFormValues = z.infer<typeof addDebtFormSchema>

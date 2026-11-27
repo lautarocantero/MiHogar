@@ -1,6 +1,6 @@
 import { Box, Paper, Stack, Typography } from '@mui/material'
 import { organicTypography } from '@/theme/tokens'
-import logo from '@/assets/images/mi-hogar-logo.png'
+import logo from '@/assets/images/gastito-logo.png'
 import loginBackground from '@/assets/images/login-background.png'
 import { LanguageToggle } from '@/components/shared/LanguageToggle'
 import { useT } from '@/i18n'

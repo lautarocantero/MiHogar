@@ -3,7 +3,7 @@ import type { Locale, TranslateParams } from './types'
 
 export const DEFAULT_LOCALE: Locale = 'es'
 export const SUPPORTED_LOCALES: Locale[] = ['es', 'en']
-const STORAGE_KEY = 'mihogar.locale'
+const STORAGE_KEY = 'gastito.locale'
 
 export function isLocale(value: unknown): value is Locale {
   return value === 'es' || value === 'en'

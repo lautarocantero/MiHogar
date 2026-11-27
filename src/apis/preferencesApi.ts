@@ -5,7 +5,7 @@ import type { PreferencesFile } from '@shared/vaultEnvelope.types'
  * `localStorage`. Si el almacenamiento no está disponible se usan los valores por
  * defecto y no se rompe nada.
  */
-const STORAGE_KEY = 'mihogar.preferences'
+const STORAGE_KEY = 'gastito.preferences'
 
 const DEFAULT_PREFERENCES: PreferencesFile = {
   fontSizeLevel: 'normal',

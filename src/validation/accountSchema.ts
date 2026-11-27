@@ -20,6 +20,7 @@ export const accountSchema = z.object({
   nextDueDay: boundedNumber().int().min(1).max(31).optional(),
   minPayment: boundedNumber().nonnegative().optional(),
   minPaymentDueDate: z.string().optional(),
+  bankName: z.string().optional(),
   color: z.string().optional(),
   sortOrder: boundedNumber().optional()
 })

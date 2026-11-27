@@ -13,6 +13,7 @@ import { formatDueLabel } from '@/utils/formatting/formatDate'
 import { DonutChart } from '@/components/shared/DonutChart'
 import { DebtStatus } from '@/typings/domain/enums'
 import { DebtsSummaryCards } from './components/DebtsSummaryCards'
+import { CardDebtRow } from './components/CardDebtRow'
 import { DebtRow } from './components/DebtRow'
 import { AddDebtDialog } from './components/AddDebtDialog'
 import { EditDebtDialog } from './components/EditDebtDialog'
@@ -48,7 +49,7 @@ function SectionHeading({
 }
 
 export function DebtsPage(): React.JSX.Element {
-  const { summary, owedByHousehold, owedToHousehold } = useDebtsData()
+  const { summary, owedByHousehold, owedToHousehold, cardDebts } = useDebtsData()
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [editingDebt, setEditingDebt] = useState<DebtView | null>(null)
   const [deletingDebt, setDeletingDebt] = useState<DebtView | null>(null)
@@ -64,21 +65,26 @@ export function DebtsPage(): React.JSX.Element {
     [activeDebts]
   )
 
-  const donutSegments = activeDebts
-    .filter((debt) => debt.outstandingBalance > 0)
-    .map((debt, index) => ({
-      label: debt.name,
-      amountLabel: formatCurrency(debt.outstandingBalance),
-      percent:
-        summary.totalOwedByHousehold > 0
-          ? (debt.outstandingBalance / summary.totalOwedByHousehold) * 100
-          : 0,
-      color: DEBT_COLORS[index % DEBT_COLORS.length]
-    }))
+  const donutSources = [
+    ...cardDebts.map((debt) => ({
+      label: `${debt.bankName} · ${debt.account.name}`,
+      amount: debt.totalRemaining
+    })),
+    ...activeDebts
+      .filter((debt) => debt.outstandingBalance > 0)
+      .map((debt) => ({ label: debt.name, amount: debt.outstandingBalance }))
+  ]
+  const donutSegments = donutSources.map((source, index) => ({
+    label: source.label,
+    amountLabel: formatCurrency(source.amount),
+    percent:
+      summary.totalOwedByHousehold > 0 ? (source.amount / summary.totalOwedByHousehold) * 100 : 0,
+    color: DEBT_COLORS[index % DEBT_COLORS.length]
+  }))
 
   return (
     <Stack spacing={3} component="section" aria-label="Deudas y préstamos">
-      <DebtsSummaryCards summary={summary} activeCount={activeDebts.length} />
+      <DebtsSummaryCards summary={summary} activeCount={activeDebts.length + cardDebts.length} />
 
       <Grid container spacing={2} alignItems="flex-start">
         <Grid size={{ xs: 12, md: 7 }}>
@@ -225,12 +231,15 @@ export function DebtsPage(): React.JSX.Element {
             Lo que debemos
           </SectionHeading>
         </Box>
-        {owedByHousehold.length === 0 ? (
+        {owedByHousehold.length === 0 && cardDebts.length === 0 ? (
           <Typography variant="body1" color="text.secondary">
             No tenés deudas cargadas.
           </Typography>
         ) : (
           <Stack spacing={2} component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
+            {cardDebts.map((debt) => (
+              <CardDebtRow key={debt.account.id} debt={debt} />
+            ))}
             {owedByHousehold.map((debt) => (
               <DebtRow
                 key={debt.id}

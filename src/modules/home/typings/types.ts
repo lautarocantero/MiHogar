@@ -21,7 +21,16 @@ export type RecentMovementView = {
   accountName: string
 }
 
+export type HomeDebtItem = {
+  id: string
+  name: string
+  counterparty: string
+  amount: number
+}
+
 export type HomeData = {
+  debts: HomeDebtItem[]
+  totalDebt: number
   totalAvailable: number
   accounts: Account[]
   pendingTotal: number
